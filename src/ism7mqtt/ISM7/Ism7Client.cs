@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.IO;
@@ -10,7 +9,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
 
@@ -19,11 +17,8 @@ namespace ism7mqtt
     public class Ism7Client
     {
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
+        private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
 
-        public Ism7Client()
-        {
-            
-        }
         public async Task RunAsync(IPAddress ipAddress, string password, CancellationToken cancellationToken)
         {
             var tcp = new TcpClient();
@@ -36,11 +31,25 @@ namespace ism7mqtt
                     TargetHost = "ism7.server",
                     ClientCertificates = new X509Certificate2Collection(certificate)
                 }, cancellationToken);
-                await AuthenticateAsync(ssl, password, cancellationToken);
+                var session = await AuthenticateAsync(ssl, password, cancellationToken);
+                await GetConfigAsync(ssl, session, cancellationToken);
             }
         }
 
-        private async Task AuthenticateAsync(Stream connection, string password, CancellationToken cancellationToken)
+        private async Task GetConfigAsync(SslStream connection, LoginResp session, CancellationToken cancellationToken)
+        {
+            await SendAsync(connection, new SystemconfigReq {Sid = session.Sid}, cancellationToken);
+            var result = await ReadAsync(connection, cancellationToken);
+            if (result.MessageType != PayloadType.SystemconfigResp)
+                throw new InvalidDataException("invalid response");
+            var resp = (SystemconfigResp)result;
+            foreach (var device in resp.BusConfig.Devices)
+            {
+                _devices.AddOrUpdate(device.Ba, device, (k, o) => device);
+            }
+        }
+
+        private async Task<LoginResp> AuthenticateAsync(Stream connection, string password, CancellationToken cancellationToken)
         {
             await SendAsync(connection, new LoginReq {Password = password}, cancellationToken);
             var result = await ReadAsync(connection, cancellationToken);
@@ -49,7 +58,7 @@ namespace ism7mqtt
             var resp = (LoginResp)result;
             if (resp.State != LoginState.ok)
                 throw new InvalidDataException("invalid login state");
-
+            return resp;
         }
 
         private ValueTask SendAsync<T>(Stream connection, T payload, CancellationToken cancellationToken) where T:IPayload
@@ -70,16 +79,18 @@ namespace ism7mqtt
             var length = BinaryPrimitives.ReadInt32BigEndian(buffer);
             var type = (PayloadType) BinaryPrimitives.ReadInt16BigEndian(buffer.AsSpan(4));
             await ReadExactAsync(connection, buffer, length, cancellationToken);
-            return Deserialize(type, buffer.AsSpan(0, length));
+            using var stream = new MemoryStream(buffer, 0, length);
+            return Deserialize(type, stream);
         }
 
-        private IResponse Deserialize(PayloadType type, Span<byte> data)
+        private IResponse Deserialize(PayloadType type, Stream data)
         {
-            var xml = Encoding.UTF8.GetString(data);
             switch (type)
             {
                 case PayloadType.DirectLogonResp:
-                    return (IResponse) GetSerializer<LoginResp>().Deserialize(new StringReader(xml));
+                    return (IResponse) GetSerializer<LoginResp>().Deserialize(data);
+                case PayloadType.SystemconfigResp:
+                    return (IResponse) GetSerializer<SystemconfigResp>().Deserialize(data);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type));
             }
