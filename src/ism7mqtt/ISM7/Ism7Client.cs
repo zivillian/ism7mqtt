@@ -18,6 +18,7 @@ namespace ism7mqtt
     {
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
+        private readonly Ism7Config _config = new Ism7Config();
 
         public async Task RunAsync(IPAddress ipAddress, string password, CancellationToken cancellationToken)
         {

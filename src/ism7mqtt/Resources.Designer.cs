@@ -69,5 +69,43 @@ namespace ism7mqtt {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;ConverterTemplateConfig xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; Version=&quot;1&quot;&gt;
+        ///  &lt;ConverterTemplates&gt;
+        ///    &lt;NumericConverter16Template CTID=&quot;1000&quot;&gt;
+        ///      &lt;TelegramNr&gt;5&lt;/TelegramNr&gt;
+        ///      &lt;Type&gt;SS10&lt;/Type&gt;
+        ///    &lt;/NumericConverter16Template&gt;
+        ///    &lt;NumericConverter16Template CTID=&quot;1001&quot;&gt;
+        ///      &lt;TelegramNr&gt;8&lt;/TelegramNr&gt;
+        ///      &lt;Type&gt;SS10&lt;/Type&gt;
+        ///    &lt;/NumericConverter16Template&gt;
+        ///    &lt;NumericConverter16Templat [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ConverterTemplates {
+            get {
+                return ResourceManager.GetString("ConverterTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;DeviceTemplateConfig xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; Version=&quot;1&quot;&gt;
+        ///  &lt;DeviceTemplates&gt;
+        ///    &lt;DeviceTemplate DTID=&quot;1000&quot; Name=&quot;DHK_BM&quot;&gt;
+        ///      &lt;CustomerId&gt;WOLF&lt;/CustomerId&gt;
+        ///      &lt;SoftwareNumber&gt;0x0&lt;/SoftwareNumber&gt;
+        ///      &lt;WRSDeviceIds&gt;0x0&lt;/WRSDeviceIds&gt;
+        ///      &lt;EnableEBus5InfoNumberTelegram&gt;false&lt;/EnableEBus5InfoNumberTelegram&gt;
+        ///      &lt;HasOwnFaultMessageHistory&gt;false&lt;/HasOwnFaultMessageHistory&gt;
+        ///    [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DeviceTemplates {
+            get {
+                return ResourceManager.GetString("DeviceTemplates", resourceCulture);
+            }
+        }
     }
 }
