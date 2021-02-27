@@ -107,5 +107,24 @@ namespace ism7mqtt {
                 return ResourceManager.GetString("DeviceTemplates", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;ParameterTemplateConfig xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; Version=&quot;1&quot;&gt;
+        ///  &lt;ParameterList&gt;
+        ///    &lt;NumericParameterDescriptor PTID=&quot;1000&quot;&gt;
+        ///      &lt;Name&gt;Tagtemperatur&lt;/Name&gt;
+        ///      &lt;UnitName&gt;°C&lt;/UnitName&gt;
+        ///      &lt;App&gt;true&lt;/App&gt;
+        ///      &lt;RemoveConditionId&gt;False&lt;/RemoveConditionId&gt;
+        ///      &lt;ReadOnlyConditionId&gt;False&lt;/ReadOnlyConditionId&gt;
+        ///      &lt;InactiveConditionId&gt;False&lt;/InactiveConditionId&gt;
+        ///      &lt;IsSnapshot [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ParameterTemplates {
+            get {
+                return ResourceManager.GetString("ParameterTemplates", resourceCulture);
+            }
+        }
     }
 }

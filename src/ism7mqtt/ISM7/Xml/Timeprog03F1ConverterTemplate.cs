@@ -1,4 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -15,5 +18,19 @@ namespace ism7mqtt.ISM7.Xml
 
         [XmlElement("HzkInstance")]
         public int HzkInstance { get; set; }
+
+        public override IEnumerable<ushort> TelegramIds => Array.Empty<ushort>();
+
+        public override void AddTelegram(ushort telegram, byte low, byte high)
+        {
+        }
+
+        public override bool IsImplemented => false;
+
+        public override bool HasValue => false;
+        public override JValue GetValue()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

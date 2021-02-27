@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace ism7mqtt.ISM7.Protocol
 {
     [XmlRoot("tbreq")]
-	public class TelegramBundleReq
+	public class TelegramBundleReq:IPayload
 	{
 		[XmlAttribute("bn")]
 		public string BundleId { get; set; }
@@ -20,5 +20,19 @@ namespace ism7mqtt.ISM7.Protocol
 
 		[XmlElement("ird")]
 		public List<InfoRead> InfoReadTelegrams { get; set; }
+
+        [XmlElement("erd")]
+        public ErrorStateRead EStRead { get; set; }
+
+        public PayloadType Type => PayloadType.TgrBundleReq;
+
+        public class ErrorStateRead
+        {
+            [XmlAttribute("se")]
+            public string Seq { get; set; }
+
+            [XmlAttribute("li")]
+            public string VisibleDeviceAdresses { get; set; }
+        }
     }
 }

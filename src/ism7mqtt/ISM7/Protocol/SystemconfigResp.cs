@@ -39,6 +39,18 @@ namespace ism7mqtt.ISM7.Protocol
 
             [XmlAttribute("did")]
             public string DeviceId { get; set; }
+
+            [XmlIgnore]
+            public string SoftwareNumber
+            {
+                get
+                {
+                    var major = Converter.FromHex(SoftwareVersion);
+                    var minor = Converter.FromHex(SoftwareRevision);
+                    var number = major * 100 + minor;
+                    return $"0x{number:X}";
+                }
+            }
         }
 
         public PayloadType MessageType => PayloadType.SystemconfigResp;

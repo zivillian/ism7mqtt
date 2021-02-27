@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -9,6 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
 
@@ -34,6 +37,40 @@ namespace ism7mqtt
                 }, cancellationToken);
                 var session = await AuthenticateAsync(ssl, password, cancellationToken);
                 await GetConfigAsync(ssl, session, cancellationToken);
+                await LoadInitialValues(ipAddress.ToString(), ssl, cancellationToken);
+            }
+        }
+
+        private async Task LoadInitialValues(string ip, Stream connection, CancellationToken cancellationToken)
+        {
+            var json = new List<string>();
+            foreach (var device in _devices.Values)
+            {
+                _config.AddDevice(ip, device.Ba, device.DeviceId, device.SoftwareNumber);
+                var ids = _config.GetTelegramIdsForDevice(device.Ba);
+                await SendAsync(connection, new TelegramBundleReq
+                {
+                    AbortOnError = false,
+                    BundleId = "1",
+                    GatewayId = "1",
+                    TelegramBundleType = TelegramBundleType.pull,
+                    InfoReadTelegrams = ids.Select(x=>new InfoRead
+                    {
+                        BusAddress = device.Ba,
+                        InfoNumber = x,
+                    }).ToList()
+                }, cancellationToken);
+                var result = await ReadAsync(connection, cancellationToken);
+                if (result.MessageType != PayloadType.TgrBundleResp)
+                    throw new InvalidDataException("invalid response");
+                var resp = (TelegramBundleResp) result;
+                if (!String.IsNullOrEmpty(resp.Errormsg))
+                    throw new InvalidDataException(resp.Errormsg);
+                if (resp.State != TelegrResponseState.OK)
+                    throw new InvalidDataException($"unexpected stat '{resp.State}");
+                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams)
+                    .Select(x=>x.Content.ToString());
+                json.AddRange(datapoints);
             }
         }
 
@@ -65,6 +102,7 @@ namespace ism7mqtt
         private ValueTask SendAsync<T>(Stream connection, T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = Serialize(payload);
+            Console.WriteLine($"> {data}");
             var length = Encoding.UTF8.GetByteCount(data);
             var buffer = new byte[length + 6];
             BinaryPrimitives.WriteInt32BigEndian(buffer, length);
@@ -75,11 +113,13 @@ namespace ism7mqtt
 
         private async Task<IResponse> ReadAsync(Stream connection, CancellationToken cancellationToken)
         {
-            var buffer = new byte[4096];
+            var buffer = new byte[6];
             await ReadExactAsync(connection, buffer, 6, cancellationToken);
             var length = BinaryPrimitives.ReadInt32BigEndian(buffer);
             var type = (PayloadType) BinaryPrimitives.ReadInt16BigEndian(buffer.AsSpan(4));
+            buffer = new byte[length];
             await ReadExactAsync(connection, buffer, length, cancellationToken);
+            Console.WriteLine($"< {Encoding.UTF8.GetString(buffer.AsSpan(0, length))}");
             using var stream = new MemoryStream(buffer, 0, length);
             return Deserialize(type, stream);
         }
@@ -92,6 +132,8 @@ namespace ism7mqtt
                     return (IResponse) GetSerializer<LoginResp>().Deserialize(data);
                 case PayloadType.SystemconfigResp:
                     return (IResponse) GetSerializer<SystemconfigResp>().Deserialize(data);
+                case PayloadType.TgrBundleResp:
+                    return (IResponse) GetSerializer<TelegramBundleResp>().Deserialize(data);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type));
             }
@@ -114,8 +156,9 @@ namespace ism7mqtt
         private string Serialize<T>(T request)
         {
             using var sw = new StringWriter();
+            var xmlWriter = XmlWriter.Create(sw, new XmlWriterSettings {Indent = false});
             var serializer = GetSerializer<T>();
-            serializer.Serialize(sw, request);
+            serializer.Serialize(xmlWriter, request);
             sw.Flush();
             return sw.ToString();
         }

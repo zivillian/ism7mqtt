@@ -8,5 +8,7 @@ namespace ism7mqtt.ISM7.Xml
         [XmlArray("TelegramNumbers")]
         [XmlArrayItem("unsignedShort")]
         public List<ushort> TelegramNumbers { get; set; }
+
+        public override IEnumerable<ushort> TelegramIds => TelegramNumbers;
     }
 }

@@ -7,7 +7,7 @@ namespace ism7mqtt.ISM7.Protocol
     public class InfoRead
     {
         [XmlAttribute("in")]
-        public int[] InfoNumber { get; set; }
+        public int InfoNumber { get; set; }
         
         [XmlAttribute("se")]
         public string Seq { get; set; }
