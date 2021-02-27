@@ -68,7 +68,7 @@ namespace ism7mqtt
                     throw new InvalidDataException(resp.Errormsg);
                 if (resp.State != TelegrResponseState.OK)
                     throw new InvalidDataException($"unexpected stat '{resp.State}");
-                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams)
+                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams.Where(x=>x.State == TelegrResponseState.OK))
                     .Select(x=>x.Content.ToString());
                 json.AddRange(datapoints);
             }

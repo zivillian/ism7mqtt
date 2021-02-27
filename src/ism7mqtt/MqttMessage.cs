@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {

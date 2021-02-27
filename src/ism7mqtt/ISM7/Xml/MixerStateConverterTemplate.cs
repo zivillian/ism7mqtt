@@ -34,7 +34,22 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JValue GetValue()
         {
-            throw new System.NotImplementedException();
+            JValue result;
+            if (_open.HasValue && _open.Value != 0)
+            {
+                result = new JValue("opened");
+            }
+            else if (_close.HasValue && _close.Value != 0)
+            {
+                result = new JValue("closed");
+            }
+            else
+            {
+                result = new JValue("-");
+            }
+            _open = null;
+            _close = null;
+            return result;
         }
     }
 }
