@@ -10,9 +10,8 @@ namespace ism7mqtt.ISM7.Xml
             throw new NotImplementedException();
         }
 
-        public override bool IsImplemented => true;
-
         public override bool HasValue => throw new NotImplementedException();
+
         public override JValue GetValue()
         {
             throw new NotImplementedException();

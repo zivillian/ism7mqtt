@@ -20,8 +20,6 @@ namespace ism7mqtt.ISM7.Xml
             _bit = (value >> Bitnumber) & 0x1;
         }
 
-        public override bool IsImplemented => true;
-
         public override bool HasValue => _bit.HasValue;
 
         public override JValue GetValue()

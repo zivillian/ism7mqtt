@@ -30,9 +30,8 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override bool IsImplemented => true;
-
         public override bool HasValue => _open.HasValue && _close.HasValue;
+
         public override JValue GetValue()
         {
             throw new System.NotImplementedException();

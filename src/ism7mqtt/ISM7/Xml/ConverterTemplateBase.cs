@@ -16,8 +16,6 @@ namespace ism7mqtt.ISM7.Xml
 
         public abstract void AddTelegram(ushort telegram, byte low, byte high);
 
-        public abstract bool IsImplemented { get; }
-
         public abstract bool HasValue { get; }
 
         public abstract JValue GetValue();

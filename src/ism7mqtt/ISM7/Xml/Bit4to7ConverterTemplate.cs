@@ -14,8 +14,6 @@ namespace ism7mqtt.ISM7.Xml
             _value = (byte) (low >> 4);
         }
 
-        public override bool IsImplemented => true;
-
         public override bool HasValue => _value.HasValue;
 
         public override JValue GetValue()

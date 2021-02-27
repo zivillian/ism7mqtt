@@ -12,9 +12,8 @@ namespace ism7mqtt.ISM7.Xml
             _value = TimeSpan.FromHours(high).Add(TimeSpan.FromMinutes(low));
         }
 
-        public override bool IsImplemented => false;
-
         public override bool HasValue => _value.HasValue;
+
         public override JValue GetValue()
         {
             var result = new JValue(_value.Value);

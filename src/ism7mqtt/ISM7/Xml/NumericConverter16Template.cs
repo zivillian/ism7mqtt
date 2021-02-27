@@ -9,12 +9,8 @@ namespace ism7mqtt.ISM7.Xml
 
         protected override void AddTelegram(byte low, byte high)
         {
-            if (_value.HasValue)
-                throw new NotImplementedException();
             _value = (ushort) ((high << 8) | low);
         }
-
-        public override bool IsImplemented => true;
 
         public override bool HasValue => _value.HasValue;
 
