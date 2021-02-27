@@ -79,7 +79,6 @@ namespace ism7mqtt
                 device = devices.Single(x => x.SoftwareNumber == version);
             }
             var ptids = device.ParameterReferenceList
-                .Where(x => !x.ExpertOnly)
                 .Select(x => x.PTID)
                 .Where(x=>_whitelist.Contains(x))
                 .ToHashSet();
