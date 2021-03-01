@@ -155,7 +155,7 @@ namespace ism7mqtt
                         .Distinct()
                         .ToList();
                     if (converters.Count == 0) return null;
-                    var result = new MqttMessage( $"Wolf/{_name}_{_ip}_{_ba}");
+                    var result = new MqttMessage($"Wolf/{_ip}/{_name}_{_ba}");
                     foreach (var converter in converters)
                     {
                         var parameter = _parameter[converter.CTID];

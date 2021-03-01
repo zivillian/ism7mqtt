@@ -27,10 +27,25 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("ControlType")]
         public string ControlType { get; set; }
 
+        public string SafeName
+        {
+            get
+            {
+                return Name.Replace("ä", "ae")
+                    .Replace("ö", "oe")
+                    .Replace("ü", "ue")
+                    .Replace("Ä", "Ae")
+                    .Replace("Ö", "Oe")
+                    .Replace("Ü", "Ue")
+                    .Replace("ß", "ss")
+                    ;
+            }
+        }
+
         public JProperty GetValue(ConverterTemplateBase converter)
         {
             var value = converter.GetValue();
-            return new JProperty(Name, value);
+            return new JProperty(SafeName, value);
         }
     }
 }

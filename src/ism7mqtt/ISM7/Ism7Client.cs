@@ -19,9 +19,15 @@ namespace ism7mqtt
 {
     public class Ism7Client
     {
+        private readonly Func<MqttMessage, CancellationToken, Task> _messageHandler;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
         private readonly Ism7Config _config = new Ism7Config();
+
+        public Ism7Client(Func<MqttMessage, CancellationToken, Task> messageHandler)
+        {
+            _messageHandler = messageHandler;
+        }
 
         public async Task RunAsync(IPAddress ipAddress, string password, CancellationToken cancellationToken)
         {
@@ -37,13 +43,64 @@ namespace ism7mqtt
                 }, cancellationToken);
                 var session = await AuthenticateAsync(ssl, password, cancellationToken);
                 await GetConfigAsync(ssl, session, cancellationToken);
-                await LoadInitialValues(ipAddress.ToString(), ssl, cancellationToken);
+                await LoadInitialValuesAsync(ipAddress.ToString(), ssl, cancellationToken);
+                await SubscribeAsync(ssl, cancellationToken);
+                await ReadEventsAsync(ssl, cancellationToken);
             }
         }
 
-        private async Task LoadInitialValues(string ip, Stream connection, CancellationToken cancellationToken)
+        private async Task ReadEventsAsync(Stream connection, CancellationToken cancellationToken)
         {
-            var json = new List<string>();
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                var result = await ReadAsync(connection, cancellationToken);
+                if (result.MessageType != PayloadType.TgrBundleResp)
+                    throw new InvalidDataException("invalid response");
+                var resp = (TelegramBundleResp) result;
+                if (!String.IsNullOrEmpty(resp.Errormsg))
+                    throw new InvalidDataException(resp.Errormsg);
+                if (resp.State != TelegrResponseState.OK)
+                    throw new InvalidDataException($"unexpected stat '{resp.State}");
+                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams.Where(x => x.State == TelegrResponseState.OK));
+                foreach (var datapoint in datapoints)
+                {
+                    await _messageHandler(datapoint, cancellationToken);
+                }
+            }
+        }
+
+        private async Task SubscribeAsync(Stream connection, CancellationToken cancellationToken)
+        {
+            foreach (var device in _devices.Values)
+            {
+                var ids = _config.GetTelegramIdsForDevice(device.Ba);
+                await SendAsync(connection, new TelegramBundleReq
+                {
+                    AbortOnError = false,
+                    BundleId = device.Ba,
+                    GatewayId = "1",
+                    TelegramBundleType = TelegramBundleType.push,
+                    InfoReadTelegrams = ids.Select(x=>new InfoRead
+                    {
+                        BusAddress = device.Ba,
+                        InfoNumber = x,
+                        Intervall = 60
+                        
+                    }).ToList()
+                }, cancellationToken);
+                var result = await ReadAsync(connection, cancellationToken);
+                if (result.MessageType != PayloadType.TgrBundleResp)
+                    throw new InvalidDataException("invalid response");
+                var resp = (TelegramBundleResp) result;
+                if (!String.IsNullOrEmpty(resp.Errormsg))
+                    throw new InvalidDataException(resp.Errormsg);
+                if (resp.State != TelegrResponseState.OK)
+                    throw new InvalidDataException($"unexpected stat '{resp.State}");
+            }
+        }
+
+        private async Task LoadInitialValuesAsync(string ip, Stream connection, CancellationToken cancellationToken)
+        {
             foreach (var device in _devices.Values)
             {
                 _config.AddDevice(ip, device.Ba, device.DeviceId, device.SoftwareNumber);
@@ -68,9 +125,11 @@ namespace ism7mqtt
                     throw new InvalidDataException(resp.Errormsg);
                 if (resp.State != TelegrResponseState.OK)
                     throw new InvalidDataException($"unexpected stat '{resp.State}");
-                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams.Where(x=>x.State == TelegrResponseState.OK))
-                    .Select(x=>x.Content.ToString());
-                json.AddRange(datapoints);
+                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams.Where(x => x.State == TelegrResponseState.OK));
+                foreach (var datapoint in datapoints)
+                {
+                    await _messageHandler(datapoint, cancellationToken);
+                }
             }
         }
 

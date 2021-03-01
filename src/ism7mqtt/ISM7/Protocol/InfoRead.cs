@@ -14,5 +14,13 @@ namespace ism7mqtt.ISM7.Protocol
 
         [XmlAttribute("ba")]
         public string BusAddress { get; set; }
+
+        [XmlAttribute("is")]
+        public int Intervall { get; set; } = -1;
+
+        public bool ShouldSerializeIntervall()
+        {
+            return Intervall >= 0;
+        }
     }
 }
