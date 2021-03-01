@@ -5,8 +5,6 @@ namespace ism7mqtt.ISM7.Xml
 {
     public class NumericParameterDescriptor:ParameterDescriptor
     {
-        private ConverterTemplateBase _converter;
-
         [XmlElement("UnitName")]
         public string UnitName { get; set; }
         

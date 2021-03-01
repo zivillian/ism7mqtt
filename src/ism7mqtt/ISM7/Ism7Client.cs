@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -36,11 +38,19 @@ namespace ism7mqtt
             var certificate = new X509Certificate2(Resources.client);
             using (var ssl = new SslStream(tcp.GetStream(), false, (a, b, c, d) => true))
             {
-                await ssl.AuthenticateAsClientAsync(new SslClientAuthenticationOptions
+                var sslOptions = new SslClientAuthenticationOptions
                 {
                     TargetHost = "ism7.server",
-                    ClientCertificates = new X509Certificate2Collection(certificate)
-                }, cancellationToken);
+                    ClientCertificates = new X509Certificate2Collection(certificate),
+                };
+                if (!OperatingSystem.IsWindows())
+                {
+                    sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
+                    {
+                        TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
+                    });
+                }
+                await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
                 var session = await AuthenticateAsync(ssl, password, cancellationToken);
                 await GetConfigAsync(ssl, session, cancellationToken);
                 await LoadInitialValuesAsync(ipAddress.ToString(), ssl, cancellationToken);
