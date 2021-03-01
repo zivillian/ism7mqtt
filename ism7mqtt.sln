@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7mqtt", "src\ism7mqtt\ism7mqtt.csproj", "{B7E33C2D-9BC2-4864-BC11-917C33EA0874}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7parameter", "src\ism7parameter\ism7parameter.csproj", "{FAF14727-7805-47E3-B603-26FA6A355BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B7E33C2D-9BC2-4864-BC11-917C33EA0874}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7E33C2D-9BC2-4864-BC11-917C33EA0874}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7E33C2D-9BC2-4864-BC11-917C33EA0874}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAF14727-7805-47E3-B603-26FA6A355BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAF14727-7805-47E3-B603-26FA6A355BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAF14727-7805-47E3-B603-26FA6A355BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAF14727-7805-47E3-B603-26FA6A355BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
