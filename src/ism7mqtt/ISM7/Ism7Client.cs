@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,6 +22,8 @@ namespace ism7mqtt
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
         private readonly Ism7Config _config = new Ism7Config();
+
+        public bool EnableDebug { get; set; }
 
         public Ism7Client(Func<MqttMessage, CancellationToken, Task> messageHandler)
         {
@@ -169,7 +170,8 @@ namespace ism7mqtt
         private ValueTask SendAsync<T>(Stream connection, T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = Serialize(payload);
-            Console.WriteLine($"> {data}");
+            if (EnableDebug)
+                Console.WriteLine($"> {data}");
             var length = Encoding.UTF8.GetByteCount(data);
             var buffer = new byte[length + 6];
             BinaryPrimitives.WriteInt32BigEndian(buffer, length);
@@ -186,7 +188,8 @@ namespace ism7mqtt
             var type = (PayloadType) BinaryPrimitives.ReadInt16BigEndian(buffer.AsSpan(4));
             buffer = new byte[length];
             await ReadExactAsync(connection, buffer, length, cancellationToken);
-            Console.WriteLine($"< {Encoding.UTF8.GetString(buffer.AsSpan(0, length))}");
+            if (EnableDebug)
+                Console.WriteLine($"< {Encoding.UTF8.GetString(buffer.AsSpan(0, length))}");
             using var stream = new MemoryStream(buffer, 0, length);
             return Deserialize(type, stream);
         }

@@ -16,6 +16,7 @@ namespace ism7mqtt
         static async Task Main(string[] args)
         {
             bool showHelp = false;
+            bool enableDebug = false;
             string mqttHost = null;
             string ip = null;
             string password = null;
@@ -24,6 +25,7 @@ namespace ism7mqtt
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
                 {"i|ipAddress=", "Wolf Hostname or IP address", x => ip = x},
                 {"p|password=", "Wolf password", x => password = x},
+                {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
             try
@@ -60,8 +62,22 @@ namespace ism7mqtt
                             .WithTcpServer(mqttHost)
                             .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}")
                             .Build();
+                        mqttClient.UseDisconnectedHandler(async e =>
+                        {
+                            Console.Error.WriteLine("mqtt disconnected - reconnecting in 5 seconds");
+                            await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
+                            try
+                            {
+                                await mqttClient.ConnectAsync(mqttOptions, cts.Token);
+                            }
+                            catch
+                            {
+                                Console.Error.WriteLine("reconnect failed");
+                            }
+                        });
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, c));
+                        client.EnableDebug = enableDebug;
                         await client.RunAsync(IPAddress.Parse(ip), password, cts.Token);
                     }
                 }
@@ -71,6 +87,10 @@ namespace ism7mqtt
 
         private static Task OnMessage(IMqttClient client, MqttMessage message, CancellationToken cancellationToken)
         {
+            if (!client.IsConnected)
+            {
+                return Task.CompletedTask;
+            }
             var payload = new MqttApplicationMessageBuilder()
                 .WithTopic(message.Path)
                 .WithPayload(JsonConvert.SerializeObject(message.Content))
