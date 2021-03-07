@@ -1,0 +1,25 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish Windows
+      run: dotnet publish --no-restore -c release -r win-x64
+    - name: Publish Linux
+      run: dotnet publish --no-restore -c release -r linux-x64
