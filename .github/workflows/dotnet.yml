@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ gh-actions ]
+    branches: [ master ]
   pull_request:
-    branches: [ gh-actions ]
+    branches: [ master ]
 
 jobs:
   build:
