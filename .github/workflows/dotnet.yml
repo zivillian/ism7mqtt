@@ -1,0 +1,33 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish Windows
+      run: dotnet publish -c release -r win-x64
+    - name: Publish Linux
+      run: dotnet publish -c release -r linux-x64
+    - uses: actions/upload-artifact@v2
+      with:
+        name: publish
+        path: |
+          src/ism7mqtt/bin/Release/net5.0/win-x64/publish
+          src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
+          src/ism7parameter/bin/Release/net48/win-x64/publish
+          src/ism7parameter/bin/Release/net48/linux-x64/publish
