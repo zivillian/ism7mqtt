@@ -31,3 +31,4 @@ jobs:
           src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
           src/ism7parameter/bin/Release/net48/win-x64/publish
           src/ism7parameter/bin/Release/net48/linux-x64/publish
+          src/ism7proxy/bin/Release/net5.0/win-x64/publish

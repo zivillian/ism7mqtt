@@ -42,7 +42,7 @@ namespace ism7mqtt
                 Console.Error.WriteLine("Try 'ism7mqtt --help' for more information");
                 return;
             }
-            if (showHelp)
+            if (showHelp || ip is null || mqttHost is null || password is null)
             {
                 options.WriteOptionDescriptions(Console.Out);
                 return;
