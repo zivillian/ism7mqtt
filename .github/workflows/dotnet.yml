@@ -20,6 +20,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish Windows
-      run: dotnet publish --no-restore -c release -r win-x64
+      run: dotnet publish -c release -r win-x64
     - name: Publish Linux
-      run: dotnet publish --no-restore -c release -r linux-x64
+      run: dotnet publish -c release -r linux-x64
