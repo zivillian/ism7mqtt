@@ -76,7 +76,7 @@ namespace ism7mqtt
                             }
                         });
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, c));
+                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c));
                         client.EnableDebug = enableDebug;
                         await client.RunAsync(IPAddress.Parse(ip), password, cts.Token);
                     }
@@ -85,17 +85,26 @@ namespace ism7mqtt
             catch(OperationCanceledException){}
         }
 
-        private static Task OnMessage(IMqttClient client, MqttMessage message, CancellationToken cancellationToken)
+        private static Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
             {
+                if (debug)
+                {
+                    Console.WriteLine("not connected - skipping mqtt publish");
+                }
                 return Task.CompletedTask;
             }
+            var data = JsonConvert.SerializeObject(message.Content);
             var payload = new MqttApplicationMessageBuilder()
                 .WithTopic(message.Path)
-                .WithPayload(JsonConvert.SerializeObject(message.Content))
+                .WithPayload(data)
                 .WithContentType("application/json")
                 .Build();
+            if (debug)
+            {
+                Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+            }
             return client.PublishAsync(payload, cancellationToken);
         }
     }
