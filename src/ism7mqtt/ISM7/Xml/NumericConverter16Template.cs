@@ -49,6 +49,10 @@ namespace ism7mqtt.ISM7.Xml
                     result = new JValue(_value.Value / 4.0);
                     _value = null;
                     return result;
+                case "IntDiv60":
+                    result = new JValue(_value.Value / 60.0);
+                    _value = null;
+                    return result;
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
             }
