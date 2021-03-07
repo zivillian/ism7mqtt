@@ -47,7 +47,7 @@ namespace ism7mqtt.ISM7.Xml
                     _low = null;
                     return result;
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
             }
         }
     }
