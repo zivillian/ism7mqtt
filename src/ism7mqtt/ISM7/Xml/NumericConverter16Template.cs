@@ -41,8 +41,12 @@ namespace ism7mqtt.ISM7.Xml
                     result = new JValue(((short)_value.Value) / 100.0);
                     _value = null;
                     return result;
+                case "SSPR":
+                    result = new JValue(((short) _value.Value) * (1.0 / 255));
+                    _value = null;
+                    return result;
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"type '{Type}' is not yet implemented");
             }
         }
     }
