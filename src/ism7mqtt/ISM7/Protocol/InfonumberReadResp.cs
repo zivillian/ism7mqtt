@@ -3,7 +3,7 @@
 namespace ism7mqtt.ISM7.Protocol
 {
     [XmlRoot("irs")]
-	public class InfonumberReadResponse : IResponse
+	public class InfonumberReadResp : IResponse
     {
         [XmlAttribute("se")]
 		public string Seq { get; set; }

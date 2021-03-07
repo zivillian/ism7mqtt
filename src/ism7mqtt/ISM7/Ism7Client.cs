@@ -70,7 +70,7 @@ namespace ism7mqtt
                     throw new InvalidDataException(resp.Errormsg);
                 if (resp.State != TelegrResponseState.OK)
                     throw new InvalidDataException($"unexpected stat '{resp.State}");
-                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams.Where(x => x.State == TelegrResponseState.OK));
+                var datapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
                 foreach (var datapoint in datapoints)
                 {
                     await _messageHandler(datapoint, cancellationToken);
@@ -134,7 +134,7 @@ namespace ism7mqtt
                     throw new InvalidDataException(resp.Errormsg);
                 if (resp.State != TelegrResponseState.OK)
                     throw new InvalidDataException($"unexpected stat '{resp.State}");
-                var datapoints = _config.ProcessData(resp.InfonumberReadResponseTelegrams.Where(x => x.State == TelegrResponseState.OK));
+                var datapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
                 foreach (var datapoint in datapoints)
                 {
                     await _messageHandler(datapoint, cancellationToken);

@@ -91,7 +91,7 @@ namespace ism7mqtt
             return device.TelegramIds;
         }
 
-        public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberReadResponse> data)
+        public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberReadResp> data)
         {
             foreach (var value in data)
             {

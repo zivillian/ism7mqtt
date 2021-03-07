@@ -22,7 +22,7 @@ namespace ism7mqtt.ISM7.Protocol
         public string Errormsg { get; set; }
 
         [XmlElement("irs")]
-        public List<InfonumberReadResponse> InfonumberReadResponseTelegrams { get; set; }
+        public List<InfonumberReadResp> Telegrams { get; set; }
 
         public PayloadType MessageType => PayloadType.TgrBundleResp;
     }
