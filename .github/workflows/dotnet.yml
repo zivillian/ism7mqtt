@@ -23,3 +23,11 @@ jobs:
       run: dotnet publish -c release -r win-x64
     - name: Publish Linux
       run: dotnet publish -c release -r linux-x64
+    - uses: actions/upload-artifact@v2
+      with:
+        name: publish
+        path: |
+          src/ism7mqtt/bin/Release/net5.0/win-x64/publish
+          src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
+          src/ism7parameter/bin/Release/net48/win-x64/publish
+          src/ism7parameter/bin/Release/net48/linux-x64/publish
