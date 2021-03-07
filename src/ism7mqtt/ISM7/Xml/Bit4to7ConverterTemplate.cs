@@ -10,7 +10,7 @@ namespace ism7mqtt.ISM7.Xml
         protected override void AddTelegram(byte low, byte high)
         {
             if (high != 0)
-                throw new NotImplementedException();
+                throw new NotImplementedException("high byte does not make any sense");
             _value = (byte) (low >> 4);
         }
 

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -12,7 +13,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JValue GetValue()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }
     }
 }

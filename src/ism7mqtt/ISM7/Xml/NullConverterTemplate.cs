@@ -17,7 +17,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }
 
         public override bool HasValue => false;

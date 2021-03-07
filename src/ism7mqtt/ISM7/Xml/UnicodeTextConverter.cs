@@ -14,7 +14,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JValue GetValue()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }
     }
 }
