@@ -1,0 +1,15 @@
+[Unit]
+Description=ISM7 MQTT Adapter
+
+[Service]
+WorkingDirectory=/opt/ism7mqtt
+ExecStart=/opt/ism7mqtt/ism7mqtt -m <mqttserver> -i <ism7 ip/host> -p <ism7 password>
+Restart=always
+# Restart service after 10 seconds if dotnet service crashes
+RestartSec=10
+SyslogIdentifier=ism7mqtt
+User=nobody
+Environment="DOTNET_CLI_TELEMETRY_OPTOUT=1"
+
+[Install]
+WantedBy=multi-user.target
