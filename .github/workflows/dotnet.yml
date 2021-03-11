@@ -20,9 +20,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish Windows
-      run: dotnet publish -c release -r win-x64
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True
     - name: Publish Linux
-      run: dotnet publish -c release -r linux-x64
+      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True
     - uses: actions/upload-artifact@v2
       with:
         name: publish
@@ -30,5 +30,4 @@ jobs:
           src/ism7mqtt/bin/Release/net5.0/win-x64/publish
           src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
           src/ism7parameter/bin/Release/net48/win-x64/publish
-          src/ism7parameter/bin/Release/net48/linux-x64/publish
           src/ism7proxy/bin/Release/net5.0/win-x64/publish
