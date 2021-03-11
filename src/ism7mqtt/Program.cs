@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -20,11 +21,13 @@ namespace ism7mqtt
             string mqttHost = null;
             string ip = null;
             string password = null;
+            string parameter = "parameter.txt";
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
                 {"i|ipAddress=", "Wolf Hostname or IP address", x => ip = x},
                 {"p|password=", "Wolf password", x => password = x},
+                {"t|parameter=", $"path to parameter.txt - defaults to {parameter}", x => parameter = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -40,6 +43,11 @@ namespace ism7mqtt
                 Console.Error.Write("ism7mqtt: ");
                 Console.Error.WriteLine(ex.Message);
                 Console.Error.WriteLine("Try 'ism7mqtt --help' for more information");
+                return;
+            }
+            if (!File.Exists(parameter))
+            {
+                Console.Error.WriteLine($"'{parameter}' does not exist");
                 return;
             }
             if (showHelp || ip is null || mqttHost is null || password is null)
@@ -76,7 +84,7 @@ namespace ism7mqtt
                             }
                         });
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c));
+                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter);
                         client.EnableDebug = enableDebug;
                         await client.RunAsync(IPAddress.Parse(ip), password, cts.Token);
                     }

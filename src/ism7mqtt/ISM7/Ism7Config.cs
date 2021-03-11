@@ -17,15 +17,15 @@ namespace ism7mqtt
         private readonly IDictionary<string, Device> _devices;
         private readonly ISet<int> _whitelist;
 
-        public Ism7Config()
+        public Ism7Config(string filename)
         {
             _deviceTemplates = LoadDeviceTemplates();
             _converterTemplates = LoadConverterTemplates();
             _parameterTemplates = LoadParameterTemplates();
             _whitelist = new HashSet<int>();
-            if (File.Exists("parameter.txt"))
+            if (File.Exists(filename))
             {
-                _whitelist = File.ReadAllLines("parameter.txt")
+                _whitelist = File.ReadAllLines(filename)
                     .Select(x=>
                     {
                         var b = Int32.TryParse(x, out var y);
