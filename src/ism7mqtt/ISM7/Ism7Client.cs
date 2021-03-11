@@ -45,10 +45,17 @@ namespace ism7mqtt
                 };
                 if (!OperatingSystem.IsWindows())
                 {
-                    sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
+                    try
                     {
-                        TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
-                    });
+                        sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
+                        {
+                            TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
+                        });
+                    }
+                    catch (PlatformNotSupportedException)
+                    {
+                        //older linux or mac https://github.com/dotnet/runtime/issues/33649
+                    }
                 }
                 await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
                 var session = await AuthenticateAsync(ssl, password, cancellationToken);
