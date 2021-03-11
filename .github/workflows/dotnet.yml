@@ -27,10 +27,21 @@ jobs:
       run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True
     - uses: actions/upload-artifact@v2
       with:
-        name: publish
-        path: |
-          src/ism7mqtt/bin/Release/net5.0/win-x64/publish
-          src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
-          src/ism7mqtt/bin/Release/net5.0/linux-arm/publish
-          src/ism7parameter/bin/Release/net48/win-x64/publish
-          src/ism7proxy/bin/Release/net5.0/win-x64/publish
+        name: ism7mqtt-win-x64
+        path: src/ism7mqtt/bin/Release/net5.0/win-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7mqtt-linux-x64
+        path: src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7mqtt-linux-arm
+        path: src/ism7mqtt/bin/Release/net5.0/linux-arm/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7parameter
+        path: src/ism7parameter/bin/Release/net48/win-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7proxy
+        path: src/ism7proxy/bin/Release/net5.0/win-x64/publish
