@@ -9,6 +9,7 @@
     <PackageReference Include="Mono.Options" Version="6.6.0.161" />
     <PackageReference Include="MQTTnet" Version="3.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.IO.Pipelines" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

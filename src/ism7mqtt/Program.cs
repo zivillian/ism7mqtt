@@ -55,9 +55,9 @@ namespace ism7mqtt
                 options.WriteOptionDescriptions(Console.Out);
                 return;
             }
-            try
+            using (var cts = new CancellationTokenSource())
             {
-                using (var cts = new CancellationTokenSource())
+                try
                 {
                     Console.CancelKeyPress += (s, e) =>
                     {
@@ -84,13 +84,20 @@ namespace ism7mqtt
                             }
                         });
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter);
+                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip));
                         client.EnableDebug = enableDebug;
-                        await client.RunAsync(IPAddress.Parse(ip), password, cts.Token);
+                        await client.RunAsync(password, cts.Token);
                     }
                 }
+                catch (OperationCanceledException)
+                {
+                }
+                catch (Exception)
+                {
+                    cts.Cancel();
+                    throw;
+                }
             }
-            catch(OperationCanceledException){}
         }
 
         private static Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
