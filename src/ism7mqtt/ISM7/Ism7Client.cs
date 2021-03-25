@@ -28,6 +28,7 @@ namespace ism7mqtt
         private readonly Pipe _pipe;
         private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
         private int _nextBundleId = 0;
+        private Stream _sslStream;
 
         public bool EnableDebug { get; set; }
 
@@ -41,39 +42,46 @@ namespace ism7mqtt
 
         public async Task RunAsync(string password, CancellationToken cancellationToken)
         {
-            var tcp = new TcpClient();
-            await tcp.ConnectAsync(_ipAddress, 9092, cancellationToken);
-            var certificate = new X509Certificate2(Resources.client);
-            using (var ssl = new SslStream(tcp.GetStream(), false, (a, b, c, d) => true))
+            using (_sslStream = await ConnectAsync(cancellationToken))
             {
-                var sslOptions = new SslClientAuthenticationOptions
-                {
-                    TargetHost = "ism7.server",
-                    ClientCertificates = new X509Certificate2Collection(certificate),
-                };
-                if (!OperatingSystem.IsWindows())
-                {
-                    try
-                    {
-                        sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
-                        {
-                            TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
-                        });
-                    }
-                    catch (PlatformNotSupportedException)
-                    {
-                        //older linux or mac https://github.com/dotnet/runtime/issues/33649
-                    }
-                }
-                await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
-                var fillPipeTask = FillPipeAsync(ssl, _pipe.Writer, cancellationToken);
+                var fillPipeTask = FillPipeAsync(_pipe.Writer, cancellationToken);
                 var readPipeTask = ReadPipeAsync(_pipe.Reader, cancellationToken);
-                await AuthenticateAsync(ssl, password, cancellationToken);
+                await AuthenticateAsync(password, cancellationToken);
                 await Task.WhenAny(fillPipeTask, readPipeTask);
             }
         }
 
-        private async Task FillPipeAsync(Stream connection, PipeWriter target, CancellationToken cancellationToken)
+        private async Task<SslStream> ConnectAsync(CancellationToken cancellationToken)
+        {
+            var tcp = new TcpClient();
+            await tcp.ConnectAsync(_ipAddress, 9092, cancellationToken);
+            var certificate = new X509Certificate2(Resources.client);
+            var ssl = new SslStream(tcp.GetStream(), false, (a, b, c, d) => true);
+
+            var sslOptions = new SslClientAuthenticationOptions
+            {
+                TargetHost = "ism7.server",
+                ClientCertificates = new X509Certificate2Collection(certificate),
+            };
+            if (!OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
+                    {
+                        TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
+                    });
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    //older linux or mac https://github.com/dotnet/runtime/issues/33649
+                }
+            }
+            await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
+            return ssl;
+        }
+
+        private async Task FillPipeAsync(PipeWriter target, CancellationToken cancellationToken)
         {
             const int bufferSize = 512;
             try
@@ -81,7 +89,7 @@ namespace ism7mqtt
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     var buffer = target.GetMemory(bufferSize);
-                    var read = await connection.ReadAsync(buffer, cancellationToken);
+                    var read = await _sslStream.ReadAsync(buffer, cancellationToken);
                     if (read == 0)
                         break;
                     target.Advance(read);
@@ -138,28 +146,25 @@ namespace ism7mqtt
             }
         }
         
-        private async Task SubscribeAsync(Stream connection, string busAddress, CancellationToken cancellationToken)
+        private async Task SubscribeAsync(string busAddress, CancellationToken cancellationToken)
         {
             var device = _devices[busAddress];
+            var ids = _config.GetTelegramIdsForDevice(device.Ba);
+            var bundleId = NextBundleId();
+            _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, OnPushResponseAsync);
+            await SendAsync(new TelegramBundleReq
             {
-                var ids = _config.GetTelegramIdsForDevice(device.Ba);
-                var bundleId = NextBundleId();
-                _dispatcher.Subscribe(x=>x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == bundleId, OnPushResponseAsync);
-                await SendAsync(connection, new TelegramBundleReq
+                AbortOnError = false,
+                BundleId = bundleId,
+                GatewayId = "1",
+                TelegramBundleType = TelegramBundleType.push,
+                InfoReadTelegrams = ids.Select(x => new InfoRead
                 {
-                    AbortOnError = false,
-                    BundleId = bundleId,
-                    GatewayId = "1",
-                    TelegramBundleType = TelegramBundleType.push,
-                    InfoReadTelegrams = ids.Select(x=>new InfoRead
-                    {
-                        BusAddress = device.Ba,
-                        InfoNumber = x,
-                        Intervall = 60
-                        
-                    }).ToList()
-                }, cancellationToken);
-            }
+                    BusAddress = device.Ba,
+                    InfoNumber = x,
+                    Intervall = 60
+                }).ToList()
+            }, cancellationToken);
         }
 
         private async Task OnPushResponseAsync(IResponse response, CancellationToken cancellationToken)
@@ -177,7 +182,7 @@ namespace ism7mqtt
             }
         }
 
-        private async Task LoadInitialValuesAsync(Stream connection, CancellationToken cancellationToken)
+        private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
             foreach (var device in _devices.Values)
             {
@@ -186,8 +191,8 @@ namespace ism7mqtt
                 var bundleId = NextBundleId();
                 _dispatcher.SubscribeOnce(
                     x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId,
-                    (r, c) => OnInitialValuesAsync(r, connection, c));
-                await SendAsync(connection, new TelegramBundleReq
+                    OnInitialValuesAsync);
+                await SendAsync(new TelegramBundleReq
                 {
                     AbortOnError = false,
                     BundleId = bundleId,
@@ -202,7 +207,7 @@ namespace ism7mqtt
             }
         }
 
-        private async Task OnInitialValuesAsync(IResponse response, Stream connection, CancellationToken cancellationToken)
+        private async Task OnInitialValuesAsync(IResponse response, CancellationToken cancellationToken)
         {
             var resp = (TelegramBundleResp) response;
             if (!String.IsNullOrEmpty(resp.Errormsg))
@@ -217,43 +222,43 @@ namespace ism7mqtt
                     await _messageHandler(datapoint, cancellationToken);
                 }
                 var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
-                await SubscribeAsync(connection, busAddress, cancellationToken);
+                await SubscribeAsync(busAddress, cancellationToken);
             }
         }
 
-        private async Task GetConfigAsync(Stream connection, LoginResp session, CancellationToken cancellationToken)
+        private async Task GetConfigAsync(LoginResp session, CancellationToken cancellationToken)
         {
             _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.SystemconfigResp,
-                (r, c) => OnSystemConfigAsync(r, connection, c));
-            await SendAsync(connection, new SystemconfigReq {Sid = session.Sid}, cancellationToken);
+                OnSystemConfigAsync);
+            await SendAsync(new SystemconfigReq {Sid = session.Sid}, cancellationToken);
         }
 
-        private Task OnSystemConfigAsync(IResponse response, Stream connection, CancellationToken cancellationToken)
+        private Task OnSystemConfigAsync(IResponse response, CancellationToken cancellationToken)
         {
             var resp = (SystemconfigResp)response;
             foreach (var device in resp.BusConfig.Devices)
             {
                 _devices.AddOrUpdate(device.Ba, device, (k, o) => device);
             }
-            return LoadInitialValuesAsync(connection, cancellationToken);
+            return LoadInitialValuesAsync(cancellationToken);
         }
 
-        private ValueTask AuthenticateAsync(Stream connection, string password, CancellationToken cancellationToken)
+        private ValueTask AuthenticateAsync(string password, CancellationToken cancellationToken)
         {
             _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.DirectLogonResp,
-                (r, c) => OnAuthenticateAsync(r, connection, c));
-            return SendAsync(connection, new LoginReq {Password = password}, cancellationToken);
+                OnAuthenticateAsync);
+            return SendAsync(new LoginReq {Password = password}, cancellationToken);
         }
 
-        private Task OnAuthenticateAsync(IResponse response, Stream connection, CancellationToken cancellationToken)
+        private Task OnAuthenticateAsync(IResponse response, CancellationToken cancellationToken)
         {
             var resp = (LoginResp)response;
             if (resp.State != LoginState.ok)
                 throw new InvalidDataException("invalid login state");
-            return GetConfigAsync(connection, resp, cancellationToken);
+            return GetConfigAsync(resp, cancellationToken);
         }
 
-        private ValueTask SendAsync<T>(Stream connection, T payload, CancellationToken cancellationToken) where T:IPayload
+        private ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = Serialize(payload);
             if (EnableDebug)
@@ -263,7 +268,7 @@ namespace ism7mqtt
             BinaryPrimitives.WriteInt32BigEndian(buffer, length);
             BinaryPrimitives.WriteInt16BigEndian(buffer.AsSpan(4), (short) payload.Type);
             Encoding.UTF8.GetBytes(data, buffer.AsSpan(6));
-            return connection.WriteAsync(buffer, cancellationToken);
+            return _sslStream.WriteAsync(buffer, cancellationToken);
         }
 
         private string NextBundleId()
