@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Mono.Options;
@@ -9,6 +8,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -21,13 +21,13 @@ namespace ism7mqtt
             string mqttHost = null;
             string ip = null;
             string password = null;
-            string parameter = "parameter.txt";
+            string parameter = "parameter.json";
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
                 {"i|ipAddress=", "Wolf Hostname or IP address", x => ip = x},
                 {"p|password=", "Wolf password", x => password = x},
-                {"t|parameter=", $"path to parameter.txt - defaults to {parameter}", x => parameter = x},
+                {"t|parameter=", $"path to parameter.json - defaults to {parameter}", x => parameter = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };

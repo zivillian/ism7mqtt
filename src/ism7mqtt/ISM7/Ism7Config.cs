@@ -4,8 +4,10 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
 using ism7mqtt.ISM7.Xml;
+using Newtonsoft.Json;
 
 namespace ism7mqtt
 {
@@ -15,25 +17,16 @@ namespace ism7mqtt
         private readonly IReadOnlyList<ConverterTemplateBase> _converterTemplates;
         private readonly IReadOnlyList<ParameterDescriptor> _parameterTemplates;
         private readonly IDictionary<string, Device> _devices;
-        private readonly ISet<int> _whitelist;
+        private ConfigRoot _config;
 
         public Ism7Config(string filename)
         {
             _deviceTemplates = LoadDeviceTemplates();
             _converterTemplates = LoadConverterTemplates();
             _parameterTemplates = LoadParameterTemplates();
-            _whitelist = new HashSet<int>();
             if (File.Exists(filename))
             {
-                _whitelist = File.ReadAllLines(filename)
-                    .Select(x=>
-                    {
-                        var b = Int32.TryParse(x, out var y);
-                        return new {b, y};
-                    })
-                    .Where(x=>x.b)
-                    .Select(x=>x.y)
-                    .ToImmutableHashSet();
+                _config = JsonConvert.DeserializeObject<ConfigRoot>(File.ReadAllText(filename));
             }
             _devices = new Dictionary<string, Device>();
         }
@@ -78,9 +71,9 @@ namespace ism7mqtt
             {
                 device = devices.Single(x => x.SoftwareNumber == version);
             }
-            var ptids = device.ParameterReferenceList
-                .Select(x => x.PTID)
-                .Where(x=>_whitelist.Contains(x))
+            var ptids = _config.Devices
+                .Where(x => x.ReadBusAddress == ba)
+                .SelectMany(x => x.Parameter)
                 .ToHashSet();
             _devices.Add(ba, new Device(device.Name, ip, ba, _parameterTemplates.Where(x => ptids.Contains(x.PTID)), _converterTemplates.Where(x => ptids.Contains(x.CTID))));
         }
@@ -116,7 +109,7 @@ namespace ism7mqtt
                 _ba = ba;
 
                 _parameter = parameter.ToImmutableDictionary(x => x.PTID);
-                _converter = converter//.Where(x => x.IsImplemented)
+                _converter = converter
                     .SelectMany(x => x.TelegramIds, (x, y) => new {Id = y, Value = x})
                     .ToLookup(x => x.Id, x => x.Value)
                     .ToImmutableDictionary(x=>x.Key, x=>x.ToList());
