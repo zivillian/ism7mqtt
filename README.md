@@ -4,38 +4,58 @@ Get all statistics and values from your Wolf ISM7 and send them to an mqtt serve
 
 ## How?
 
-Run ism7parameter on a Windows machine where Wolf SmartSet is installed and was connected to your ism7 at least once. This will create a parameter.txt file which is needed for ism7mqtt.
+Run ism7parameter on a Windows machine where Wolf SmartSet is installed and was connected to your ism7 at least once. This will create a parameter.json file which is needed for ism7mqtt.
 
 Run ism7mqtt on any machine which can connect to your ism7 and an mqtt server.
 
-```
+```sh
 ism7mqtt -m <mqttserver> -i <ism7 ip/host> -p <ism7 password>
 ```
 
-Do not forget to put the generated parameter.txt next to the ism7client.
+Do not forget to put the generated parameter.json next to the ism7client or specify the path with `-t .../parameter.json`.
 
 ## Cons
 
 The ism7 accepts only a single connection, so you cannot use the Smartset application while ism7mqtt is running.
 
-Currently it is not possible to send any command or configuration to the ism7 (mainly for safety reasons - it get's cold if this software breaks something).
+## Configuration
+
+The parameter.json contains all devices and the corresponding properties for the installation extracted from smartset. You can remove any property which is not needed.
+
+## MQTT
+
+ism7mqtt initially fetches all properties declared in parameter.json and afterwards subscribes to changes with an intervall of 60 seconds. Whenever new values are received from ism7 a json update with all those properties is published to mqtt. Please be aware that an update contains only the changed properties - so only the initial message may contain all properties.
+
+Each device on the bus (and present in the parameter.json) is reported via its own topic. The format is
+
+```txt
+Wolf/<ism7 ip address>/<device type>_<device bus address>
+```
+
+For each property of type ListParameter (basically all comboboxes) two values are reported - the original numerical value and the german text representation (with the suffix `_Text`).
+
+Duplicate properties get a numerical suffix (property id) to make them unique.
+
+## Writing
+
+You can send values to ism7 via mqtt by publishing json to the topic
+
+```txt
+Wolf/<ism7 ip address>/<device type>_<device bus address>/set
+```
+
+or just the raw value to
+
+```txt
+Wolf/<ism7 ip address>/<device type>_<device bus address>/set/<property name>
+```
+
+Please be aware that not all properties can be set - ism7mqtt tries to validate if a property is writable, but this may be incorrect (#6).
+
+## Bugs / Missing Features
+
+If something is not working in your setup, you can get more output by using the debug switch `-d`. This will dump the communication with the ism7 (including your password). Please include a redacted version of this dump when opening an issue and also attach your smartset database file (%APPDATA%\Roaming\Wolf GmbH\Smartset\App_Data\smartsetpc.sdf).
 
 ## Protocol
 
-The Smartset application connects to the ism7 via TCP on port 9092. There can only be one connection at a time.
-
-### Encryption
-
-The connection is encrypted using TLS (TLS_RSA_WITH_AES_256_CBC_SHA256) and a client certificate singed by "LuCon Root CA (direct)" is required.
-
-### Payload
-
-Each message starts with a six byte header (4 byte length, 2 byte type). The payload is mostly xml.
-
-### Interpretation
-
-The Smartset application contains 3 helpful xml files, which define the conversion, dependencies and human readable names for the data.
-
-## Diving deeper
-
-If you want look at all the nasty details, I recommend taking a look at [dnSpy](https://github.com/dnSpy/dnSpy/). Using this I was able to get all required information (like database password, encryption key for the XML files in the system-config folder, client certificate, etc.) and was able to patch out the certificate verification to use a mitm proxy.
+See [PROTOCOL.md](PROTOCOL.md)
