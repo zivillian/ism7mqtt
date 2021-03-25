@@ -177,7 +177,7 @@ namespace ism7mqtt
                         foreach (var result in results)
                         {
                             result.BusAddress = WriteAddress;
-                            result.Seq = "A;255";
+                            result.Seq = "";
                             yield return result;
                         }
                     }
