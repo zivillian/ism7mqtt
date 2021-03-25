@@ -18,7 +18,7 @@ namespace ism7mqtt.ISM7.Xml
         public string MaxValueCondition { get; set; }
 
         [XmlElement("StepWidth")]
-        public double StepWidth { get; set; }
+        public double? StepWidth { get; set; }
 
         [XmlElement("Decimals")]
         public int Decimals { get; set; }

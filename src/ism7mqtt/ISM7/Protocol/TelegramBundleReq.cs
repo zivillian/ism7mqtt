@@ -21,6 +21,9 @@ namespace ism7mqtt.ISM7.Protocol
 		[XmlElement("ird")]
 		public List<InfoRead> InfoReadTelegrams { get; set; }
 
+		[XmlElement("iwr")]
+		public List<InfoWrite> InfoWriteTelegrams { get; set; }
+
         [XmlElement("erd")]
         public ErrorStateRead EStRead { get; set; }
 

@@ -84,8 +84,13 @@ namespace ism7mqtt
                             }
                         });
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip));
-                        client.EnableDebug = enableDebug;
+                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
+                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/+");
+                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
+                        {
+                            EnableDebug = enableDebug
+                        };
+                        mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, cts.Token));
                         await client.RunAsync(password, cts.Token);
                     }
                 }
@@ -98,6 +103,29 @@ namespace ism7mqtt
                     throw;
                 }
             }
+        }
+
+        private static Task OnMessage(Ism7Client client, MqttApplicationMessageReceivedEventArgs arg, CancellationToken cancellationToken)
+        {
+            var message = arg.ApplicationMessage;
+
+            JObject data;
+            string topic;
+            if (message.Topic.EndsWith("/set"))
+            {
+                //json
+                data = JObject.Parse(message.ConvertPayloadToString());
+                topic = message.Topic.Substring(0, message.Topic.Length - 4);
+            }
+            else
+            {
+                //single value
+                var index = message.Topic.LastIndexOf('/');
+                var property = message.Topic.Substring(index + 1);
+                topic = message.Topic.Substring(0, index - 4);
+                data = new JObject{{property, new JValue(message.ConvertPayloadToString())}};
+            }
+            return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
         private static Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)

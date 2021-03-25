@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
+using ism7mqtt.ISM7.Protocol;
 using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
@@ -19,5 +20,7 @@ namespace ism7mqtt.ISM7.Xml
         public abstract bool HasValue { get; }
 
         public abstract JValue GetValue();
+
+        public abstract IEnumerable<InfoWrite> GetWrite(JValue value);
     }
 }

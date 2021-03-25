@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using ism7mqtt.ISM7.Protocol;
 using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
@@ -23,6 +25,11 @@ namespace ism7mqtt.ISM7.Xml
             var result = new JValue(_value.Value);
             _value = null;
             return result;
+        }
+
+        public override IEnumerable<InfoWrite> GetWrite(JValue value)
+        {
+            throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }
     }
 }

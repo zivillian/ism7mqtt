@@ -8,6 +8,7 @@ using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
 using ism7mqtt.ISM7.Xml;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -17,7 +18,7 @@ namespace ism7mqtt
         private readonly IReadOnlyList<ConverterTemplateBase> _converterTemplates;
         private readonly IReadOnlyList<ParameterDescriptor> _parameterTemplates;
         private readonly IDictionary<string, Device> _devices;
-        private ConfigRoot _config;
+        private readonly ConfigRoot _config;
 
         public Ism7Config(string filename)
         {
@@ -93,20 +94,38 @@ namespace ism7mqtt
             }
             return _devices.Values.Select(x => x.Message).Where(x => x != null);
         }
+
+        public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberWriteResp> data)
+        {
+            foreach (var value in data)
+            {
+                var device = _devices.Values.First(x => x.WriteAddress == value.BusAddress);
+                device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));
+            }
+            return _devices.Values.Select(x => x.Message).Where(x => x != null);
+        }
+
+        public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JObject data)
+        {
+            foreach (var device in _devices.Values)
+            {
+                if (device.MqttTopic == mqttTopic)
+                {
+                    return device.GetWriteRequest(data);
+                }
+            }
+            return Array.Empty<InfoWrite>();
+        }
         
         class Device
         {
-            private readonly string _name;
-            private readonly string _ip;
-            private readonly string _ba;
             private readonly ImmutableDictionary<int, ParameterDescriptor> _parameter;
             private readonly ImmutableDictionary<ushort, List<ConverterTemplateBase>> _converter;
 
             public Device(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
-                _name = name;
-                _ip = ip;
-                _ba = ba;
+                WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
+                MqttTopic = $"Wolf/{ip}/{name}_{ba}";
 
                 _parameter = parameter.ToImmutableDictionary(x => x.PTID);
                 _converter = converter
@@ -115,6 +134,10 @@ namespace ism7mqtt
                     .ToImmutableDictionary(x=>x.Key, x=>x.ToList());
                 EnsureUniqueParameterNames();
             }
+
+            public string MqttTopic { get; }
+
+            public string WriteAddress { get; }
 
             private void EnsureUniqueParameterNames()
             {
@@ -130,6 +153,11 @@ namespace ism7mqtt
 
             public IEnumerable<ushort> TelegramIds => _converter.Select(x=>x.Key);
 
+            public IEnumerable<ParameterDescriptor> WritableParameters()
+            {
+                return _parameter.Values.Where(x => x.ReadOnlyConditionId == "False");
+            }
+
             public void ProcessDatapoint(ushort telegram, byte low, byte high)
             {
                 var converters = _converter[telegram];
@@ -137,6 +165,36 @@ namespace ism7mqtt
                 {
                     converter.AddTelegram(telegram, low, high);
                 }
+            }
+
+            public IEnumerable<InfoWrite> GetWriteRequest(JObject data)
+            {
+                foreach (var property in data.Properties())
+                {
+                    if (property.Value is JValue value)
+                    {
+                        var results = GetWriteRequest(property.Name, value);
+                        foreach (var result in results)
+                        {
+                            result.BusAddress = WriteAddress;
+                            result.Seq = "A;255";
+                            yield return result;
+                        }
+                    }
+                }
+            }
+
+            private IEnumerable<InfoWrite> GetWriteRequest(string name, JValue value)
+            {
+                var parameter = WritableParameters().FirstOrDefault(x => x.SafeName == name);
+                if (parameter is null) return Array.Empty<InfoWrite>();
+                var converter = _converter.Values.SelectMany(x => x).FirstOrDefault(x => x.CTID == parameter.PTID);
+                if (converter is null) return Array.Empty<InfoWrite>();
+                if (parameter is ListParameterDescriptor listParameter)
+                {
+                    value = listParameter.GetValue(value);
+                }
+                return converter.GetWrite(value);
             }
 
             public MqttMessage Message
@@ -148,7 +206,7 @@ namespace ism7mqtt
                         .Distinct()
                         .ToList();
                     if (converters.Count == 0) return null;
-                    var result = new MqttMessage($"Wolf/{_ip}/{_name}_{_ba}");
+                    var result = new MqttMessage(MqttTopic);
                     foreach (var converter in converters)
                     {
                         var parameter = _parameter[converter.CTID];

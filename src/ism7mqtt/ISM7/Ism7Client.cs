@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
+using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -79,6 +80,38 @@ namespace ism7mqtt
             }
             await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
             return ssl;
+        }
+
+        public async Task OnCommandAsync(string mqttTopic, JObject data, CancellationToken cancellationToken)
+        {
+            var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+            if (writeRequests.Count == 0) return;
+            var request = new TelegramBundleReq
+            {
+                AbortOnError = true,
+                BundleId = NextBundleId(),
+                GatewayId = "1",
+                TelegramBundleType = TelegramBundleType.write,
+                InfoWriteTelegrams = writeRequests
+            };
+            _dispatcher.SubscribeOnce(x=>x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == request.BundleId, OnWriteResponse);
+            await SendAsync(request, cancellationToken);
+        }
+
+        private async Task OnWriteResponse(IResponse response, CancellationToken cancellationToken)
+        {
+            var resp = (TelegramBundleResp) response;
+            if (!String.IsNullOrEmpty(resp.Errormsg))
+                throw new InvalidDataException(resp.Errormsg);
+            if (resp.State != TelegrResponseState.OK)
+                throw new InvalidDataException($"unexpected state '{resp.State}");
+            
+            
+            var datapoints = _config.ProcessData(resp.WriteTelegrams.Where(x => x.State == TelegrResponseState.OK));
+            foreach (var datapoint in datapoints)
+            {
+                await _messageHandler(datapoint, cancellationToken);
+            }
         }
 
         private async Task FillPipeAsync(PipeWriter target, CancellationToken cancellationToken)

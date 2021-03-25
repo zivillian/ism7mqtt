@@ -3,7 +3,7 @@
 namespace ism7mqtt.ISM7.Protocol
 {
     [XmlRoot("irs")]
-	public class InfonumberReadResp : IResponse
+	public class InfonumberReadResp
     {
         [XmlAttribute("se")]
 		public string Seq { get; set; }
@@ -25,7 +25,5 @@ namespace ism7mqtt.ISM7.Protocol
 
 		[XmlAttribute("snr")]
 		public string ServiceNumber { get; set; }
-
-        public PayloadType MessageType => PayloadType.TgrBundleResp;
     }
 }

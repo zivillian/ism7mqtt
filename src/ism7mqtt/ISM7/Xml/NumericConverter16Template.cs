@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using ism7mqtt.ISM7.Protocol;
 using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
@@ -56,6 +58,41 @@ namespace ism7mqtt.ISM7.Xml
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
             }
+        }
+
+        public override IEnumerable<InfoWrite> GetWrite(JValue value)
+        {
+            ushort data;
+            switch (Type)
+            {
+                case "US":
+                    data = UInt16.Parse(value.Value.ToString());
+                    break;
+                case "SS":
+                    data = (ushort) Int16.Parse(value.Value.ToString());
+                    break;
+                case "SS10":
+                    data = (ushort) (Double.Parse(value.Value.ToString()) * 10);
+                    break;
+                case "US10":
+                    data = (ushort) (Double.Parse(value.Value.ToString()) * 10);
+                    break;
+                case "SS100":
+                    data = (ushort) (Double.Parse(value.Value.ToString()) * 100);
+                    break;
+                case "SSPR":
+                    data = (ushort) (Double.Parse(value.Value.ToString()) * (1.0/256));
+                    break;
+                case "US4":
+                    data = (ushort) (Double.Parse(value.Value.ToString()) * 4);
+                    break;
+                case "IntDiv60":
+                    data = (ushort) (Double.Parse(value.Value.ToString()) * 60);
+                    break;
+                default:
+                    throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
+            }
+            yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{(data & 0xff):X2}", DBHigh = $"0x{(data >> 8):X2}"};
         }
     }
 }

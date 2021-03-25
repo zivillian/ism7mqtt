@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using ism7mqtt.ISM7.Protocol;
 using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
@@ -49,6 +50,24 @@ namespace ism7mqtt.ISM7.Xml
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
             }
+        }
+
+        public override IEnumerable<InfoWrite> GetWrite(JValue value)
+        {
+            ushort low;
+            ushort high;
+            switch (Type)
+            {
+                case "UINT32":
+                    var data = UInt32.Parse(value.Value.ToString());
+                    low = (ushort) (data & 0xffff);
+                    high = (ushort) (data >> 16);
+                    break;
+                default:
+                    throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
+            }
+            yield return new InfoWrite{InfoNumber = TelegramNrLow, DBLow = $"0x{(low & 0xff):X2}", DBHigh = $"0x{(low >> 8):X2}"};
+            yield return new InfoWrite{InfoNumber = TelegramNrHigh, DBLow = $"0x{(high & 0xff):X2}", DBHigh = $"0x{(high >> 8):X2}"};
         }
     }
 }
