@@ -225,17 +225,23 @@ namespace ism7mqtt
                 _dispatcher.SubscribeOnce(
                     x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId,
                     OnInitialValuesAsync);
+                var infoReads = ids.Select(x=>new InfoRead
+                {
+                    BusAddress = device.Ba,
+                    InfoNumber = x,
+                }).ToList();
+                if (infoReads.Count == 0)
+                {
+                    //device without any valid parameter
+                    continue;
+                }
                 await SendAsync(new TelegramBundleReq
                 {
                     AbortOnError = false,
                     BundleId = bundleId,
                     GatewayId = "1",
                     TelegramBundleType = TelegramBundleType.pull,
-                    InfoReadTelegrams = ids.Select(x=>new InfoRead
-                    {
-                        BusAddress = device.Ba,
-                        InfoNumber = x,
-                    }).ToList()
+                    InfoReadTelegrams = infoReads
                 }, cancellationToken);
             }
         }
