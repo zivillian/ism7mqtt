@@ -3,10 +3,10 @@
 namespace ism7mqtt.ISM7.Protocol
 {
     [XmlRoot("read-systemconfig-request")]
-    public class SystemconfigReq:IPayload
+    public class SystemconfigReq:XmlPayload
     {
         [XmlAttribute("sid")]
         public string Sid { get; set; }
-        public PayloadType Type => PayloadType.SystemconfigReq;
+        public override PayloadType Type => PayloadType.SystemconfigReq;
     }
 }

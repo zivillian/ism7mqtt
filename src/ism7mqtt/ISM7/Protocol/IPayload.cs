@@ -3,5 +3,7 @@
     public interface IPayload
     {
         PayloadType Type { get; }
+
+        public byte[] Serialize();
     }
 }

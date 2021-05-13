@@ -3,11 +3,11 @@
 namespace ism7mqtt.ISM7.Protocol
 {
     [XmlRoot("direct-logon-request")]
-    public class LoginReq:IPayload
+    public class LoginReq:XmlPayload
     {
         [XmlElement("password")]
         public string Password { get;set; }
 
-        public PayloadType Type => PayloadType.DirectLogonReq;
+        public override PayloadType Type => PayloadType.DirectLogonReq;
     }
 }

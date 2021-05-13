@@ -12,7 +12,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
 using Newtonsoft.Json.Linq;
@@ -29,6 +28,7 @@ namespace ism7mqtt
         private readonly Pipe _pipe;
         private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
         private int _nextBundleId = 0;
+        private short _lastKeepAlive = 0;
         private Stream _sslStream;
 
         public bool EnableDebug { get; set; }
@@ -48,7 +48,8 @@ namespace ism7mqtt
                 var fillPipeTask = FillPipeAsync(_pipe.Writer, cancellationToken);
                 var readPipeTask = ReadPipeAsync(_pipe.Reader, cancellationToken);
                 await AuthenticateAsync(password, cancellationToken);
-                await Task.WhenAny(fillPipeTask, readPipeTask);
+                var keepAlive = KeepAliveAsync(cancellationToken);
+                await Task.WhenAny(fillPipeTask, readPipeTask, keepAlive);
             }
         }
 
@@ -152,7 +153,7 @@ namespace ism7mqtt
                         var size = buffer.Slice(0, 6);
                         size.CopyTo(header);
                         var length = BinaryPrimitives.ReadInt32BigEndian(header);
-                        if (buffer.Length < length) break;
+                        if (buffer.Length < length + 6) break;
                         var type = (PayloadType)BinaryPrimitives.ReadInt16BigEndian(header.AsSpan(4));
                         var xmlBuffer = buffer.Slice(6, length);
                         if (EnableDebug)
@@ -297,16 +298,36 @@ namespace ism7mqtt
             return GetConfigAsync(resp, cancellationToken);
         }
 
+        private async Task KeepAliveAsync(CancellationToken cancellationToken)
+        {
+            _dispatcher.Subscribe(x=>x.MessageType == PayloadType.KeepAlive, OnKeepAliveAsync);
+            short currentKeepAlive = 0;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+                if (currentKeepAlive != _lastKeepAlive)
+                    throw new TimeoutException("No keepalive response within the last 60 seconds");
+                currentKeepAlive++;
+                await SendAsync(new KeepAliveReq(currentKeepAlive), cancellationToken);
+            }
+        }
+
+        private Task OnKeepAliveAsync(IResponse response, CancellationToken cancellationToken)
+        {
+            var resp = (KeepAliveResp) response;
+            _lastKeepAlive = resp.Seq;
+            return Task.CompletedTask;
+        }
+
         private ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
         {
-            var data = Serialize(payload);
+            var data = payload.Serialize();
             if (EnableDebug)
-                Console.WriteLine($"> {data}");
-            var length = Encoding.UTF8.GetByteCount(data);
-            var buffer = new byte[length + 6];
-            BinaryPrimitives.WriteInt32BigEndian(buffer, length);
+                Console.WriteLine($"> {Encoding.UTF8.GetString(data)}");
+            var buffer = new byte[data.Length + 6];
+            BinaryPrimitives.WriteInt32BigEndian(buffer, data.Length);
             BinaryPrimitives.WriteInt16BigEndian(buffer.AsSpan(4), (short) payload.Type);
-            Encoding.UTF8.GetBytes(data, buffer.AsSpan(6));
+            Buffer.BlockCopy(data, 0, buffer, 6, data.Length);
             return _sslStream.WriteAsync(buffer, cancellationToken);
         }
 
@@ -326,19 +347,15 @@ namespace ism7mqtt
                     return (IResponse) GetSerializer<SystemconfigResp>().Deserialize(data);
                 case PayloadType.TgrBundleResp:
                     return (IResponse) GetSerializer<TelegramBundleResp>().Deserialize(data);
+                case PayloadType.KeepAlive:
+                    using (var reader = new BinaryReader(data))
+                    {
+                        var buffer = reader.ReadBytes(2);
+                        return new KeepAliveResp(BinaryPrimitives.ReadInt16BigEndian(buffer));
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type));
             }
-        }
-
-        private string Serialize<T>(T request)
-        {
-            using var sw = new StringWriter();
-            var xmlWriter = XmlWriter.Create(sw, new XmlWriterSettings {Indent = false});
-            var serializer = GetSerializer<T>();
-            serializer.Serialize(xmlWriter, request);
-            sw.Flush();
-            return sw.ToString();
         }
 
         private XmlSerializer GetSerializer<T>()
