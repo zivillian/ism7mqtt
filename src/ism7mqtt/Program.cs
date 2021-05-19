@@ -22,12 +22,16 @@ namespace ism7mqtt
             string ip = null;
             string password = null;
             string parameter = "parameter.json";
+            string mqttUsername = null;
+            string mqttPassword = null;
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
                 {"i|ipAddress=", "Wolf Hostname or IP address", x => ip = x},
                 {"p|password=", "Wolf password", x => password = x},
                 {"t|parameter=", $"path to parameter.json - defaults to {parameter}", x => parameter = x},
+                {"mqttuser=", "MQTT username", x => mqttUsername = x},
+                {"mqttpass=", "MQTT password", x => mqttPassword = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -66,10 +70,14 @@ namespace ism7mqtt
                     };
                     using (var mqttClient = new MqttFactory().CreateMqttClient())
                     {
-                        var mqttOptions = new MqttClientOptionsBuilder()
+                        var mqttOptionBuilder = new MqttClientOptionsBuilder()
                             .WithTcpServer(mqttHost)
-                            .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}")
-                            .Build();
+                            .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}");
+                        if (!String.IsNullOrEmpty(mqttUsername) || !String.IsNullOrEmpty(mqttPassword))
+                        {
+                            mqttOptionBuilder = mqttOptionBuilder.WithCredentials(mqttUsername, mqttPassword);
+                        }
+                        var mqttOptions = mqttOptionBuilder.Build();
                         mqttClient.UseDisconnectedHandler(async e =>
                         {
                             Console.Error.WriteLine("mqtt disconnected - reconnecting in 5 seconds");
