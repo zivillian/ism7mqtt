@@ -9,10 +9,10 @@ namespace ism7mqtt.ISM7.Xml
     {
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
-            throw new NotImplementedException();
+            Console.Error.WriteLine($"UnicodeTextConverter: T:{telegram} H:{high} L:{low}");
         }
 
-        public override bool HasValue => throw new NotImplementedException();
+        public override bool HasValue => false;
 
         public override JValue GetValue()
         {
