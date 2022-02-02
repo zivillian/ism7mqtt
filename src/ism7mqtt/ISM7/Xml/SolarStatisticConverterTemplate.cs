@@ -9,6 +9,7 @@ namespace ism7mqtt.ISM7.Xml
     {
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
+            Console.Error.WriteLine($"SolarStatisticConverter: T:{telegram} H:{high} L:{low}");
         }
 
         public override bool HasValue => false;
