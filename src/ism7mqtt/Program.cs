@@ -105,8 +105,9 @@ namespace ism7mqtt
                 catch (OperationCanceledException)
                 {
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.Error.WriteLine(ex);
                     cts.Cancel();
                     throw;
                 }

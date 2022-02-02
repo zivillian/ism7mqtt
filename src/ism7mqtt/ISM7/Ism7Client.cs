@@ -135,6 +135,7 @@ namespace ism7mqtt
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 await target.CompleteAsync(ex);
             }
         }
@@ -176,6 +177,7 @@ namespace ism7mqtt
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 await source.CompleteAsync(ex);
             }
         }
