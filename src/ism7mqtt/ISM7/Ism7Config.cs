@@ -62,14 +62,16 @@ namespace ism7mqtt
             }
         }
 
-        public void AddDevice(string ip, string ba, string did, string version)
+        public bool AddDevice(string ip, string ba)
         {
             var tids = _config.Devices
                 .Where(x => x.ReadBusAddress == ba)
-                .Select(x => new {Dtid = x.DeviceTemplateId,Ptids = x.Parameter.ToHashSet()})
-                .First();
+                .Select(x => new {Dtid = x.DeviceTemplateId, Ptids = x.Parameter.ToHashSet()})
+                .FirstOrDefault();
+            if (tids is null) return false;
             var device = _deviceTemplates.First(x => x.DTID == tids.Dtid);
             _devices.Add(ba, new Device(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Ptids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Ptids.Contains(x.CTID))));
+            return true;
         }
 
         public IEnumerable<ushort> GetTelegramIdsForDevice(string ba)
