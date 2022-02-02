@@ -222,7 +222,7 @@ namespace ism7mqtt
         {
             foreach (var device in _devices.Values)
             {
-                _config.AddDevice(_ipAddress.ToString(), device.Ba, device.DeviceId, device.SoftwareNumber);
+                if (!_config.AddDevice(_ipAddress.ToString(), device.Ba)) continue;
                 var ids = _config.GetTelegramIdsForDevice(device.Ba);
                 var bundleId = NextBundleId();
                 _dispatcher.SubscribeOnce(
