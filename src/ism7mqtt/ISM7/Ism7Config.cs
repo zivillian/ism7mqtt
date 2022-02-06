@@ -17,7 +17,7 @@ namespace ism7mqtt
         private readonly IReadOnlyList<DeviceTemplate> _deviceTemplates;
         private readonly IReadOnlyList<ConverterTemplateBase> _converterTemplates;
         private readonly IReadOnlyList<ParameterDescriptor> _parameterTemplates;
-        private readonly IDictionary<byte, Device> _devices;
+        private readonly IDictionary<byte, List<Device>> _devices;
         private readonly ConfigRoot _config;
 
         public Ism7Config(string filename)
@@ -29,7 +29,7 @@ namespace ism7mqtt
             {
                 _config = JsonConvert.DeserializeObject<ConfigRoot>(File.ReadAllText(filename));
             }
-            _devices = new Dictionary<byte, Device>();
+            _devices = new Dictionary<byte, List<Device>>();
         }
 
         private List<DeviceTemplate> LoadDeviceTemplates()
@@ -64,45 +64,57 @@ namespace ism7mqtt
 
         public bool AddDevice(string ip, string ba)
         {
-            var tids = _config.Devices
-                .Where(x => x.ReadBusAddress == ba)
-                .Select(x => new {Dtid = x.DeviceTemplateId, Ptids = x.Parameter.ToHashSet()})
-                .FirstOrDefault();
-            if (tids is null) return false;
-            var device = _deviceTemplates.First(x => x.DTID == tids.Dtid);
-            _devices.Add(Converter.FromHex(ba), new Device(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Ptids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Ptids.Contains(x.CTID))));
+            if (!_devices.TryGetValue(Converter.FromHex(ba), out var devices))
+            {
+                devices = new List<Device>();
+                _devices.Add(Converter.FromHex(ba), devices);
+            }
+            foreach (var configDevice in _config.Devices.Where(x => x.ReadBusAddress == ba))
+            {
+                var device = _deviceTemplates.First(x => x.DTID == configDevice.DeviceTemplateId);
+                var tids = configDevice.Parameter.ToHashSet();
+                devices.Add(new Device(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
+            }
             return true;
         }
 
         public IEnumerable<ushort> GetTelegramIdsForDevice(string ba)
         {
-            var device = _devices[Converter.FromHex(ba)];
-            return device.TelegramIds;
+            var devices = _devices[Converter.FromHex(ba)];
+            return devices.SelectMany(x=>x.TelegramIds);
         }
 
         public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberReadResp> data)
         {
             foreach (var value in data)
             {
-                var device = _devices[Converter.FromHex(value.BusAddress)];
-                device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));
+                var devices = _devices[Converter.FromHex(value.BusAddress)];
+                foreach (var device in devices)
+                {
+                    device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
+                }
             }
-            return _devices.Values.Select(x => x.Message).Where(x => x != null);
+            return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
         }
 
         public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberWriteResp> data)
         {
             foreach (var value in data)
             {
-                var device = _devices.Values.First(x => Converter.FromHex(x.WriteAddress) == Converter.FromHex(value.BusAddress));
-                device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));
+                var devices = _devices.Values.SelectMany(x => x)
+                    .Where(x => Converter.FromHex(x.WriteAddress) == Converter.FromHex(value.BusAddress))
+                    .ToList();
+                foreach (var device in devices)
+                {
+                    device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
+                }
             }
-            return _devices.Values.Select(x => x.Message).Where(x => x != null);
+            return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
         }
 
         public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JObject data)
         {
-            foreach (var device in _devices.Values)
+            foreach (var device in _devices.Values.SelectMany(x => x))
             {
                 if (device.MqttTopic == mqttTopic)
                 {
@@ -155,7 +167,7 @@ namespace ism7mqtt
 
             public void ProcessDatapoint(ushort telegram, byte low, byte high)
             {
-                var converters = _converter[telegram];
+                if (!_converter.TryGetValue(telegram, out var converters)) return;
                 foreach (var converter in converters)
                 {
                     converter.AddTelegram(telegram, low, high);
