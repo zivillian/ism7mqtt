@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlServerCe;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -124,6 +126,37 @@ namespace ism7parameter
             public long DeviceId { get; set; }
 
             public long ParameterId { get; set; }
+        }
+
+        public static void DecryptSystemConfig()
+        {
+            var pass = "92(*l´ß";
+            var bytes = Encoding.UTF8.GetBytes(pass);
+            using (var md5 = MD5.Create())
+            {
+                var hash = md5.ComputeHash(bytes);
+                var files = Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%APPDATA%\Wolf GmbH\Smartset\system-config\"), "*.dat");
+                foreach (var file in files)
+                {
+                    using (var rijndael = Rijndael.Create())
+                    {
+                        rijndael.Mode = CipherMode.CBC;
+                        rijndael.Padding = PaddingMode.PKCS7;
+                        var password = Convert.FromBase64String("z0VCAYPN8aY0i1kehH/2jZgm2IbYpe7mH9NtdH5dQ+A=");
+                        Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, hash, 1000);
+                        var key = rfc2898DeriveBytes.GetBytes(rijndael.KeySize / 8);
+                        var iv = rfc2898DeriveBytes.GetBytes(rijndael.BlockSize / 8);
+                        var decryptor = rijndael.CreateDecryptor(key, iv);
+                        var xml = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".xml");
+                        using (var fs = File.OpenRead(file))
+                        using (var decrypt = new CryptoStream(fs, decryptor, CryptoStreamMode.Read))
+                        using (var target = File.OpenWrite(xml))
+                        {
+                            decrypt.CopyTo(target);
+                        }
+                    }
+                }
+            }
         }
     }
 }
