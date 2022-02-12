@@ -7,7 +7,6 @@ using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
@@ -137,6 +136,7 @@ namespace ism7mqtt
             return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
+        private static MqttApplicationMessage payload;
         private static Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
@@ -147,15 +147,22 @@ namespace ism7mqtt
                 }
                 return Task.CompletedTask;
             }
-            var data = JsonConvert.SerializeObject(message.Content);
-            var payload = new MqttApplicationMessageBuilder()
-                .WithTopic(message.Path)
-                .WithPayload(data)
-                .WithContentType("application/json")
-                .Build();
-            if (debug)
+
+            foreach (var kv in message.Content)
             {
-                Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                var topic = message.Path + "/" + kv.Key.Replace("/", "\\");
+                payload = new MqttApplicationMessageBuilder()
+                    .WithTopic(topic)
+                    .WithPayload((string)kv.Value)
+                    .WithContentType("text/strings")
+                    .Build();
+                if (debug)
+                {
+                    Console.WriteLine($"publishing mqtt with topic '{topic}' '{kv.Value}'");
+
+                    Console.WriteLine(kv.Key + ":" + kv.Value);
+                }
+                client.PublishAsync(payload, cancellationToken);
             }
             return client.PublishAsync(payload, cancellationToken);
         }
