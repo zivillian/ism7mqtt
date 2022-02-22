@@ -10,7 +10,7 @@ namespace ism7mqtt.ISM7.Xml
     public class UnicodeTextConverter:MultiTelegramConverterTemplateBase
     {
         private bool _broken = false;
-        private List<(ushort, int)> _letters = new List<(ushort, int)>();
+        private readonly List<(ushort, int)> _letters = new List<(ushort, int)>();
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
             if (high != 128 && high != 0)
