@@ -54,14 +54,14 @@ namespace ism7mqtt
                 Console.Error.WriteLine("Try 'ism7mqtt --help' for more information");
                 return;
             }
-            if (!File.Exists(parameter))
-            {
-                Console.Error.WriteLine($"'{parameter}' does not exist");
-                return;
-            }
             if (showHelp || ip is null || mqttHost is null || password is null)
             {
                 options.WriteOptionDescriptions(Console.Out);
+                return;
+            }
+            if (!File.Exists(parameter))
+            {
+                Console.Error.WriteLine($"'{parameter}' does not exist");
                 return;
             }
             using (var cts = new CancellationTokenSource())
