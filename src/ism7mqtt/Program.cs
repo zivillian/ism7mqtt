@@ -173,12 +173,13 @@ namespace ism7mqtt
                 {
                     var name = EscapeMqttTopic(property.Name);
                     var data = property.Value.ToString();
-                    var payload = builder.WithTopic($"{message.Path}/{name}")
+                    var topic = $"{message.Path}/{name}";
+                    var payload = builder.WithTopic(topic)
                         .WithPayload(data)
                         .Build();
                     if (debug)
                     {
-                        Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                        Console.WriteLine($"publishing mqtt with topic '{topic}' '{data}'");
                     }
                     await client.PublishAsync(payload, cancellationToken);
                 }
