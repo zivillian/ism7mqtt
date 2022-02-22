@@ -14,6 +14,9 @@ namespace ism7mqtt
 {
     class Program
     {
+        private static bool _disableJson = false;
+        private static bool _useSeparateTopics = false;
+
         static async Task Main(string[] args)
         {
             bool showHelp = false;
@@ -32,6 +35,8 @@ namespace ism7mqtt
                 {"t|parameter=", $"path to parameter.json - defaults to {parameter}", x => parameter = x},
                 {"mqttuser=", "MQTT username", x => mqttUsername = x},
                 {"mqttpass=", "MQTT password", x => mqttPassword = x},
+                {"s|separate", "send values to separate mqtt topics", x=> _useSeparateTopics = x != null},
+                {"disable-json", "disable json mqtt payload", x=> _disableJson = x != null},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -137,7 +142,7 @@ namespace ism7mqtt
             return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
-        private static Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
+        private static async Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
             {
@@ -145,19 +150,44 @@ namespace ism7mqtt
                 {
                     Console.WriteLine("not connected - skipping mqtt publish");
                 }
-                return Task.CompletedTask;
+                return;
             }
-            var data = JsonConvert.SerializeObject(message.Content);
-            var payload = new MqttApplicationMessageBuilder()
-                .WithTopic(message.Path)
-                .WithPayload(data)
-                .WithContentType("application/json")
-                .Build();
-            if (debug)
+            if (!_disableJson)
             {
-                Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                var data = JsonConvert.SerializeObject(message.Content);
+                var payload = new MqttApplicationMessageBuilder()
+                    .WithTopic(message.Path)
+                    .WithPayload(data)
+                    .WithContentType("application/json")
+                    .Build();
+                if (debug)
+                {
+                    Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                }
+                await client.PublishAsync(payload, cancellationToken);
             }
-            return client.PublishAsync(payload, cancellationToken);
+            if (_useSeparateTopics)
+            {
+                var builder = new MqttApplicationMessageBuilder();
+                foreach (var property in message.Content.Properties())
+                {
+                    var name = EscapeMqttTopic(property.Name);
+                    var data = property.Value.ToString();
+                    var payload = builder.WithTopic($"{message.Path}/{name}")
+                        .WithPayload(data)
+                        .Build();
+                    if (debug)
+                    {
+                        Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                    }
+                    await client.PublishAsync(payload, cancellationToken);
+                }
+            }
+        }
+
+        private static string EscapeMqttTopic(string name)
+        {
+            return name.Replace('/', '_').Replace(' ', '_');
         }
     }
 }
