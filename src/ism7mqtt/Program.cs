@@ -172,7 +172,7 @@ namespace ism7mqtt
                 foreach (var property in message.Content.Properties())
                 {
                     var name = EscapeMqttTopic(property.Name);
-                    var data = property.Value.ToString();
+                    var data = JsonConvert.SerializeObject(property.Value);
                     var topic = $"{message.Path}/{name}";
                     var payload = builder.WithTopic(topic)
                         .WithPayload(data)
