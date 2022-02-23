@@ -24,20 +24,19 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override bool HasValue => Type switch
-        {
-            KwType => _values.Count == 2,
-            KwMwType => _values.Count == 3,
-            _ => false
-        };
+        public override bool HasValue => _values.Count > 0;
 
         public override JValue GetValue()
         {
             var values = _values.OrderBy(x => x.Item1).ToList();
             var wh = values[0].Item2;
-            var kwh = values[1].Item2;
-            var value = wh + (1_000UL * kwh);
-            if (Type == KwMwType)
+            ulong value = wh;
+            if (values.Count > 1)
+            {
+                var kwh = values[1].Item2;
+                value += kwh * 1_000UL;
+            }
+            if (values.Count > 2)
             {
                 var mwh = values[2].Item2;
                 value += mwh * 1_000_000UL;
