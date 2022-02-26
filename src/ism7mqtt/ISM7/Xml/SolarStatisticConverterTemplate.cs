@@ -10,13 +10,23 @@ namespace ism7mqtt.ISM7.Xml
     {
         private const string KwType = "SolarertragW_kW";
         private const string KwMwType = "SolarertragW_kW_MW";
-        private readonly List<(ushort, uint)> _values = new();
+        private readonly SortedDictionary<ushort, uint> _values = new();
+        private bool _hasValue = false;
 
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
             if (Type == KwMwType || Type == KwType)
             {
-                _values.Add((telegram, (uint)(high << 8) | low));
+                var value = (uint)(high << 8) | low;
+                if (!_values.ContainsKey(telegram))
+                {
+                    _values.Add(telegram, value);
+                }
+                else
+                {
+                    _values[telegram] = value;
+                }
+                _hasValue = true;
             }
             else
             {
@@ -24,25 +34,24 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override bool HasValue => Type switch
-        {
-            KwType => _values.Count == 2,
-            KwMwType => _values.Count == 3,
-            _ => false
-        };
+        public override bool HasValue => _hasValue;
 
         public override JValue GetValue()
         {
-            var values = _values.OrderBy(x => x.Item1).ToList();
-            var wh = values[0].Item2;
-            var kwh = values[1].Item2;
-            var value = wh + (1_000UL * kwh);
-            if (Type == KwMwType)
+            var values = _values.Values.ToList();
+            var wh = values[0];
+            ulong value = wh;
+            if (values.Count > 1)
             {
-                var mwh = values[2].Item2;
+                var kwh = values[1];
+                value += kwh * 1_000UL;
+            }
+            if (values.Count > 2)
+            {
+                var mwh = values[2];
                 value += mwh * 1_000_000UL;
             }
-            _values.Clear();
+            _hasValue = false;
             return new JValue(value);
         }
 
