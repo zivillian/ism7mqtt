@@ -162,8 +162,15 @@ namespace ism7mqtt
                             var xml = Encoding.UTF8.GetString(xmlBuffer);
                             Console.WriteLine($"< {xml}");
                         }
-                        var response = Deserialize(type, new ReadOnlySequenceStream(xmlBuffer));
-                        await _dispatcher.DispatchAsync(response, cancellationToken);
+                        if (xmlBuffer.Length == 0)
+                        {
+                            Console.WriteLine($"Received empty xml of type '{type}' - skipping dispatch (raw '{HexEncode(header)}')");
+                        }
+                        else
+                        {
+                            var response = Deserialize(type, new ReadOnlySequenceStream(xmlBuffer));
+                            await _dispatcher.DispatchAsync(response, cancellationToken);
+                        }
                         buffer = buffer.Slice(xmlBuffer.End);
                         
                     }
@@ -181,7 +188,15 @@ namespace ism7mqtt
                 await source.CompleteAsync(ex);
             }
         }
-        
+
+        private static string HexEncode(ReadOnlySpan<byte> data)
+        {
+            StringBuilder s = new StringBuilder(data.Length*2);
+            foreach (byte b in data)
+                s.Append(b.ToString("x2"));
+            return s.ToString();
+        }
+
         private async Task SubscribeAsync(string busAddress, CancellationToken cancellationToken)
         {
             var device = _devices[busAddress];
@@ -356,7 +371,7 @@ namespace ism7mqtt
                         return new KeepAliveResp(BinaryPrimitives.ReadInt16BigEndian(buffer));
                     }
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(type));
+                    throw new ArgumentOutOfRangeException(nameof(type), type, "unsupported payload type");
             }
         }
 
