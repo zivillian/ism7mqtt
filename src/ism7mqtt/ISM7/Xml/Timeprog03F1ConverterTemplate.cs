@@ -24,6 +24,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
+            Console.Error.WriteLine($"Timeprog03F1ConverterTemplate: T:{telegram} H:{high} L:{low}");
         }
 
         public override bool HasValue => false;
