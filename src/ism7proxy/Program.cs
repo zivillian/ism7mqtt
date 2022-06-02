@@ -54,7 +54,7 @@ namespace ism7proxy
                     server.Start();
                     while (!cts.IsCancellationRequested)
                     {
-                        using(var incoming = await server.AcceptTcpClientAsync())
+                        using(var incoming = await server.AcceptTcpClientAsync(cts.Token))
                         using (var outgoing = new TcpClient(ip, 9092))
                         using(var sslServer = new SslStream(incoming.GetStream(), true, (a, b, c, d) => true))
                         using(var sslClient = new SslStream(outgoing.GetStream(), false, (a, b, c, d) => true))
