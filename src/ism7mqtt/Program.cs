@@ -16,6 +16,7 @@ namespace ism7mqtt
     {
         private static bool _disableJson = false;
         private static bool _useSeparateTopics = false;
+        private static bool _retain = false;
 
         static async Task Main(string[] args)
         {
@@ -37,6 +38,7 @@ namespace ism7mqtt
                 {"mqttpass=", "MQTT password", x => mqttPassword = x},
                 {"s|separate", "send values to separate mqtt topics", x=> _useSeparateTopics = x != null},
                 {"disable-json", "disable json mqtt payload", x=> _disableJson = x != null},
+                {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -155,10 +157,13 @@ namespace ism7mqtt
             if (!_disableJson)
             {
                 var data = JsonConvert.SerializeObject(message.Content);
-                var payload = new MqttApplicationMessageBuilder()
+                var builder = new MqttApplicationMessageBuilder()
                     .WithTopic(message.Path)
                     .WithPayload(data)
-                    .WithContentType("application/json")
+                    .WithContentType("application/json");
+                if (_retain)
+                    builder = builder.WithRetainFlag();
+                var payload = builder
                     .Build();
                 if (debug)
                 {
@@ -168,15 +173,16 @@ namespace ism7mqtt
             }
             if (_useSeparateTopics)
             {
-                var builder = new MqttApplicationMessageBuilder();
                 foreach (var property in message.Content.Properties())
                 {
                     var name = EscapeMqttTopic(property.Name);
                     var data = JsonConvert.SerializeObject(property.Value);
                     var topic = $"{message.Path}/{name}";
-                    var payload = builder.WithTopic(topic)
-                        .WithPayload(data)
-                        .Build();
+                    var builder = new MqttApplicationMessageBuilder().WithTopic(topic)
+                        .WithPayload(data);
+                    if (_retain)
+                        builder = builder.WithRetainFlag();
+                    var payload = builder.Build();
                     if (debug)
                     {
                         Console.WriteLine($"publishing mqtt with topic '{topic}' '{data}'");
