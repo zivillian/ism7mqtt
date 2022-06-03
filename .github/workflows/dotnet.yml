@@ -12,31 +12,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish Windows
-      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
     - name: Publish Linux
-      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True
+      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
     - name: Publish Linux ARM
-      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True
+      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-win-x64
-        path: src/ism7mqtt/bin/Release/net5.0/win-x64/publish
+        path: src/ism7mqtt/bin/Release/net6.0/win-x64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-linux-x64
-        path: src/ism7mqtt/bin/Release/net5.0/linux-x64/publish
+        path: src/ism7mqtt/bin/Release/net6.0/linux-x64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-linux-arm
-        path: src/ism7mqtt/bin/Release/net5.0/linux-arm/publish
+        path: src/ism7mqtt/bin/Release/net6.0/linux-arm/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7parameter
@@ -44,4 +44,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: ism7proxy
-        path: src/ism7proxy/bin/Release/net5.0/win-x64/publish
+        path: src/ism7proxy/bin/Release/net6.0/win-x64/publish
