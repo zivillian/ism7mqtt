@@ -31,6 +31,8 @@ namespace ism7mqtt
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
 
+        public int Interval { get; set; }
+
         public bool EnableDebug { get; set; }
 
         public Ism7Client(Func<MqttMessage, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
@@ -213,7 +215,7 @@ namespace ism7mqtt
                 {
                     BusAddress = device.Ba,
                     InfoNumber = x,
-                    Intervall = 60
+                    Intervall = Interval
                 }).ToList()
             }, cancellationToken);
         }

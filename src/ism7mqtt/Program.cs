@@ -28,6 +28,7 @@ namespace ism7mqtt
             string parameter = "parameter.json";
             string mqttUsername = null;
             string mqttPassword = null;
+            int interval = 60;
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -39,6 +40,7 @@ namespace ism7mqtt
                 {"s|separate", "send values to separate mqtt topics", x=> _useSeparateTopics = x != null},
                 {"disable-json", "disable json mqtt payload", x=> _disableJson = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
+                {"i|interval", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -103,6 +105,7 @@ namespace ism7mqtt
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/+");
                         var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
                         {
+                            Interval = interval,
                             EnableDebug = enableDebug
                         };
                         mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, cts.Token));
