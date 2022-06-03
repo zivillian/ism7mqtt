@@ -40,7 +40,7 @@ namespace ism7mqtt
                 {"s|separate", "send values to separate mqtt topics", x=> _useSeparateTopics = x != null},
                 {"disable-json", "disable json mqtt payload", x=> _disableJson = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
-                {"interval", "push interval in seconds (defaults to 60)", (int x) => interval = x},
+                {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
