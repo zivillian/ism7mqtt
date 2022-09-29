@@ -108,7 +108,7 @@ namespace ism7mqtt
                             Interval = interval,
                             EnableDebug = enableDebug
                         };
-                        mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, cts.Token));
+                        mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, enableDebug, cts.Token));
                         await client.RunAsync(password, cts.Token);
                     }
                 }
@@ -124,12 +124,16 @@ namespace ism7mqtt
             }
         }
 
-        private static Task OnMessage(Ism7Client client, MqttApplicationMessageReceivedEventArgs arg, CancellationToken cancellationToken)
+        private static Task OnMessage(Ism7Client client, MqttApplicationMessageReceivedEventArgs arg, bool debug, CancellationToken cancellationToken)
         {
             var message = arg.ApplicationMessage;
 
             JObject data;
             string topic;
+            if (debug)
+            {
+                Console.WriteLine($"received mqtt with topic '{message.Topic}' '{message.ConvertPayloadToString()}'");
+            }
             if (message.Topic.EndsWith("/set"))
             {
                 //json
