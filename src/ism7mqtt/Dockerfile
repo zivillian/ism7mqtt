@@ -1,11 +1,17 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
-WORKDIR /App
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
 
 COPY . ./
-RUN dotnet restore
-RUN dotnet publish -c Release -o out -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+    RID=linux-x64 ; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+    RID=linux-arm64 ; \
+    fi \
+    && dotnet publish -c Release -o out -r $RID -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine
-WORKDIR /App
-COPY --from=build-env /App/out .
-ENTRYPOINT ["/App/ism7mqtt"]
+FROM ubuntu/dotnet-deps:6.0-22.04_beta
+WORKDIR /app
+COPY --from=build-env /app/out .
+
+ENTRYPOINT ["/app/ism7mqtt"]
