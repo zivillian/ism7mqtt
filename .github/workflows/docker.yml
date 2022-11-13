@@ -16,7 +16,7 @@ jobs:
         fetch-depth: 0
     - name: Get tag
       id: repository
-      run: echo  "::set-output name=tag::$(git describe --tags HEAD)"
+      run: echo "tag=$(git describe --tags HEAD)" >> $GITHUB_OUTPUT
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
