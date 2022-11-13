@@ -62,5 +62,4 @@ jobs:
     - name: Build
       uses: docker/build-push-action@v3
       with:
-        context: src/ism7mqtt
         platforms: linux/amd64,linux/arm64

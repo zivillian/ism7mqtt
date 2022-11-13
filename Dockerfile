@@ -1,7 +1,7 @@
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
-COPY . ./
+COPY src/ism7mqtt/ ./
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
     RID=linux-x64 ; \
