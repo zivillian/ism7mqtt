@@ -88,7 +88,11 @@ namespace ism7mqtt
         public async Task OnCommandAsync(string mqttTopic, JObject data, CancellationToken cancellationToken)
         {
             var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
-            if (writeRequests.Count == 0) return;
+            if (writeRequests.Count == 0)
+            {
+                Console.WriteLine($"nothing to send for topic '{mqttTopic}'");
+                return;
+            }
             var request = new TelegramBundleReq
             {
                 AbortOnError = true,
