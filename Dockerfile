@@ -4,18 +4,16 @@ WORKDIR /app
 COPY src/ism7mqtt/ ./
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
-    RID=linux-x64 ; \
+    RID=linux-musl-x64 ; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
-    RID=linux-arm64 ; \
+    RID=linux-musl-arm64 ; \
     elif [ "$TARGETARCH" = "arm" ]; then \
-    RID=linux-arm ; \
+    RID=linux-musl-arm ; \
     fi \
     && dotnet publish -c Release -o out -r $RID -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
 COPY openssl.cnf ./out/
 
-FROM --platform=amd64 ubuntu/dotnet-deps:6.0-22.04_beta
-FROM --platform=arm64 ubuntu/dotnet-deps:6.0-22.04_beta
-FROM --platform=arm mcr.microsoft.com/dotnet/runtime-deps:6.0
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine
 WORKDIR /app
 COPY --from=build-env /app/out .
 
