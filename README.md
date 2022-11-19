@@ -4,7 +4,7 @@ Get all statistics and values from your Wolf ISM7 and send them to an mqtt serve
 
 ## How?
 
-Run ism7parameter on a Windows machine where Wolf SmartSet is installed and was connected to your ism7 at least once. This will create a parameter.json file which is needed for ism7mqtt.
+Run ism7parameter on a Windows machine where [Wolf SmartSet](https://www.wolf.eu/download-asset/22335) is installed and was connected to your ism7 at least once. This will create a parameter.json file which is needed for ism7mqtt.
 
 Run ism7mqtt on any machine which can connect to your ism7 and an mqtt server.
 
