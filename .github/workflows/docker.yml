@@ -36,5 +36,5 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: zivillian/ism7mqtt:${{ steps.repository.outputs.tag }}
         labels: ${{ steps.meta.outputs.labels }}
