@@ -14,6 +14,14 @@ ism7mqtt -m <mqttserver> -i <ism7 ip/host> -p <ism7 password>
 
 Do not forget to put the generated parameter.json next to the ism7client or specify the path with `-t .../parameter.json`.
 
+### Docker
+
+If you want to run this via docker, use:
+
+```sh
+docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> zivillian/ism7mqtt:latest
+```
+
 ## Cons
 
 The ism7 accepts only a single connection, so you cannot use the Smartset application while ism7mqtt is running.

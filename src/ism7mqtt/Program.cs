@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -21,14 +22,17 @@ namespace ism7mqtt
         static async Task Main(string[] args)
         {
             bool showHelp = false;
-            bool enableDebug = false;
-            string mqttHost = null;
-            string ip = null;
-            string password = null;
+            bool enableDebug = GetEnvBool("ISM7_DEBUG");
+            string mqttHost = GetEnvString("ISM7_MQTTHOST");
+            string ip = GetEnvString("ISM7_IP");
+            string password = GetEnvString("ISM7_PASSWORD");
             string parameter = "parameter.json";
-            string mqttUsername = null;
-            string mqttPassword = null;
-            int interval = 60;
+            string mqttUsername = GetEnvString("ISM7_MQTTUSERNAME");
+            string mqttPassword = GetEnvString("ISM7_MQTTPASSWORD");
+            _disableJson = GetEnvBool("ISM7_DISABLEJSON");
+            _useSeparateTopics = GetEnvBool("ISM7_SEPARATE");
+            _retain = GetEnvBool("ISM7_RETAIN");
+            int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -58,7 +62,7 @@ namespace ism7mqtt
                 Console.Error.WriteLine("Try 'ism7mqtt --help' for more information");
                 return;
             }
-            if (showHelp || ip is null || mqttHost is null || password is null)
+            if (showHelp || String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(mqttHost) || String.IsNullOrEmpty(password))
             {
                 options.WriteOptionDescriptions(Console.Out);
                 return;
@@ -122,6 +126,31 @@ namespace ism7mqtt
                     throw;
                 }
             }
+        }
+
+        private static string GetEnvString(string name, string defaultValue = default)
+        {
+            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
+            if (value is null) return defaultValue;
+            return value;
+        }
+
+        private static bool GetEnvBool(string name, bool defaultValue = default)
+        {
+            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
+            if (value is null) return defaultValue;
+            var parsed = new BooleanConverter().ConvertFromString(value);
+            if (parsed is null) return defaultValue;
+            return (bool)parsed;
+        }
+
+        private static int GetEnvInt32(string name, int defaultValue = default)
+        {
+            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
+            if (value is null) return defaultValue;
+            var parsed = new Int32Converter().ConvertFromString(value);
+            if (parsed is null) return defaultValue;
+            return (int)parsed;
         }
 
         private static Task OnMessage(Ism7Client client, MqttApplicationMessageReceivedEventArgs arg, bool debug, CancellationToken cancellationToken)
