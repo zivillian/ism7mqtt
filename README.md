@@ -19,7 +19,7 @@ Do not forget to put the generated parameter.json next to the ism7client or spec
 If you want to run this via docker, use:
 
 ```sh
-docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> ghcr.io/zivillian/ism7mqtt:alpha
+docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> zivillian/ism7mqtt:latest
 ```
 
 ## Cons
