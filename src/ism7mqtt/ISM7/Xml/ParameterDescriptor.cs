@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using System.Xml.Serialization;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -43,10 +43,10 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public virtual IEnumerable<JProperty> GetValues(ConverterTemplateBase converter)
+        public virtual IEnumerable<KeyValuePair<string,JsonNode>> GetValues(ConverterTemplateBase converter)
         {
             var value = converter.GetValue();
-            yield return new JProperty(SafeName, value);
+            yield return new KeyValuePair<string,JsonNode>(SafeName, value);
         }
     }
 }

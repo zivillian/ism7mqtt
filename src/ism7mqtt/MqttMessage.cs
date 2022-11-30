@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Collections.Generic;
+using System.Text.Json.Nodes;
 
 namespace ism7mqtt
 {
@@ -7,16 +8,16 @@ namespace ism7mqtt
         public MqttMessage(string path)
         {
             Path = path;
-            Content = new JObject();
+            Content = new JsonObject();
         }
 
         public string Path { get; }
 
-        public JObject Content { get; }
+        public JsonObject Content { get; }
 
         public bool HasContent { get; private set; }
 
-        public void AddProperty(JProperty property)
+        public void AddProperty(KeyValuePair<string,JsonNode> property)
         {
             HasContent = true;
             Content.Add(property);

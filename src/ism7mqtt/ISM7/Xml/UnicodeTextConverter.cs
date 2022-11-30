@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using ism7mqtt.ISM7.Protocol;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -35,7 +35,7 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override JValue GetValue()
+        public override JsonValue GetValue()
         {
             if (_broken)
             {
@@ -47,10 +47,10 @@ namespace ism7mqtt.ISM7.Xml
                 sb.Append((char)letter);
             }
             _letters.Clear();
-            return new JValue(sb.ToString());
+            return JsonValue.Create(sb.ToString());
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JValue value)
+        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }

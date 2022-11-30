@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
 using ism7mqtt.ISM7.Xml;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -27,7 +27,7 @@ namespace ism7mqtt
             _parameterTemplates = LoadParameterTemplates();
             if (File.Exists(filename))
             {
-                _config = JsonConvert.DeserializeObject<ConfigRoot>(File.ReadAllText(filename));
+                _config = JsonSerializer.Deserialize<ConfigRoot>(File.ReadAllText(filename));
             }
             _devices = new Dictionary<byte, List<Device>>();
         }
@@ -112,7 +112,7 @@ namespace ism7mqtt
             return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
         }
 
-        public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JObject data)
+        public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JsonObject data)
         {
             foreach (var device in _devices.Values.SelectMany(x => x))
             {
@@ -174,13 +174,13 @@ namespace ism7mqtt
                 }
             }
 
-            public IEnumerable<InfoWrite> GetWriteRequest(JObject data)
+            public IEnumerable<InfoWrite> GetWriteRequest(JsonObject data)
             {
-                foreach (var property in data.Properties())
+                foreach (var property in data)
                 {
-                    if (property.Value is JValue value)
+                    if (property.Value is JsonValue value)
                     {
-                        var results = GetWriteRequest(property.Name, value);
+                        var results = GetWriteRequest(property.Key, value);
                         foreach (var result in results)
                         {
                             result.BusAddress = WriteAddress;
@@ -191,7 +191,7 @@ namespace ism7mqtt
                 }
             }
 
-            private IEnumerable<InfoWrite> GetWriteRequest(string name, JValue value)
+            private IEnumerable<InfoWrite> GetWriteRequest(string name, JsonValue value)
             {
                 var parameter = WritableParameters().FirstOrDefault(x => x.SafeName == name);
                 if (parameter is null) return Array.Empty<InfoWrite>();

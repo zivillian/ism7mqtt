@@ -10,11 +10,11 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -85,7 +85,7 @@ namespace ism7mqtt
             return ssl;
         }
 
-        public async Task OnCommandAsync(string mqttTopic, JObject data, CancellationToken cancellationToken)
+        public async Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
         {
             var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
             if (writeRequests.Count == 0)

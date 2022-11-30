@@ -2,14 +2,14 @@
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -157,7 +157,7 @@ namespace ism7mqtt
         {
             var message = arg.ApplicationMessage;
 
-            JObject data;
+            JsonObject data;
             string topic;
             if (debug)
             {
@@ -166,7 +166,7 @@ namespace ism7mqtt
             if (message.Topic.EndsWith("/set"))
             {
                 //json
-                data = JObject.Parse(message.ConvertPayloadToString());
+                data = JsonNode.Parse(message.ConvertPayloadToString()).AsObject();
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
             }
             else
@@ -175,7 +175,7 @@ namespace ism7mqtt
                 var index = message.Topic.LastIndexOf('/');
                 var property = message.Topic.Substring(index + 1);
                 topic = message.Topic.Substring(0, index - 4);
-                data = new JObject{{property, new JValue(message.ConvertPayloadToString())}};
+                data = new JsonObject{{property, JsonValue.Create(message.ConvertPayloadToString())}};
             }
             return client.OnCommandAsync(topic, data, cancellationToken);
         }
@@ -192,7 +192,7 @@ namespace ism7mqtt
             }
             if (!_disableJson)
             {
-                var data = JsonConvert.SerializeObject(message.Content);
+                var data = JsonSerializer.Serialize(message.Content);
                 var builder = new MqttApplicationMessageBuilder()
                     .WithTopic(message.Path)
                     .WithPayload(data)
@@ -209,10 +209,10 @@ namespace ism7mqtt
             }
             if (_useSeparateTopics)
             {
-                foreach (var property in message.Content.Properties())
+                foreach (var property in message.Content)
                 {
-                    var name = EscapeMqttTopic(property.Name);
-                    var data = JsonConvert.SerializeObject(property.Value);
+                    var name = EscapeMqttTopic(property.Key);
+                    var data = JsonSerializer.Serialize(property.Value);
                     var topic = $"{message.Path}/{name}";
                     var builder = new MqttApplicationMessageBuilder().WithTopic(topic)
                         .WithPayload(data);
