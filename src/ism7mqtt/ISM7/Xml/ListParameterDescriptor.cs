@@ -23,26 +23,23 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("DependentDefinitionId")]
         public string DependentDefinitionId { get; set; }
 
-        public override IEnumerable<KeyValuePair<string,JsonNode>> GetValues(ConverterTemplateBase converter)
+        public override KeyValuePair<string,JsonNode> GetValues(ConverterTemplateBase converter)
         {
             var value = converter.GetValue();
-            yield return new KeyValuePair<string,JsonNode>(SafeName, value);
-            if (String.IsNullOrEmpty(KeyValueList)) yield break;
+            var result = new KeyValuePair<string, JsonNode>(SafeName, value);
+            if (String.IsNullOrEmpty(KeyValueList)) return result;
             var names = KeyValueList.Split(';');
             var key = value.ToString();
-            var index = Array.IndexOf<string>(names, key);
-            if (index < 0) yield break;
+            var index = Array.IndexOf(names, key);
+            if (index < 0) return result;
             index++;
-            if (index >= names.Length) yield break;
-            yield return new KeyValuePair<string,JsonNode>($"{SafeName}_Text", names[index]);
-        }
-
-        public IEnumerable<string> Values
-        {
-            get
+            if (index >= names.Length) return result;
+            var data = new JsonObject
             {
-                return KeyValueList.Split(';').Where((x, i) => i % 2 == 1);
-            }
+                ["value"] = value,
+                ["text"] = names[index]
+            };
+            return new KeyValuePair<string, JsonNode>(SafeName, data);
         }
 
         public JsonValue GetValue(JsonValue value)

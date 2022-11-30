@@ -217,10 +217,7 @@ namespace ism7mqtt
                     foreach (var converter in converters)
                     {
                         var parameter = _parameter[converter.CTID];
-                        foreach (var value in parameter.GetValues(converter))
-                        {
-                            result.AddProperty(value);
-                        }
+                        result.AddProperty(parameter.GetValues(converter));
                     }
                     return result;
                 }

@@ -43,10 +43,10 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public virtual IEnumerable<KeyValuePair<string,JsonNode>> GetValues(ConverterTemplateBase converter)
+        public virtual KeyValuePair<string,JsonNode> GetValues(ConverterTemplateBase converter)
         {
             var value = converter.GetValue();
-            yield return new KeyValuePair<string,JsonNode>(SafeName, value);
+            return new KeyValuePair<string,JsonNode>(SafeName, value);
         }
     }
 }
