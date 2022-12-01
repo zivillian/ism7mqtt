@@ -23,34 +23,44 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("DependentDefinitionId")]
         public string DependentDefinitionId { get; set; }
 
-        public override KeyValuePair<string,JsonNode> GetValues(ConverterTemplateBase converter)
+        protected override JsonNode GetValueCore(ConverterTemplateBase converter)
         {
             var value = converter.GetValue();
-            var result = new KeyValuePair<string, JsonNode>(SafeName, value);
-            if (String.IsNullOrEmpty(KeyValueList)) return result;
-            var names = KeyValueList.Split(';');
-            var key = value.ToString();
-            var index = Array.IndexOf(names, key);
-            if (index < 0) return result;
-            index++;
-            if (index >= names.Length) return result;
-            var data = new JsonObject
-            {
-                ["value"] = value,
-                ["text"] = names[index]
-            };
-            return new KeyValuePair<string, JsonNode>(SafeName, data);
-        }
-
-        public JsonValue GetValue(JsonValue value)
-        {
             if (String.IsNullOrEmpty(KeyValueList)) return value;
             var names = KeyValueList.Split(';');
-            var name = value.ToString();
-            var index = Array.IndexOf(names, name);
-            if (index < 1 || index % 2 == 0) return value;
-            index--;
-            return JsonValue.Create(names[index]);
-        } 
+            var key = value.ToString();
+            for (int i = 0; i < names.Length - 1; i += 2)
+            {
+                if (names[i] == key)
+                {
+                    return new JsonObject
+                    {
+                        ["value"] = value,
+                        ["text"] = names[i + 1]
+                    };
+                }
+            }
+            return value;
+        }
+
+        protected override JsonValue GetWrite(JsonNode node)
+        {
+            if (String.IsNullOrEmpty(KeyValueList)) return base.GetWrite(node);
+            if (node is not JsonObject jobject) return base.GetWrite(node);
+            if (jobject.TryGetPropertyValue("value", out var value))
+            {
+                return value.AsValue();
+            }
+            if (jobject.TryGetPropertyValue("text", out value))
+            {
+                var names = KeyValueList.Split(';');
+                var name = value.ToString();
+                for (int i = 1; i < names.Length; i += 2)
+                {
+                    if (names[i] == name) return JsonValue.Create(names[i - 1]);
+                }
+            }
+            return base.GetWrite(node);
+        }
     }
 }

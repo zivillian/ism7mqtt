@@ -59,7 +59,7 @@ namespace ism7mqtt.ISM7.Xml
             switch (Type)
             {
                 case "UINT32":
-                    var data = value.GetValue<int>();
+                    if (!UInt32.TryParse(value.ToString(), out var data)) yield break;
                     low = (ushort) (data & 0xffff);
                     high = (ushort) (data >> 16);
                     break;

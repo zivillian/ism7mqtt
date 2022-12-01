@@ -154,7 +154,7 @@ namespace ism7mqtt
                     .ToList();
                 foreach (var duplicate in duplicates.SelectMany(x=>x))
                 {
-                    duplicate.Name = $"{duplicate.Name}_{duplicate.PTID}";
+                    duplicate.IsDuplicate = true;
                 }
             }
 
@@ -178,30 +178,29 @@ namespace ism7mqtt
             {
                 foreach (var property in data)
                 {
-                    if (property.Value is JsonValue value)
+                    var results = GetWriteRequest(property.Key, property.Value);
+                    foreach (var result in results)
                     {
-                        var results = GetWriteRequest(property.Key, value);
-                        foreach (var result in results)
-                        {
-                            result.BusAddress = WriteAddress;
-                            result.Seq = "";
-                            yield return result;
-                        }
+                        result.BusAddress = WriteAddress;
+                        result.Seq = "";
+                        yield return result;
                     }
                 }
             }
 
-            private IEnumerable<InfoWrite> GetWriteRequest(string name, JsonValue value)
+            private IEnumerable<InfoWrite> GetWriteRequest(string name, JsonNode node)
             {
-                var parameter = WritableParameters().FirstOrDefault(x => x.SafeName == name);
-                if (parameter is null) return Array.Empty<InfoWrite>();
-                var converter = _converter.Values.SelectMany(x => x).FirstOrDefault(x => x.CTID == parameter.PTID);
-                if (converter is null) return Array.Empty<InfoWrite>();
-                if (parameter is ListParameterDescriptor listParameter)
+                foreach (var parameter in WritableParameters().Where(x => x.SafeName == name))
                 {
-                    value = listParameter.GetValue(value);
+                    if (!parameter.TryGetValue(node, out var value)) continue;
+                    foreach (var converter in _converter.Values.SelectMany(x => x).Where(x => x.CTID == parameter.PTID))
+                    {
+                        foreach (var write in converter.GetWrite(value))
+                        {
+                            yield return write;
+                        }
+                    }
                 }
-                return converter.GetWrite(value);
             }
 
             public MqttMessage Message

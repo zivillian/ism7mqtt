@@ -66,28 +66,35 @@ namespace ism7mqtt.ISM7.Xml
             switch (Type)
             {
                 case "US":
-                    data = value.GetValue<UInt16>();
+                    if (!UInt16.TryParse(value.ToString(), out data)) yield break;
                     break;
                 case "SS":
-                    data = (ushort) value.GetValue<short>();
+                    if (!Int16.TryParse(value.ToString(), out var int16)) yield break;
+                    data = (ushort) int16;
                     break;
                 case "SS10":
-                    data = (ushort) (value.GetValue<double>() * 10);
+                    if (!Double.TryParse(value.ToString(), out var parsed)) yield break;
+                    data = (ushort) (parsed * 10);
                     break;
                 case "US10":
-                    data = (ushort) (value.GetValue<double>() * 10);
+                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    data = (ushort) (parsed * 10);
                     break;
                 case "SS100":
-                    data = (ushort) (value.GetValue<double>() * 100);
+                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    data = (ushort) (parsed * 100);
                     break;
                 case "SSPR":
-                    data = (ushort) (value.GetValue<double>() * (1.0/256));
+                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    data = (ushort) (parsed * (1.0/256));
                     break;
                 case "US4":
-                    data = (ushort) (value.GetValue<double>() * 4);
+                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    data = (ushort) (parsed * 4);
                     break;
                 case "IntDiv60":
-                    data = (ushort) (value.GetValue<double>() * 60);
+                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    data = (ushort) (parsed * 60);
                     break;
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");

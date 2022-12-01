@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
@@ -87,10 +88,19 @@ namespace ism7mqtt
 
         public async Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
         {
-            var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+            List<InfoWrite> writeRequests;
+            try
+            {
+                writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error for topic '{mqttTopic}' with payload '{data.ToJsonString()}'\n{ex.Message}");
+                return;
+            }
             if (writeRequests.Count == 0)
             {
-                Console.WriteLine($"nothing to send for topic '{mqttTopic}'");
+                Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
                 return;
             }
             var request = new TelegramBundleReq
