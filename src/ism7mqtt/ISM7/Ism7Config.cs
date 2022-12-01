@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
 using ism7mqtt.ISM7.Xml;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -27,7 +27,7 @@ namespace ism7mqtt
             _parameterTemplates = LoadParameterTemplates();
             if (File.Exists(filename))
             {
-                _config = JsonConvert.DeserializeObject<ConfigRoot>(File.ReadAllText(filename));
+                _config = JsonSerializer.Deserialize<ConfigRoot>(File.ReadAllText(filename));
             }
             _devices = new Dictionary<byte, List<Device>>();
         }
@@ -112,7 +112,7 @@ namespace ism7mqtt
             return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
         }
 
-        public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JObject data)
+        public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JsonObject data)
         {
             foreach (var device in _devices.Values.SelectMany(x => x))
             {
@@ -154,7 +154,7 @@ namespace ism7mqtt
                     .ToList();
                 foreach (var duplicate in duplicates.SelectMany(x=>x))
                 {
-                    duplicate.Name = $"{duplicate.Name}_{duplicate.PTID}";
+                    duplicate.IsDuplicate = true;
                 }
             }
 
@@ -174,34 +174,33 @@ namespace ism7mqtt
                 }
             }
 
-            public IEnumerable<InfoWrite> GetWriteRequest(JObject data)
+            public IEnumerable<InfoWrite> GetWriteRequest(JsonObject data)
             {
-                foreach (var property in data.Properties())
+                foreach (var property in data)
                 {
-                    if (property.Value is JValue value)
+                    var results = GetWriteRequest(property.Key, property.Value);
+                    foreach (var result in results)
                     {
-                        var results = GetWriteRequest(property.Name, value);
-                        foreach (var result in results)
-                        {
-                            result.BusAddress = WriteAddress;
-                            result.Seq = "";
-                            yield return result;
-                        }
+                        result.BusAddress = WriteAddress;
+                        result.Seq = "";
+                        yield return result;
                     }
                 }
             }
 
-            private IEnumerable<InfoWrite> GetWriteRequest(string name, JValue value)
+            private IEnumerable<InfoWrite> GetWriteRequest(string name, JsonNode node)
             {
-                var parameter = WritableParameters().FirstOrDefault(x => x.SafeName == name);
-                if (parameter is null) return Array.Empty<InfoWrite>();
-                var converter = _converter.Values.SelectMany(x => x).FirstOrDefault(x => x.CTID == parameter.PTID);
-                if (converter is null) return Array.Empty<InfoWrite>();
-                if (parameter is ListParameterDescriptor listParameter)
+                foreach (var parameter in WritableParameters().Where(x => x.SafeName == name))
                 {
-                    value = listParameter.GetValue(value);
+                    if (!parameter.TryGetValue(node, out var value)) continue;
+                    foreach (var converter in _converter.Values.SelectMany(x => x).Where(x => x.CTID == parameter.PTID))
+                    {
+                        foreach (var write in converter.GetWrite(value))
+                        {
+                            yield return write;
+                        }
+                    }
                 }
-                return converter.GetWrite(value);
             }
 
             public MqttMessage Message
@@ -217,10 +216,7 @@ namespace ism7mqtt
                     foreach (var converter in converters)
                     {
                         var parameter = _parameter[converter.CTID];
-                        foreach (var value in parameter.GetValues(converter))
-                        {
-                            result.AddProperty(value);
-                        }
+                        result.AddProperty(parameter.GetValues(converter));
                     }
                     return result;
                 }

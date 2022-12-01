@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -34,16 +34,16 @@ namespace ism7mqtt.ISM7.Xml
 
         public override bool HasValue => _high.HasValue && _low.HasValue;
 
-        public override JValue GetValue()
+        public override JsonValue GetValue()
         {
             if (!HasValue)
                 throw new InvalidOperationException();
             var value = (_high.Value << 16) | _low.Value;
-                    JValue result;
+            JsonValue result;
             switch (Type)
             {
                 case "UINT32":
-                    result = new JValue((uint) value);
+                    result = JsonValue.Create((uint) value);
                     _high = null;
                     _low = null;
                     return result;
@@ -52,14 +52,14 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JValue value)
+        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
         {
             ushort low;
             ushort high;
             switch (Type)
             {
                 case "UINT32":
-                    var data = UInt32.Parse(value.Value.ToString());
+                    if (!UInt32.TryParse(value.ToString(), out var data)) yield break;
                     low = (ushort) (data & 0xffff);
                     high = (ushort) (data >> 16);
                     break;

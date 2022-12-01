@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
@@ -10,11 +11,11 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -85,12 +86,21 @@ namespace ism7mqtt
             return ssl;
         }
 
-        public async Task OnCommandAsync(string mqttTopic, JObject data, CancellationToken cancellationToken)
+        public async Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
         {
-            var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+            List<InfoWrite> writeRequests;
+            try
+            {
+                writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error for topic '{mqttTopic}' with payload '{data.ToJsonString()}'\n{ex.Message}");
+                return;
+            }
             if (writeRequests.Count == 0)
             {
-                Console.WriteLine($"nothing to send for topic '{mqttTopic}'");
+                Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
                 return;
             }
             var request = new TelegramBundleReq

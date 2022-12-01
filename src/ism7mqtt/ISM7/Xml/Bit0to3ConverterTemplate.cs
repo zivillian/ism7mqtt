@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using ism7mqtt.ISM7.Protocol;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -18,16 +18,16 @@ namespace ism7mqtt.ISM7.Xml
 
         public override bool HasValue => _value.HasValue;
 
-        public override JValue GetValue()
+        public override JsonValue GetValue()
         {
             if (!HasValue)
                 throw new InvalidOperationException();
-            var result = new JValue(_value.Value);
+            var result = JsonValue.Create(_value.Value);
             _value = null;
             return result;
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JValue value)
+        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }

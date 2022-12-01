@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ism7mqtt
 {
@@ -106,7 +107,7 @@ namespace ism7mqtt
                         });
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
-                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/+");
+                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
                         var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
                         {
                             Interval = interval,
@@ -157,7 +158,7 @@ namespace ism7mqtt
         {
             var message = arg.ApplicationMessage;
 
-            JObject data;
+            JsonObject data;
             string topic;
             if (debug)
             {
@@ -166,16 +167,23 @@ namespace ism7mqtt
             if (message.Topic.EndsWith("/set"))
             {
                 //json
-                data = JObject.Parse(message.ConvertPayloadToString());
+                data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
             }
             else
             {
                 //single value
-                var index = message.Topic.LastIndexOf('/');
-                var property = message.Topic.Substring(index + 1);
-                topic = message.Topic.Substring(0, index - 4);
-                data = new JObject{{property, new JValue(message.ConvertPayloadToString())}};
+                var index = message.Topic.LastIndexOf("/set/");
+                var property = message.Topic.Substring(index + 5);
+                topic = message.Topic.Substring(0, index);
+                var propertyParts = property.Split('/').AsSpan();
+                data = new JsonObject{{propertyParts[^1], JsonValue.Create(message.ConvertPayloadToString())}};
+                propertyParts = propertyParts[..^1];
+                while (!propertyParts.IsEmpty)
+                {
+                    data = new JsonObject{{propertyParts[^1], data}};
+                    propertyParts = propertyParts[..^1];
+                }
             }
             return client.OnCommandAsync(topic, data, cancellationToken);
         }
@@ -192,7 +200,7 @@ namespace ism7mqtt
             }
             if (!_disableJson)
             {
-                var data = JsonConvert.SerializeObject(message.Content);
+                var data = JsonSerializer.Serialize(message.Content);
                 var builder = new MqttApplicationMessageBuilder()
                     .WithTopic(message.Path)
                     .WithPayload(data)
@@ -209,10 +217,8 @@ namespace ism7mqtt
             }
             if (_useSeparateTopics)
             {
-                foreach (var property in message.Content.Properties())
+                foreach (var (name, data) in Flatten(message.Content))
                 {
-                    var name = EscapeMqttTopic(property.Name);
-                    var data = JsonConvert.SerializeObject(property.Value);
                     var topic = $"{message.Path}/{name}";
                     var builder = new MqttApplicationMessageBuilder().WithTopic(topic)
                         .WithPayload(data);
@@ -224,6 +230,25 @@ namespace ism7mqtt
                         Console.WriteLine($"publishing mqtt with topic '{topic}' '{data}'");
                     }
                     await client.PublishAsync(payload, cancellationToken);
+                }
+            }
+        }
+
+        private static IEnumerable<(string, string)> Flatten(JsonObject data)
+        {
+            foreach (var property in data)
+            {
+                var topic = EscapeMqttTopic(property.Key);
+                if (property.Value is JsonObject nested)
+                {
+                    foreach (var (path, value) in Flatten(nested))
+                    {
+                        yield return ($"{topic}/{path}", value);
+                    }
+                }
+                else
+                {
+                    yield return (topic, property.Value?.ToString());
                 }
             }
         }
