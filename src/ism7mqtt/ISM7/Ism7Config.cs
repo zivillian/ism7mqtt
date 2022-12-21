@@ -241,7 +241,7 @@ namespace ism7mqtt
                     }
 
                     message.AddProperty("name", descriptor.Name);
-                    message.AddProperty("object_id", $"{discoveryId}_{descriptor.Name}");
+                    message.AddProperty("object_id", $"{discoveryId}_{name}_{descriptor.Name}");
 
                     if (descriptor.DiscoveryProperties != null) {
                         foreach (var discoveryProperty in descriptor.DiscoveryProperties) {
