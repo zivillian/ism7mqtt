@@ -20,6 +20,8 @@ namespace ism7mqtt
         private static bool _useSeparateTopics = false;
         private static bool _retain = false;
 
+        private static string _discoveryId = null;
+
         static async Task Main(string[] args)
         {
             bool showHelp = false;
@@ -46,6 +48,7 @@ namespace ism7mqtt
                 {"disable-json", "disable json mqtt payload", x=> _disableJson = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
+                {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => _discoveryId = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -73,6 +76,12 @@ namespace ism7mqtt
                 Console.Error.WriteLine($"'{parameter}' does not exist");
                 return;
             }
+
+            if (_discoveryId != null) {
+                _retain = true;
+                _useSeparateTopics = true;
+            }
+
             using (var cts = new CancellationTokenSource())
             {
                 try
@@ -108,7 +117,8 @@ namespace ism7mqtt
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
-                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
+
+                        var client = new Ism7Client((i, m, c) => OnMessage(i, mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
                         {
                             Interval = interval,
                             EnableDebug = enableDebug
@@ -154,6 +164,20 @@ namespace ism7mqtt
             return (int)parsed;
         }
 
+        private static async void publishDiscoveryInfo(Ism7Client client, IMqttClient mqttClient, CancellationToken cancellationToken) {
+            foreach (var message in client.GetDiscoveryInfo(_discoveryId)) {
+                var data = JsonSerializer.Serialize(message.Content);
+                var builder = new MqttApplicationMessageBuilder()
+                    .WithTopic(message.Path)
+                    .WithPayload(data)
+                    .WithContentType("application/json")
+                    .WithRetainFlag();
+                var payload = builder
+                    .Build();
+                await mqttClient.PublishAsync(payload, cancellationToken);
+            }
+        }
+
         private static Task OnMessage(Ism7Client client, MqttApplicationMessageReceivedEventArgs arg, bool debug, CancellationToken cancellationToken)
         {
             var message = arg.ApplicationMessage;
@@ -188,7 +212,7 @@ namespace ism7mqtt
             return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
-        private static async Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
+        private static async Task OnMessage(Ism7Client ismClient, IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
             {
@@ -231,6 +255,11 @@ namespace ism7mqtt
                     }
                     await client.PublishAsync(payload, cancellationToken);
                 }
+            }
+
+            if (_discoveryId != null) {
+                publishDiscoveryInfo(ismClient, client, cancellationToken);
+                _discoveryId = null;
             }
         }
 

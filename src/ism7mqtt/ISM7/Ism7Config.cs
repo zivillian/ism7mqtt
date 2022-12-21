@@ -123,14 +123,31 @@ namespace ism7mqtt
             }
             return Array.Empty<InfoWrite>();
         }
+
+        public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId) {
+            List<MqttMessage> result = new List<MqttMessage>();
+            foreach (var device in _devices.Values.SelectMany(x => x)) {
+                result.AddRange(device.GetDiscoveryInfo(discoveryId));
+            }
+            return result;
+        }
         
         class Device
         {
             private readonly ImmutableDictionary<int, ParameterDescriptor> _parameter;
             private readonly ImmutableDictionary<ushort, List<ConverterTemplateBase>> _converter;
 
+            private readonly string ip;
+            private readonly string name;
+
+            private readonly string ba;
+
             public Device(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
+                this.name = name;
+                this.ip = ip;
+                this.ba = ba;
+
                 WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
                 MqttTopic = $"Wolf/{ip}/{name}_{ba}";
 
@@ -162,7 +179,7 @@ namespace ism7mqtt
 
             public IEnumerable<ParameterDescriptor> WritableParameters()
             {
-                return _parameter.Values.Where(x => x.ReadOnlyConditionId == "False");
+                return _parameter.Values.Where(x => !x.IsWritable);
             }
 
             public void ProcessDatapoint(ushort telegram, byte low, byte high)
@@ -200,6 +217,61 @@ namespace ism7mqtt
                             yield return write;
                         }
                     }
+                }
+            }
+
+            public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId) {
+                List<MqttMessage> result = new List<MqttMessage>();
+                foreach (var descriptor in _parameter.Values) {
+                    string type = descriptor.HomeAssistantType;
+                    if (type == null) continue;
+
+                    string uniqueId = $"{discoveryId}_{descriptor.DiscoveryName}";
+                    string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
+                    if (discoveryTopic.Contains("3-Wege"))
+                        discoveryTopic += "";
+                    MqttMessage message = new MqttMessage(discoveryTopic);
+
+                    message.AddProperty("unique_id", JsonValue.Create(uniqueId));
+
+                    string stateTopic = $"{MqttTopic}/{descriptor.DiscoveryName}{descriptor.DiscoveryTopicSuffix}";
+                    message.AddProperty("state_topic", JsonValue.Create(stateTopic));
+
+                    if (descriptor.IsWritable) {
+                        string commandTopic = $"{MqttTopic}/set/{descriptor.DiscoveryName}{descriptor.DiscoveryTopicSuffix}";
+                        message.AddProperty("command_topic", JsonValue.Create(commandTopic));
+                    }
+
+                    message.AddProperty("name", descriptor.Name);
+                    message.AddProperty("object_id", $"{discoveryId}_{descriptor.Name}");
+
+                    if (descriptor.DiscoveryProperties != null) {
+                        foreach (var discoveryProperty in descriptor.DiscoveryProperties) {
+                            message.AddProperty(discoveryProperty.Key, discoveryProperty.Value);
+                        }
+                    }
+
+                    message.AddProperty("device", DiscoveryDeviceNode);
+                    result.Add(message);
+                }
+                return result;
+            }
+
+            public JsonObject DiscoveryDeviceNode
+            {
+                get
+                {
+                    JsonObject obj = new JsonObject();
+                    obj.Add(new KeyValuePair<string, JsonNode?>("configuration_url", $"http://{ip}/"));
+                    obj.Add(new KeyValuePair<string, JsonNode?>("manufacturer", "Wolf"));
+                    obj.Add(new KeyValuePair<string, JsonNode?>("model", name));
+                    var conn = new JsonArray();
+                    conn.Add("ip_dev");
+                    conn.Add($"{ip}_{name}");
+                    var conns = new JsonArray();
+                    conns.Add(conn);
+                    obj.Add(new KeyValuePair<string, JsonNode?>("connections", conns));
+                    return obj;
                 }
             }
 

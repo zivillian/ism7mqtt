@@ -30,6 +30,12 @@ namespace ism7mqtt.ISM7.Xml
 
         public bool IsDuplicate { get; set; }
 
+        public bool IsWritable {
+            get {
+                return ReadOnlyConditionId == "False";
+            }
+        }
+
         public string SafeName
         {
             get
@@ -44,6 +50,23 @@ namespace ism7mqtt.ISM7.Xml
                     ;
             }
         }
+
+        public abstract string HomeAssistantType { get; }
+
+        public abstract IDictionary<string, JsonNode> DiscoveryProperties { get; }
+        public string DiscoveryName
+        {
+            get
+            {
+                var name = SafeName;
+                return SafeName.Replace(" ", "_")
+                    .Replace("/", "_")
+                    .Replace(".", "");
+                    ;
+            }
+        }
+
+        public virtual string DiscoveryTopicSuffix => "";
 
         public KeyValuePair<string,JsonNode> GetValues(ConverterTemplateBase converter)
         {

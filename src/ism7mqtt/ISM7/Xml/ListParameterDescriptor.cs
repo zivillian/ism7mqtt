@@ -23,22 +23,32 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("DependentDefinitionId")]
         public string DependentDefinitionId { get; set; }
 
+        private IDictionary<string, string> Options {
+            get {
+                var result = new Dictionary<string, string>();
+                if (String.IsNullOrEmpty(KeyValueList))
+                    return result;
+
+                var names = KeyValueList.Split(";");
+                for (int i = 0; i < names.Length - 1; i += 2) {
+                    result.Add(names[i], names[i + 1]);
+                }
+                return result;
+            }
+        }
+
         protected override JsonNode GetValueCore(ConverterTemplateBase converter)
         {
             var value = converter.GetValue();
-            if (String.IsNullOrEmpty(KeyValueList)) return value;
-            var names = KeyValueList.Split(';');
             var key = value.ToString();
-            for (int i = 0; i < names.Length - 1; i += 2)
+            var options = Options;
+            if (options.ContainsKey(key))
             {
-                if (names[i] == key)
+                return new JsonObject
                 {
-                    return new JsonObject
-                    {
-                        ["value"] = value,
-                        ["text"] = names[i + 1]
-                    };
-                }
+                    ["value"] = value,
+                    ["text"] = options[key]
+                };
             }
             return value;
         }
@@ -62,5 +72,75 @@ namespace ism7mqtt.ISM7.Xml
             }
             return base.GetWrite(node);
         }
+
+        private bool isBinaryOptions() {
+            var opts = Options;
+            if (opts.Count != 2)
+                return false;
+            if (opts.Values.Contains("An") && opts.Values.Contains("Aus"))
+                return true;
+            if (opts.Values.Contains("Aktiviert") && opts.Values.Contains("Deaktiviert"))
+                return true;
+            return false;
+        }
+
+        private IDictionary<bool, string> getBinaryOptions() {
+            if (!isBinaryOptions())
+                return null;
+            var opts = Options;
+            var result = new Dictionary<bool, string>();
+            if (opts.Values.Contains("An"))
+                result.Add(true, "An");
+            else if (opts.Values.Contains("Aktiviert"))
+                result.Add(true, "Aktiviert");
+
+            if (opts.Values.Contains("Aus"))
+                result.Add(false, "Aus");
+            else if (opts.Values.Contains("Deaktiviert"))
+                result.Add(false, "Deaktiviert");
+            return result;
+        }
+        
+        public override string HomeAssistantType {
+            get
+            {
+                // Try to auto-detect switch and select vs sensor and binary_sensor
+                if (IsWritable) {
+                    if (isBinaryOptions())
+                        return "switch";
+                    return "select";
+                }
+
+                if (isBinaryOptions()) {
+                    return "binary_sensor";
+                }
+                return "sensor";
+            }
+        }
+
+        public override IDictionary<string, JsonNode> DiscoveryProperties {
+            get
+            {
+                var properties = new Dictionary<string, JsonNode>();
+
+                if (HomeAssistantType == "select")
+                {
+                    var options = new JsonArray();
+                    foreach (var value in Options.Values)
+                        options.Add(value);
+                    properties.Add("options", options);
+                }
+                else if (HomeAssistantType == "switch" || HomeAssistantType == "binary_sensor")
+                {
+                    var options = getBinaryOptions();
+                    properties.Add("payload_on", options[true]);
+                    properties.Add("payload_off", options[false]);
+                }
+
+                return properties;
+            }
+        }
+
+        public override string DiscoveryTopicSuffix => "/text";
     }
 }

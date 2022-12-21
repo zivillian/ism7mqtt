@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Nodes;
+using System.Xml.Serialization;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -9,5 +11,9 @@ namespace ism7mqtt.ISM7.Xml
 
         [XmlElement("MaxValue")]
         public int MaxValue { get; set; }
+
+        public override string HomeAssistantType => IsWritable ? "text" : "sensor";
+
+        public override IDictionary<string, JsonNode> DiscoveryProperties => null;
     }
 }
