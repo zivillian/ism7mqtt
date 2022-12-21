@@ -84,7 +84,7 @@ namespace ism7mqtt.ISM7.Xml
             var opts = Options;
             if (opts.Count != 2)
                 return false;
-            if (opts.Values.Contains("An") && opts.Values.Contains("Aus"))
+            if (opts.Values.Contains("Ein") && opts.Values.Contains("Aus"))
                 return true;
             if (opts.Values.Contains("Aktiviert") && opts.Values.Contains("Deaktiviert"))
                 return true;
@@ -96,8 +96,8 @@ namespace ism7mqtt.ISM7.Xml
                 return null;
             var opts = Options;
             var result = new Dictionary<bool, string>();
-            if (opts.Values.Contains("An"))
-                result.Add(true, "An");
+            if (opts.Values.Contains("Ein"))
+                result.Add(true, "Ein");
             else if (opts.Values.Contains("Aktiviert"))
                 result.Add(true, "Aktiviert");
 

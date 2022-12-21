@@ -236,7 +236,7 @@ namespace ism7mqtt
                     message.AddProperty("state_topic", JsonValue.Create(stateTopic));
 
                     if (descriptor.IsWritable) {
-                        string commandTopic = $"{MqttTopic}/set/{descriptor.DiscoveryName}{descriptor.DiscoveryTopicSuffix}";
+                        string commandTopic = $"{MqttTopic}/set/{descriptor.SafeName}{descriptor.DiscoveryTopicSuffix}";
                         message.AddProperty("command_topic", JsonValue.Create(commandTopic));
                     }
 
@@ -249,28 +249,43 @@ namespace ism7mqtt
                         }
                     }
 
-                    message.AddProperty("device", DiscoveryDeviceNode);
+                    // Try to guess a suitable icon if none given
+                    if (!message.Content.ContainsKey("icon")) {
+                        if (descriptor.Name.ToLower().Contains("brenner"))
+                            message.AddProperty("icon", "mdi:fire");
+                        else if (descriptor.Name.ToLower().Contains("solar"))
+                            message.AddProperty("icon", "mdi:solar-panel");
+                        else if (descriptor.Name.ToLower().Contains("ventil"))
+                            message.AddProperty("icon", "mdi:pipe-valve");
+                        else if (descriptor.Name.ToLower().Contains("heizung"))
+                            message.AddProperty("icon", "mdi:radiator");
+                        else if (descriptor.Name.ToLower().Contains("pumpe"))
+                            message.AddProperty("icon", "mdi:pump");
+                        if (descriptor.Name.ToLower().Contains("druck"))
+                            message.AddProperty("icon", "mdi:gauge");
+                    }
+
+                    message.AddProperty("device", GetDiscoveryDeviceInfo(discoveryId));
                     result.Add(message);
                 }
                 return result;
             }
 
-            public JsonObject DiscoveryDeviceNode
+            public JsonObject GetDiscoveryDeviceInfo(string discoveryId)
             {
-                get
-                {
-                    JsonObject obj = new JsonObject();
-                    obj.Add(new KeyValuePair<string, JsonNode?>("configuration_url", $"http://{ip}/"));
-                    obj.Add(new KeyValuePair<string, JsonNode?>("manufacturer", "Wolf"));
-                    obj.Add(new KeyValuePair<string, JsonNode?>("model", name));
-                    var conn = new JsonArray();
-                    conn.Add("ip_dev");
-                    conn.Add($"{ip}_{name}");
-                    var conns = new JsonArray();
-                    conns.Add(conn);
-                    obj.Add(new KeyValuePair<string, JsonNode?>("connections", conns));
-                    return obj;
-                }
+                JsonObject obj = new JsonObject();
+                obj.Add("configuration_url", $"http://{ip}/");
+                obj.Add("manufacturer", "Wolf");
+                obj.Add("model", name);
+                obj.Add("name", $"{discoveryId} {name}");
+                var conn = new JsonArray();
+                conn.Add("ip_dev");
+                conn.Add($"{ip}_{name}");
+                var conns = new JsonArray();
+                conns.Add(conn);
+                obj.Add("connections", conns);
+                return obj;
+
             }
 
             public MqttMessage Message

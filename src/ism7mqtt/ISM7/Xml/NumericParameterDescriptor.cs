@@ -40,8 +40,12 @@ namespace ism7mqtt.ISM7.Xml
                 }
                 if (UnitName != null) {
                     result.Add("unit_of_measurement", UnitName);
-                    if (UnitName == "°C")
+                    if (UnitName == "°C") {
                         result.Add("icon", "mdi:thermometer");
+                        result.Add("state_class", "measurement");
+                    } else if (UnitName == "%") {
+                        result.Add("state_class", "measurement");
+                    }
                 }
                 return result;
             }
