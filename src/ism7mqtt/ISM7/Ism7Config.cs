@@ -179,7 +179,7 @@ namespace ism7mqtt
 
             public IEnumerable<ParameterDescriptor> WritableParameters()
             {
-                return _parameter.Values.Where(x => !x.IsWritable);
+                return _parameter.Values.Where(x => x.IsWritable);
             }
 
             public void ProcessDatapoint(ushort telegram, byte low, byte high)
@@ -228,8 +228,6 @@ namespace ism7mqtt
 
                     string uniqueId = $"{discoveryId}_{descriptor.DiscoveryName}";
                     string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
-                    if (discoveryTopic.Contains("3-Wege"))
-                        discoveryTopic += "";
                     MqttMessage message = new MqttMessage(discoveryTopic);
 
                     message.AddProperty("unique_id", JsonValue.Create(uniqueId));

@@ -41,6 +41,13 @@ namespace ism7mqtt.ISM7.Xml
         {
             var value = converter.GetValue();
             var key = value.ToString();
+            // some list types have a binary/bool converter, even if it doesn't make much sense.. try to detect those cases
+            if (!isBinaryOptions() && converter.GetType() == typeof(BinaryReadOnlyConverterTemplate)) {
+                if (value.TryGetValue<bool>(out var valueBool)) {
+                    key = valueBool ? "1" : "0";
+                }
+            }
+
             var options = Options;
             if (options.ContainsKey(key))
             {
