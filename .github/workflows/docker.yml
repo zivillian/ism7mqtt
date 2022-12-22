@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [ master ]
+    branches: [ ha-discovery ]
     tags:
       - '*'
 
@@ -36,5 +36,5 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
-        tags: zivillian/ism7mqtt:master
+        tags: zivillian/ism7mqtt:ha-discovery
         labels: ${{ steps.meta.outputs.labels }}
