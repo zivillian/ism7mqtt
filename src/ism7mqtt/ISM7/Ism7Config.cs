@@ -124,29 +124,19 @@ namespace ism7mqtt
             return Array.Empty<InfoWrite>();
         }
 
-        public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId) {
-            List<MqttMessage> result = new List<MqttMessage>();
-            foreach (var device in _devices.Values.SelectMany(x => x))
-            {
-                result.AddRange(device.GetDiscoveryInfo(discoveryId));
-            }
-            return result;
-        }
-        
-        class Device
+        public IEnumerable<Device> Devices => _devices.SelectMany(x => x.Value);
+
+        public class Device
         {
             private readonly ImmutableDictionary<int, ParameterDescriptor> _parameter;
             private readonly ImmutableDictionary<ushort, List<ConverterTemplateBase>> _converter;
-
-            private readonly string ip;
-            private readonly string name;
 
             private readonly string ba;
 
             public Device(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
-                this.name = name;
-                this.ip = ip;
+                Name = name;
+                Ip = ip;
                 this.ba = ba;
 
                 WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
@@ -163,6 +153,10 @@ namespace ism7mqtt
             public string MqttTopic { get; }
 
             public string WriteAddress { get; }
+
+            public string Name { get; }
+
+            public string Ip { get; }
 
             private void EnsureUniqueParameterNames()
             {
@@ -182,6 +176,8 @@ namespace ism7mqtt
             {
                 return _parameter.Values.Where(x => x.IsWritable);
             }
+
+            public IEnumerable<ParameterDescriptor> Parameters => _parameter.Values;
 
             public void ProcessDatapoint(ushort telegram, byte low, byte high)
             {
@@ -219,87 +215,6 @@ namespace ism7mqtt
                         }
                     }
                 }
-            }
-
-            public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId)
-            {
-                List<MqttMessage> result = new List<MqttMessage>();
-                foreach (var descriptor in _parameter.Values)
-                {
-                    string type = descriptor.HomeAssistantType;
-                    if (type == null) continue;
-                    if (descriptor.ControlType == "DaySwitchTimes") continue;
-
-                    // Handle parameters with name-duplicates - their ID will be part of the topic
-                    string deduplicator = "";
-                    string deduplicatorLabel = "";
-                    if (descriptor.IsDuplicate)
-                    {
-                        deduplicator = $"/{descriptor.PTID}";
-                        deduplicatorLabel = $"_{descriptor.PTID}";
-                    }
-
-                    string uniqueId = $"{discoveryId}_{descriptor.DiscoveryName}{deduplicatorLabel}";
-                    string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
-                    MqttMessage message = new MqttMessage(discoveryTopic);
-
-                    message.AddProperty("unique_id", uniqueId);
-
-                    string stateTopic = $"{MqttTopic}/{descriptor.DiscoveryName}{deduplicator}{descriptor.DiscoveryTopicSuffix}";
-                    message.AddProperty("state_topic", stateTopic);
-
-                    if (descriptor.IsWritable)
-                    {
-                        string commandTopic = $"{MqttTopic}/set/{descriptor.SafeName}{deduplicator}{descriptor.DiscoveryTopicSuffix}";
-                        message.AddProperty("command_topic", commandTopic);
-                    }
-
-                    message.AddProperty("name", descriptor.Name);
-                    message.AddProperty("object_id", $"{discoveryId}_{name}_{descriptor.Name}{deduplicatorLabel}");
-
-                    foreach (var (key, value) in descriptor.DiscoveryProperties)
-                    {
-                        message.AddProperty(key, value);
-                    }
-
-                    // Try to guess a suitable icon if none given
-                    if (!message.Content.ContainsKey("icon"))
-                    {
-                        if (descriptor.Name.ToLower().Contains("brenner"))
-                            message.AddProperty("icon", "mdi:fire");
-                        else if (descriptor.Name.ToLower().Contains("solar"))
-                            message.AddProperty("icon", "mdi:solar-panel");
-                        else if (descriptor.Name.ToLower().Contains("ventil"))
-                            message.AddProperty("icon", "mdi:pipe-valve");
-                        else if (descriptor.Name.ToLower().Contains("heizung"))
-                            message.AddProperty("icon", "mdi:radiator");
-                        else if (descriptor.Name.ToLower().Contains("pumpe"))
-                            message.AddProperty("icon", "mdi:pump");
-                        if (descriptor.Name.ToLower().Contains("druck"))
-                            message.AddProperty("icon", "mdi:gauge");
-                    }
-
-                    message.AddProperty("device", GetDiscoveryDeviceInfo(discoveryId));
-                    result.Add(message);
-                }
-                return result;
-            }
-
-            public JsonObject GetDiscoveryDeviceInfo(string discoveryId)
-            {
-                JsonObject obj = new JsonObject();
-                obj.Add("configuration_url", $"http://{ip}/");
-                obj.Add("manufacturer", "Wolf");
-                obj.Add("model", name);
-                obj.Add("name", $"{discoveryId} {name}");
-                var conn = new JsonArray();
-                conn.Add("ip_dev");
-                conn.Add($"{ip}_{name}");
-                var conns = new JsonArray();
-                conns.Add(conn);
-                obj.Add("connections", conns);
-                return obj;
-
             }
 
             public MqttMessage Message

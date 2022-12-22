@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
+using ism7mqtt.HomeAssistant;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
@@ -118,12 +119,17 @@ namespace ism7mqtt
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
 
-                        var client = new Ism7Client((i, m, c) => OnMessage(i, mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
+                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
                         {
                             Interval = interval,
                             EnableDebug = enableDebug
                         };
                         mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, enableDebug, cts.Token));
+
+                        if (_discoveryId != null)
+                        {
+                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, c);
+                        }
                         await client.RunAsync(password, cts.Token);
                     }
                 }
@@ -164,9 +170,10 @@ namespace ism7mqtt
             return (int)parsed;
         }
 
-        private static async Task PublishDiscoveryInfo(Ism7Client client, IMqttClient mqttClient, CancellationToken cancellationToken)
+        private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, CancellationToken cancellationToken)
         {
-            foreach (var message in client.GetDiscoveryInfo(_discoveryId))
+            var discovery = new HaDiscovery(config);
+            foreach (var message in discovery.GetDiscoveryInfo(_discoveryId))
             {
                 var data = JsonSerializer.Serialize(message.Content);
                 var builder = new MqttApplicationMessageBuilder()
@@ -214,7 +221,7 @@ namespace ism7mqtt
             return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
-        private static async Task OnMessage(Ism7Client ismClient, IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
+        private static async Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
             {
@@ -257,12 +264,6 @@ namespace ism7mqtt
                     }
                     await client.PublishAsync(payload, cancellationToken);
                 }
-            }
-
-            if (_discoveryId != null)
-            {
-                await PublishDiscoveryInfo(ismClient, client, cancellationToken);
-                _discoveryId = null;
             }
         }
 

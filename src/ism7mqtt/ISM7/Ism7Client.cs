@@ -21,7 +21,7 @@ namespace ism7mqtt
 {
     public class Ism7Client
     {
-        private readonly Func<Ism7Client, MqttMessage, CancellationToken, Task> _messageHandler;
+        private readonly Func<MqttMessage, CancellationToken, Task> _messageHandler;
         private readonly IPAddress _ipAddress;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
@@ -36,7 +36,9 @@ namespace ism7mqtt
 
         public bool EnableDebug { get; set; }
 
-        public Ism7Client(Func<Ism7Client, MqttMessage, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
+        public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
+
+        public Ism7Client(Func<MqttMessage, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
         {
             _messageHandler = messageHandler;
             _ipAddress = ipAddress;
@@ -115,11 +117,6 @@ namespace ism7mqtt
             await SendAsync(request, cancellationToken);
         }
 
-        public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId)
-        {
-            return _config.GetDiscoveryInfo(discoveryId);
-        }
-
         private async Task OnWriteResponse(IResponse response, CancellationToken cancellationToken)
         {
             var resp = (TelegramBundleResp) response;
@@ -132,7 +129,7 @@ namespace ism7mqtt
             var datapoints = _config.ProcessData(resp.WriteTelegrams.Where(x => x.State == TelegrResponseState.OK));
             foreach (var datapoint in datapoints)
             {
-                await _messageHandler(this, datapoint, cancellationToken);
+                await _messageHandler(datapoint, cancellationToken);
             }
         }
 
@@ -250,7 +247,7 @@ namespace ism7mqtt
             var datapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
             foreach (var datapoint in datapoints)
             {
-                await _messageHandler(this, datapoint, cancellationToken);
+                await _messageHandler(datapoint, cancellationToken);
             }
         }
 
@@ -283,6 +280,10 @@ namespace ism7mqtt
                     InfoReadTelegrams = infoReads
                 }, cancellationToken);
             }
+            if (OnInitializationFinishedAsync is not null)
+            {
+                await OnInitializationFinishedAsync(_config, cancellationToken);
+            }
         }
 
         private async Task OnInitialValuesAsync(IResponse response, CancellationToken cancellationToken)
@@ -297,7 +298,7 @@ namespace ism7mqtt
                 var datapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
                 foreach (var datapoint in datapoints)
                 {
-                    await _messageHandler(this, datapoint, cancellationToken);
+                    await _messageHandler(datapoint, cancellationToken);
                 }
                 var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
                 await SubscribeAsync(busAddress, cancellationToken);
