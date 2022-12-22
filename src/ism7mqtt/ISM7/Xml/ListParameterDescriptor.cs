@@ -23,17 +23,26 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("DependentDefinitionId")]
         public string DependentDefinitionId { get; set; }
 
-        private IDictionary<string, string> Options {
-            get {
-                var result = new Dictionary<string, string>();
+        private IReadOnlyCollection<KeyValuePair<string, string>> _options;
+        public IReadOnlyCollection<KeyValuePair<string, string>> Options
+        {
+            get
+            {
+                if (_options is not null) return _options;
                 if (String.IsNullOrEmpty(KeyValueList))
-                    return result;
-
-                var names = KeyValueList.Split(";");
-                for (int i = 0; i < names.Length - 1; i += 2) {
-                    result.Add(names[i], names[i + 1]);
+                {
+                    _options = Array.Empty<KeyValuePair<string, string>>();
                 }
-                return result;
+                else
+                {
+                    var result = new List<KeyValuePair<string, string>>();
+                    var names = KeyValueList.Split(";");
+                    for (int i = 0; i < names.Length - 1; i += 2) {
+                        result.Add(new KeyValuePair<string,string>(names[i], names[i + 1]));
+                    }
+                    _options = result;
+                }
+                return _options;
             }
         }
 
@@ -42,19 +51,21 @@ namespace ism7mqtt.ISM7.Xml
             var value = converter.GetValue();
             var key = value.ToString();
             // some list types have a binary/bool converter, even if it doesn't make much sense.. try to detect those cases
-            if (!IsBinaryOptions() && converter is BinaryReadOnlyConverterTemplate) {
-                if (value.TryGetValue<bool>(out var valueBool)) {
+            if (!IsBoolean && converter is BinaryReadOnlyConverterTemplate)
+            {
+                if (value.TryGetValue<bool>(out var valueBool))
+                {
                     key = valueBool ? "1" : "0";
                 }
             }
 
-            var options = Options;
-            if (options.ContainsKey(key))
+            var text = Options.Where(x => x.Key == key).Select(x => x.Value).FirstOrDefault();
+            if (!String.IsNullOrEmpty(text))
             {
                 return new JsonObject
                 {
                     ["value"] = value,
-                    ["text"] = options[key]
+                    ["text"] = text
                 };
             }
             return value;
@@ -80,87 +91,30 @@ namespace ism7mqtt.ISM7.Xml
             return base.GetWrite(node);
         }
 
-        private bool IsBinaryOptions() {
-            var opts = Options;
-            if (opts.Count != 2)
-                return false;
-            if (opts.Values.Contains("Ein") && opts.Values.Contains("Aus"))
-                return true;
-            if (opts.Values.Contains("Aktiviert") && opts.Values.Contains("Deaktiviert"))
-                return true;
-            return false;
-        }
-
-        private IDictionary<bool, string> GetBinaryOptions() {
-            if (!IsBinaryOptions())
-                return null;
-            var opts = Options;
-            var result = new Dictionary<bool, string>();
-            if (opts.Values.Contains("Ein"))
-                result.Add(true, "Ein");
-            else if (opts.Values.Contains("Aktiviert"))
-                result.Add(true, "Aktiviert");
-
-            if (opts.Values.Contains("Aus"))
-                result.Add(false, "Aus");
-            else if (opts.Values.Contains("Deaktiviert"))
-                result.Add(false, "Deaktiviert");
-            return result;
-        }
-        
-        public override string HomeAssistantType {
-            get
-            {
-                // Try to auto-detect switch and select vs sensor and binary_sensor
-                if (IsWritable) {
-                    if (IsBinaryOptions())
-                        return "switch";
-                    return "select";
-                }
-
-                if (IsBinaryOptions()) {
-                    return "binary_sensor";
-                }
-                return "sensor";
-            }
-        }
-
-        public override IEnumerable<(string, JsonNode)> DiscoveryProperties
+        private bool? _isBoolean;
+        public bool IsBoolean
         {
             get
             {
-                if (HomeAssistantType == "select")
+                if (_isBoolean.HasValue) return _isBoolean.Value;
+                if (Options.Count != 2)
                 {
-                    var options = new JsonArray();
-                    foreach (var value in Options.Values)
-                        options.Add(value);
-                    yield return("options", options);
+                    _isBoolean = false;
                 }
-                else if (HomeAssistantType == "switch")
+                else if (Options.Any(x => x.Value == "Ein") && Options.Any(x => x.Value == "Aus"))
                 {
-                    var options = GetBinaryOptions();
-                    yield return("payload_on", options[true]);
-                    yield return("payload_off", options[false]);
+                    _isBoolean = true;
                 }
-                else if (HomeAssistantType == "binary_sensor")
+                else if (Options.Any(x => x.Value == "Aktiviert") && Options.Any(x => x.Value == "Deaktiviert"))
                 {
-                    yield return("payload_on", "true");
-                    yield return("payload_off", "false");
+                    _isBoolean = true;
                 }
+                else
+                {
+                    _isBoolean = false;
+                }
+                return _isBoolean.Value;
             }
         }
-
-        public override string DiscoveryTopicSuffix
-        {
-            get
-            {
-                if (HomeAssistantType == "binary_sensor")
-                {
-                    return ""; // true/false directly
-                }
-                return "/text"; // "Aktiviert" in text-subtopic, or e.g. "Heizung" for 3-Wege-Ventil
-            }
-        }
-
     }
 }

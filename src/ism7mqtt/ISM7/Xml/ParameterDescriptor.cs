@@ -52,10 +52,6 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public abstract string HomeAssistantType { get; }
-
-        public virtual IEnumerable<(string, JsonNode)> DiscoveryProperties => Enumerable.Empty<(string, JsonNode)>();
-
         public string DiscoveryName
         {
             get
@@ -67,8 +63,6 @@ namespace ism7mqtt.ISM7.Xml
                     ;
             }
         }
-
-        public virtual string DiscoveryTopicSuffix => "";
 
         public KeyValuePair<string,JsonNode> GetValues(ConverterTemplateBase converter)
         {

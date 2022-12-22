@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
+using ism7mqtt.ISM7.Xml;
 
 namespace ism7mqtt.HomeAssistant
 {
@@ -24,7 +25,7 @@ namespace ism7mqtt.HomeAssistant
             List<MqttMessage> result = new List<MqttMessage>();
             foreach (var descriptor in device.Parameters)
             {
-                string type = descriptor.HomeAssistantType;
+                var type = GetHomeAssistantType(descriptor);
                 if (type == null) continue;
                 if (descriptor.ControlType == "DaySwitchTimes") continue;
 
@@ -43,19 +44,20 @@ namespace ism7mqtt.HomeAssistant
 
                 message.AddProperty("unique_id", uniqueId);
 
-                string stateTopic = $"{device.MqttTopic}/{descriptor.DiscoveryName}{deduplicator}{descriptor.DiscoveryTopicSuffix}";
+                var discoveryTopicSSuffix = GetDiscoveryTopicSuffix(descriptor);
+                string stateTopic = $"{device.MqttTopic}/{descriptor.DiscoveryName}{deduplicator}{discoveryTopicSSuffix}";
                 message.AddProperty("state_topic", stateTopic);
 
                 if (descriptor.IsWritable)
                 {
-                    string commandTopic = $"{device.MqttTopic}/set/{descriptor.SafeName}{deduplicator}{descriptor.DiscoveryTopicSuffix}";
+                    string commandTopic = $"{device.MqttTopic}/set/{descriptor.SafeName}{deduplicator}{discoveryTopicSSuffix}";
                     message.AddProperty("command_topic", commandTopic);
                 }
 
                 message.AddProperty("name", descriptor.Name);
                 message.AddProperty("object_id", $"{discoveryId}_{device.Name}_{descriptor.Name}{deduplicatorLabel}");
 
-                foreach (var (key, value) in descriptor.DiscoveryProperties)
+                foreach (var (key, value) in GetDiscoveryProperties(descriptor))
                 {
                     message.AddProperty(key, value);
                 }
@@ -102,6 +104,117 @@ namespace ism7mqtt.HomeAssistant
                     }
                 }
             };
+        }
+
+        private string GetDiscoveryTopicSuffix(ParameterDescriptor descriptor)
+        {
+            if (descriptor is ListParameterDescriptor list)
+            {
+                if (!list.IsWritable && list.IsBoolean)
+                {
+                    return String.Empty;
+                }
+                return "/text";
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+
+        private string GetHomeAssistantType(ParameterDescriptor descriptor)
+        {
+            switch (descriptor)
+            {
+                case ListParameterDescriptor list:
+                    // Try to auto-detect switch and select vs sensor and binary_sensor
+                    if (list.IsWritable)
+                    {
+                        return list.IsBoolean ? "switch" : "select";
+                    }
+
+                    return list.IsBoolean ? "binary_sensor" : "sensor";
+                case NumericParameterDescriptor numeric:
+                    return numeric.IsWritable ? "number" : "sensor";
+                case TextParameterDescriptor text:
+                    return text.IsWritable ? "text" : "sensor";
+                case OtherParameterDescriptor other:
+                    return other.IsWritable ? "text" : "sensor";
+                default:
+                    return null;
+            }
+        }
+
+        private IEnumerable<(string, JsonNode)> GetDiscoveryProperties(ParameterDescriptor descriptor)
+        {
+            switch (descriptor)
+            {
+                case NumericParameterDescriptor numeric:
+                    if (numeric.IsWritable)
+                    {
+                        if (numeric.MinValueCondition != null)
+                            yield return("min", Double.Parse(numeric.MinValueCondition));
+                        if (numeric.MaxValueCondition != null)
+                            yield return ("max", Double.Parse(numeric.MaxValueCondition));
+                        if (numeric.StepWidth != null)
+                            yield return ("step", numeric.StepWidth);
+                    }
+                    if (numeric.UnitName != null)
+                    {
+                        yield return ("unit_of_measurement", numeric.UnitName);
+                        if (numeric.UnitName == "°C")
+                        {
+                            yield return ("icon", "mdi:thermometer");
+                            yield return ("state_class", "measurement");
+                        }
+                        else if (numeric.UnitName == "%")
+                        {
+                            yield return ("state_class", "measurement");
+                        }
+                    }
+                    break;
+                case ListParameterDescriptor list:
+                    if (list.IsWritable)
+                    {
+                        if (list.IsBoolean)
+                        {
+                            if (list.Options.Any(x => x.Value == "Ein"))
+                            {
+                                yield return("payload_on", "Ein");
+                            }
+                            if (list.Options.Any(x => x.Value == "Aktiviert"))
+                            {
+                                yield return("payload_on", "Aktiviert");
+                            }
+                            if (list.Options.Any(x => x.Value == "Aus"))
+                            {
+                                yield return("payload_off", "Aus");
+                            }
+                            if (list.Options.Any(x => x.Value == "Deaktiviert"))
+                            {
+                                yield return("payload_off", "Deaktiviert");
+                            }
+                        }
+                        else
+                        {
+                            var options = new JsonArray();
+                            foreach (var value in list.Options)
+                            {
+                                options.Add(value.Value);
+                            }
+                            yield return("options", options);
+
+                        }
+                    }
+                    else if (list.IsBoolean)
+                    {
+                        yield return("payload_on", "true");
+                        yield return("payload_off", "false");
+                    }
+                    break;
+                default:
+                    yield break;
+            }
         }
     }
 }

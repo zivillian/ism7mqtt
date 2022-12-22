@@ -9,7 +9,5 @@ namespace ism7mqtt.ISM7.Xml
 
         [XmlElement("MaxValue")]
         public int MaxValue { get; set; }
-
-        public override string HomeAssistantType => IsWritable ? "text" : "sensor";
     }
 }

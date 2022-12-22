@@ -131,13 +131,10 @@ namespace ism7mqtt
             private readonly ImmutableDictionary<int, ParameterDescriptor> _parameter;
             private readonly ImmutableDictionary<ushort, List<ConverterTemplateBase>> _converter;
 
-            private readonly string ba;
-
             public Device(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
                 Name = name;
                 Ip = ip;
-                this.ba = ba;
 
                 WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
                 MqttTopic = $"Wolf/{ip}/{name}_{ba}";
