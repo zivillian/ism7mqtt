@@ -164,8 +164,10 @@ namespace ism7mqtt
             return (int)parsed;
         }
 
-        private static async void publishDiscoveryInfo(Ism7Client client, IMqttClient mqttClient, CancellationToken cancellationToken) {
-            foreach (var message in client.GetDiscoveryInfo(_discoveryId)) {
+        private static async Task PublishDiscoveryInfo(Ism7Client client, IMqttClient mqttClient, CancellationToken cancellationToken)
+        {
+            foreach (var message in client.GetDiscoveryInfo(_discoveryId))
+            {
                 var data = JsonSerializer.Serialize(message.Content);
                 var builder = new MqttApplicationMessageBuilder()
                     .WithTopic(message.Path)
@@ -257,8 +259,9 @@ namespace ism7mqtt
                 }
             }
 
-            if (_discoveryId != null) {
-                publishDiscoveryInfo(ismClient, client, cancellationToken);
+            if (_discoveryId != null)
+            {
+                await PublishDiscoveryInfo(ismClient, client, cancellationToken);
                 _discoveryId = null;
             }
         }

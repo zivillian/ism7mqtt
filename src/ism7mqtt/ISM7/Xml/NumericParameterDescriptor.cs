@@ -27,29 +27,32 @@ namespace ism7mqtt.ISM7.Xml
 
         public override string HomeAssistantType => IsWritable ? "number" : "sensor";
 
-        public override IDictionary<string, JsonNode> DiscoveryProperties {
-            get {
-                Dictionary<string, JsonNode> result = new Dictionary<string, JsonNode>();
-                if (IsWritable) {
+        public override IEnumerable<(string, JsonNode)> DiscoveryProperties {
+            get
+            {
+                if (IsWritable)
+                {
                     if (MinValueCondition != null)
-                        result.Add("min", Double.Parse(MinValueCondition));
+                        yield return("min", Double.Parse(MinValueCondition));
                     if (MaxValueCondition != null)
-                        result.Add("max", Double.Parse(MaxValueCondition));
+                        yield return ("max", Double.Parse(MaxValueCondition));
                     if (StepWidth != null)
-                        result.Add("step", StepWidth);
+                        yield return ("step", StepWidth);
                 }
-                if (UnitName != null) {
-                    result.Add("unit_of_measurement", UnitName);
-                    if (UnitName == "°C") {
-                        result.Add("icon", "mdi:thermometer");
-                        result.Add("state_class", "measurement");
-                    } else if (UnitName == "%") {
-                        result.Add("state_class", "measurement");
+                if (UnitName != null)
+                {
+                    yield return ("unit_of_measurement", UnitName);
+                    if (UnitName == "°C")
+                    {
+                        yield return ("icon", "mdi:thermometer");
+                        yield return ("state_class", "measurement");
+                    }
+                    else if (UnitName == "%")
+                    {
+                        yield return ("state_class", "measurement");
                     }
                 }
-                return result;
             }
-
         }
     }
 }

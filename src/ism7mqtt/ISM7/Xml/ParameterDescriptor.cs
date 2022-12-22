@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Xml.Serialization;
 
@@ -53,7 +54,8 @@ namespace ism7mqtt.ISM7.Xml
 
         public abstract string HomeAssistantType { get; }
 
-        public abstract IDictionary<string, JsonNode> DiscoveryProperties { get; }
+        public virtual IEnumerable<(string, JsonNode)> DiscoveryProperties => Enumerable.Empty<(string, JsonNode)>();
+
         public string DiscoveryName
         {
             get

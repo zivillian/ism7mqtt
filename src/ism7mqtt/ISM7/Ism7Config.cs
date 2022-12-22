@@ -126,7 +126,8 @@ namespace ism7mqtt
 
         public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId) {
             List<MqttMessage> result = new List<MqttMessage>();
-            foreach (var device in _devices.Values.SelectMany(x => x)) {
+            foreach (var device in _devices.Values.SelectMany(x => x))
+            {
                 result.AddRange(device.GetDiscoveryInfo(discoveryId));
             }
             return result;
@@ -220,9 +221,11 @@ namespace ism7mqtt
                 }
             }
 
-            public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId) {
+            public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId)
+            {
                 List<MqttMessage> result = new List<MqttMessage>();
-                foreach (var descriptor in _parameter.Values) {
+                foreach (var descriptor in _parameter.Values)
+                {
                     string type = descriptor.HomeAssistantType;
                     if (type == null) continue;
 
@@ -230,27 +233,28 @@ namespace ism7mqtt
                     string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
                     MqttMessage message = new MqttMessage(discoveryTopic);
 
-                    message.AddProperty("unique_id", JsonValue.Create(uniqueId));
+                    message.AddProperty("unique_id", uniqueId);
 
                     string stateTopic = $"{MqttTopic}/{descriptor.DiscoveryName}{descriptor.DiscoveryTopicSuffix}";
-                    message.AddProperty("state_topic", JsonValue.Create(stateTopic));
+                    message.AddProperty("state_topic", stateTopic);
 
-                    if (descriptor.IsWritable) {
+                    if (descriptor.IsWritable)
+                    {
                         string commandTopic = $"{MqttTopic}/set/{descriptor.SafeName}{descriptor.DiscoveryTopicSuffix}";
-                        message.AddProperty("command_topic", JsonValue.Create(commandTopic));
+                        message.AddProperty("command_topic", commandTopic);
                     }
 
                     message.AddProperty("name", descriptor.Name);
                     message.AddProperty("object_id", $"{discoveryId}_{name}_{descriptor.Name}");
 
-                    if (descriptor.DiscoveryProperties != null) {
-                        foreach (var discoveryProperty in descriptor.DiscoveryProperties) {
-                            message.AddProperty(discoveryProperty.Key, discoveryProperty.Value);
-                        }
+                    foreach (var (key, value) in descriptor.DiscoveryProperties)
+                    {
+                        message.AddProperty(key, value);
                     }
 
                     // Try to guess a suitable icon if none given
-                    if (!message.Content.ContainsKey("icon")) {
+                    if (!message.Content.ContainsKey("icon"))
+                    {
                         if (descriptor.Name.ToLower().Contains("brenner"))
                             message.AddProperty("icon", "mdi:fire");
                         else if (descriptor.Name.ToLower().Contains("solar"))

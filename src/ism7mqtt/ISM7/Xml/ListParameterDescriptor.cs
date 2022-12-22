@@ -42,7 +42,7 @@ namespace ism7mqtt.ISM7.Xml
             var value = converter.GetValue();
             var key = value.ToString();
             // some list types have a binary/bool converter, even if it doesn't make much sense.. try to detect those cases
-            if (!isBinaryOptions() && converter.GetType() == typeof(BinaryReadOnlyConverterTemplate)) {
+            if (!IsBinaryOptions() && converter is BinaryReadOnlyConverterTemplate) {
                 if (value.TryGetValue<bool>(out var valueBool)) {
                     key = valueBool ? "1" : "0";
                 }
@@ -80,7 +80,7 @@ namespace ism7mqtt.ISM7.Xml
             return base.GetWrite(node);
         }
 
-        private bool isBinaryOptions() {
+        private bool IsBinaryOptions() {
             var opts = Options;
             if (opts.Count != 2)
                 return false;
@@ -91,8 +91,8 @@ namespace ism7mqtt.ISM7.Xml
             return false;
         }
 
-        private IDictionary<bool, string> getBinaryOptions() {
-            if (!isBinaryOptions())
+        private IDictionary<bool, string> GetBinaryOptions() {
+            if (!IsBinaryOptions())
                 return null;
             var opts = Options;
             var result = new Dictionary<bool, string>();
@@ -113,38 +113,35 @@ namespace ism7mqtt.ISM7.Xml
             {
                 // Try to auto-detect switch and select vs sensor and binary_sensor
                 if (IsWritable) {
-                    if (isBinaryOptions())
+                    if (IsBinaryOptions())
                         return "switch";
                     return "select";
                 }
 
-                if (isBinaryOptions()) {
+                if (IsBinaryOptions()) {
                     return "binary_sensor";
                 }
                 return "sensor";
             }
         }
 
-        public override IDictionary<string, JsonNode> DiscoveryProperties {
+        public override IEnumerable<(string, JsonNode)> DiscoveryProperties
+        {
             get
             {
-                var properties = new Dictionary<string, JsonNode>();
-
                 if (HomeAssistantType == "select")
                 {
                     var options = new JsonArray();
                     foreach (var value in Options.Values)
                         options.Add(value);
-                    properties.Add("options", options);
+                    yield return("options", options);
                 }
                 else if (HomeAssistantType == "switch" || HomeAssistantType == "binary_sensor")
                 {
-                    var options = getBinaryOptions();
-                    properties.Add("payload_on", options[true]);
-                    properties.Add("payload_off", options[false]);
+                    var options = GetBinaryOptions();
+                    yield return("payload_on", options[true]);
+                    yield return ("payload_off", options[false]);
                 }
-
-                return properties;
             }
         }
 

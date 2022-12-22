@@ -115,7 +115,8 @@ namespace ism7mqtt
             await SendAsync(request, cancellationToken);
         }
 
-        public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId) {
+        public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId)
+        {
             return _config.GetDiscoveryInfo(discoveryId);
         }
 

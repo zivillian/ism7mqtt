@@ -18,9 +18,8 @@ namespace ism7mqtt
 
         public bool HasContent { get; private set; }
 
-        public bool IsSplittable { get; set; }
-
-        public void AddProperty(string key, JsonNode value) {
+        public void AddProperty(string key, JsonNode value)
+        {
             AddProperty(new KeyValuePair<string, JsonNode>(key, value));
         }
 
