@@ -78,7 +78,8 @@ namespace ism7mqtt
                 return;
             }
 
-            if (_discoveryId != null) {
+            if (_discoveryId != null)
+            {
                 _retain = true;
                 _useSeparateTopics = true;
             }
@@ -118,7 +119,6 @@ namespace ism7mqtt
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
-
                         var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
                         {
                             Interval = interval,

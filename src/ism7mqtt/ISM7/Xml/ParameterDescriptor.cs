@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Nodes;
 using System.Xml.Serialization;
 
@@ -31,11 +30,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public bool IsDuplicate { get; set; }
 
-        public bool IsWritable {
-            get {
-                return ReadOnlyConditionId == "False";
-            }
-        }
+        public bool IsWritable => ReadOnlyConditionId == "False";
 
         public string SafeName
         {
