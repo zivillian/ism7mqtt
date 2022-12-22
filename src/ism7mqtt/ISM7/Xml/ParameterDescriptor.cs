@@ -47,18 +47,6 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public string DiscoveryName
-        {
-            get
-            {
-                var name = SafeName;
-                return SafeName.Replace(" ", "_")
-                    .Replace("/", "_")
-                    .Replace(".", "");
-                    ;
-            }
-        }
-
         public KeyValuePair<string,JsonNode> GetValues(ConverterTemplateBase converter)
         {
             var value = GetValueCore(converter);

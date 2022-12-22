@@ -286,9 +286,12 @@ namespace ism7mqtt
             }
         }
 
-        private static string EscapeMqttTopic(string name)
+        public static string EscapeMqttTopic(string name)
         {
-            return name.Replace('/', '_').Replace(' ', '_');
+            return name.Replace(' ', '_')
+                .Replace('/', '_')
+                .Replace(".", String.Empty)
+                .Replace('+', '_');
         }
     }
 }

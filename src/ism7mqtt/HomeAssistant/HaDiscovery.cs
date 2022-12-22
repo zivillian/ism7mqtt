@@ -37,15 +37,16 @@ namespace ism7mqtt.HomeAssistant
                     deduplicator = $"/{descriptor.PTID}";
                     deduplicatorLabel = $"_{descriptor.PTID}";
                 }
-
-                string uniqueId = $"{discoveryId}_{descriptor.DiscoveryName}{deduplicatorLabel}";
+                
+                var discoveryName = GetDiscoveryName(descriptor);
+                string uniqueId = $"{discoveryId}_{discoveryName}{deduplicatorLabel}";
                 string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
                 MqttMessage message = new MqttMessage(discoveryTopic);
 
                 message.AddProperty("unique_id", uniqueId);
 
                 var discoveryTopicSSuffix = GetDiscoveryTopicSuffix(descriptor);
-                string stateTopic = $"{device.MqttTopic}/{descriptor.DiscoveryName}{deduplicator}{discoveryTopicSSuffix}";
+                string stateTopic = $"{device.MqttTopic}/{discoveryName}{deduplicator}{discoveryTopicSSuffix}";
                 message.AddProperty("state_topic", stateTopic);
 
                 if (descriptor.IsWritable)
@@ -215,6 +216,11 @@ namespace ism7mqtt.HomeAssistant
                 default:
                     yield break;
             }
+        }
+
+        private string GetDiscoveryName(ParameterDescriptor descriptor)
+        {
+            return Program.EscapeMqttTopic(descriptor.SafeName);
         }
     }
 }
