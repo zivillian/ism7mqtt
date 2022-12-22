@@ -136,15 +136,31 @@ namespace ism7mqtt.ISM7.Xml
                         options.Add(value);
                     yield return("options", options);
                 }
-                else if (HomeAssistantType == "switch" || HomeAssistantType == "binary_sensor")
+                else if (HomeAssistantType == "switch")
                 {
                     var options = GetBinaryOptions();
                     yield return("payload_on", options[true]);
-                    yield return ("payload_off", options[false]);
+                    yield return("payload_off", options[false]);
+                }
+                else if (HomeAssistantType == "binary_sensor")
+                {
+                    yield return("payload_on", "true");
+                    yield return("payload_off", "false");
                 }
             }
         }
 
-        public override string DiscoveryTopicSuffix => "/text";
+        public override string DiscoveryTopicSuffix
+        {
+            get
+            {
+                if (HomeAssistantType == "binary_sensor")
+                {
+                    return ""; // true/false directly
+                }
+                return "/text"; // "Aktiviert" in text-subtopic, or e.g. "Heizung" for 3-Wege-Ventil
+            }
+        }
+
     }
 }

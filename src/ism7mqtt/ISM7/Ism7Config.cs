@@ -229,23 +229,32 @@ namespace ism7mqtt
                     string type = descriptor.HomeAssistantType;
                     if (type == null) continue;
 
-                    string uniqueId = $"{discoveryId}_{descriptor.DiscoveryName}";
+                    // Handle parameters with name-duplicates - their ID will be part of the topic
+                    string deduplicator = "";
+                    string deduplicatorLabel = "";
+                    if (descriptor.IsDuplicate)
+                    {
+                        deduplicator = $"/{descriptor.PTID}";
+                        deduplicatorLabel = $"_{descriptor.PTID}";
+                    }
+
+                    string uniqueId = $"{discoveryId}_{descriptor.DiscoveryName}{deduplicatorLabel}";
                     string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
                     MqttMessage message = new MqttMessage(discoveryTopic);
 
                     message.AddProperty("unique_id", uniqueId);
 
-                    string stateTopic = $"{MqttTopic}/{descriptor.DiscoveryName}{descriptor.DiscoveryTopicSuffix}";
+                    string stateTopic = $"{MqttTopic}/{descriptor.DiscoveryName}{deduplicator}{descriptor.DiscoveryTopicSuffix}";
                     message.AddProperty("state_topic", stateTopic);
 
                     if (descriptor.IsWritable)
                     {
-                        string commandTopic = $"{MqttTopic}/set/{descriptor.SafeName}{descriptor.DiscoveryTopicSuffix}";
+                        string commandTopic = $"{MqttTopic}/set/{descriptor.SafeName}{deduplicator}{descriptor.DiscoveryTopicSuffix}";
                         message.AddProperty("command_topic", commandTopic);
                     }
 
                     message.AddProperty("name", descriptor.Name);
-                    message.AddProperty("object_id", $"{discoveryId}_{name}_{descriptor.Name}");
+                    message.AddProperty("object_id", $"{discoveryId}_{name}_{descriptor.Name}{deduplicatorLabel}");
 
                     foreach (var (key, value) in descriptor.DiscoveryProperties)
                     {
