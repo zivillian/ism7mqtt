@@ -24,7 +24,7 @@ docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -
 
 ## Firmware < 200
 
-The old firmware (Software < 200) uses ad different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern os. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
+The old firmware (Software < 200) uses a different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern os. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
 
 ## Cons
 
