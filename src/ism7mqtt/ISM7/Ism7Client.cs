@@ -229,7 +229,8 @@ namespace ism7mqtt
                 {
                     BusAddress = device.Ba,
                     InfoNumber = x,
-                    Intervall = Interval
+                    Intervall = Interval,
+                    Seq = String.Empty
                 }).ToList()
             }, cancellationToken);
         }
@@ -263,6 +264,7 @@ namespace ism7mqtt
                 {
                     BusAddress = device.Ba,
                     InfoNumber = x,
+                    Seq = String.Empty
                 }).ToList();
                 if (infoReads.Count == 0)
                 {

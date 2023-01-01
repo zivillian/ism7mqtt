@@ -1,0 +1,3 @@
+[submodule "lib/bc-csharp"]
+	path = lib/bc-csharp
+	url = https://github.com/zivillian/bc-csharp.git
