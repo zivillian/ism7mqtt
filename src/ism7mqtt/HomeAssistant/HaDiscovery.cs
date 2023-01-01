@@ -27,7 +27,7 @@ namespace ism7mqtt.HomeAssistant
             {
                 var type = GetHomeAssistantType(descriptor);
                 if (type == null) continue;
-                if (descriptor.ControlType == "DaySwitchTimes") continue;
+                if (descriptor.ControlType == "DaySwitchTimes" || descriptor.ControlType.Contains("NO_DISPLAY")) continue;
 
                 // Handle parameters with name-duplicates - their ID will be part of the topic
                 string deduplicator = "";
