@@ -22,6 +22,10 @@ If you want to run this via docker, use:
 docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> zivillian/ism7mqtt:latest
 ```
 
+## Firmware < 200
+
+The old firmware (Software < 200) uses a different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern os. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
+
 ## Cons
 
 The ism7 accepts only a single connection, so you cannot use the Smartset application while ism7mqtt is running.

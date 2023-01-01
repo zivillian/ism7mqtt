@@ -13,35 +13,61 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Publish Windows
-      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
-    - name: Publish Linux
-      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
-    - name: Publish Linux ARM
-      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
+    - name: remove Nerdbank.GitVersioning
+      run: dotnet remove lib/bc-csharp/crypto/src/BouncyCastle.Crypto.csproj package Nerdbank.GitVersioning
+    - name: Publish ism7mqtt Windows
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7mqtt Linux
+      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7mqtt Linux ARM
+      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7parameter Windows
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7parameter/ism7parameter.csproj
+    - name: Publish ism7proxy Windows
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7proxy/ism7proxy.csproj
+    - name: Publish oldism7proxy Windows
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/oldism7proxy/oldism7proxy.csproj
+    - name: Publish oldism7proxy Linux
+      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/oldism7proxy/oldism7proxy.csproj
+    - name: Publish oldism7proxy Linux ARM
+      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/oldism7proxy/oldism7proxy.csproj
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-win-x64
-        path: src/ism7mqtt/bin/Release/net6.0/win-x64/publish
+        path: src/ism7mqtt/bin/release/net6.0/win-x64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-linux-x64
-        path: src/ism7mqtt/bin/Release/net6.0/linux-x64/publish
+        path: src/ism7mqtt/bin/release/net6.0/linux-x64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-linux-arm
-        path: src/ism7mqtt/bin/Release/net6.0/linux-arm/publish
+        path: src/ism7mqtt/bin/release/net6.0/linux-arm/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7parameter
-        path: src/ism7parameter/bin/Release/net48/win-x64/publish
+        path: src/ism7parameter/bin/release/net48/win-x64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: ism7proxy
-        path: src/ism7proxy/bin/Release/net6.0/win-x64/publish
+        path: src/ism7proxy/bin/release/net6.0/win-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: oldism7proxy-win-x64
+        path: src/oldism7proxy/bin/release/net6.0/win-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: oldism7proxy-linux-x64
+        path: src/oldism7proxy/bin/release/net6.0/linux-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: oldism7proxy-linux-arm
+        path: src/oldism7proxy/bin/release/net6.0/linux-arm/publish
