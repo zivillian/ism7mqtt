@@ -17,7 +17,7 @@ namespace ism7mqtt
         private readonly IReadOnlyList<DeviceTemplate> _deviceTemplates;
         private readonly IReadOnlyList<ConverterTemplateBase> _converterTemplates;
         private readonly IReadOnlyList<ParameterDescriptor> _parameterTemplates;
-        private readonly IDictionary<byte, List<Device>> _devices;
+        private readonly IDictionary<byte, List<RunningDevice>> _devices;
         private readonly ConfigRoot _config;
 
         public Ism7Config(string filename)
@@ -29,7 +29,7 @@ namespace ism7mqtt
             {
                 _config = JsonSerializer.Deserialize<ConfigRoot>(File.ReadAllText(filename));
             }
-            _devices = new Dictionary<byte, List<Device>>();
+            _devices = new Dictionary<byte, List<RunningDevice>>();
         }
 
         private List<DeviceTemplate> LoadDeviceTemplates()
@@ -66,14 +66,14 @@ namespace ism7mqtt
         {
             if (!_devices.TryGetValue(Converter.FromHex(ba), out var devices))
             {
-                devices = new List<Device>();
+                devices = new List<RunningDevice>();
                 _devices.Add(Converter.FromHex(ba), devices);
             }
             foreach (var configDevice in _config.Devices.Where(x => x.ReadBusAddress == ba))
             {
                 var device = _deviceTemplates.First(x => x.DTID == configDevice.DeviceTemplateId);
                 var tids = configDevice.Parameter.ToHashSet();
-                devices.Add(new Device(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
+                devices.Add(new RunningDevice(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
             }
             return true;
         }
@@ -124,18 +124,21 @@ namespace ism7mqtt
             return Array.Empty<InfoWrite>();
         }
         
-        class Device
+        class RunningDevice
         {
-            private readonly ImmutableDictionary<int, ParameterDescriptor> _parameter;
-            private readonly ImmutableList<ConverterTemplateBase> _converter;
+            private readonly List<RunningParameter> _parameter;
 
-            public Device(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
+            public RunningDevice(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
                 WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
                 MqttTopic = $"Wolf/{ip}/{name}_{ba}";
 
-                _parameter = parameter.ToImmutableDictionary(x => x.PTID);
-                _converter = converter.ToImmutableList();
+                _parameter = new List<RunningParameter>();
+                foreach (var descriptor in parameter)
+                {
+                    _parameter.Add(new RunningParameter(descriptor, converter.First(x=>x.CTID == descriptor.PTID)));
+                }
+
                 EnsureUniqueParameterNames();
             }
 
@@ -145,7 +148,7 @@ namespace ism7mqtt
 
             private void EnsureUniqueParameterNames()
             {
-                var duplicates = _parameter.Values
+                var duplicates = _parameter
                     .GroupBy(x => x.Name)
                     .Where(x => x.Count() > 1)
                     .ToList();
@@ -155,11 +158,11 @@ namespace ism7mqtt
                 }
             }
 
-            public IEnumerable<InfoRead> InfoReads => _converter.SelectMany(x => x.InfoReads);
+            public IEnumerable<InfoRead> InfoReads => _parameter.SelectMany(x => x.InfoReads);
 
-            public IEnumerable<ParameterDescriptor> WritableParameters()
+            public IEnumerable<RunningParameter> WritableParameters()
             {
-                return _parameter.Values.Where(x => x.ReadOnlyConditionId == "False");
+                return _parameter.Where(x => x.IsWritable);
             }
 
             public void ProcessReadDatapoint(ushort telegram, int? service, byte low, byte high)
@@ -174,21 +177,9 @@ namespace ism7mqtt
 
             private void ProcessDatapoint(ushort telegram, int? service, byte low, byte high, bool write)
             {
-                foreach (var converter in _converter)
+                foreach (var parameter in _parameter)
                 {
-                    if (service.HasValue)
-                    {
-                        if (write)
-                        {
-                            if (converter.ServiceWriteNumber != service.Value) continue;
-                        }
-                        else
-                        {
-                            if (converter.ServiceReadNumber != service.Value) continue;
-                        }
-                    }
-                    if (!converter.CanProcess(telegram)) continue;
-                    converter.AddTelegram(telegram, low, high);
+                    parameter.ProcessDatapoint(telegram, service, low, high, write);
                 }
             }
 
@@ -208,36 +199,153 @@ namespace ism7mqtt
 
             private IEnumerable<InfoWrite> GetWriteRequest(string name, JsonNode node)
             {
-                foreach (var parameter in WritableParameters().Where(x => x.SafeName == name))
-                {
-                    if (!parameter.TryGetValue(node, out var value)) continue;
-                    foreach (var converter in _converter.Where(x => x.CTID == parameter.PTID))
-                    {
-                        foreach (var write in converter.GetWrite(value))
-                        {
-                            yield return write;
-                        }
-                    }
-                }
+                return WritableParameters().SelectMany(x => x.GetWriteRequest(name, node));
             }
 
             public MqttMessage Message
             {
                 get
                 {
-                    var converters = _converter
+                    var parameters = _parameter
                         .Where(x => x.HasValue)
                         .Distinct()
                         .ToList();
-                    if (converters.Count == 0) return null;
+                    if (parameters.Count == 0) return null;
                     var result = new MqttMessage(MqttTopic);
-                    foreach (var converter in converters)
+                    foreach (var parameter in parameters)
                     {
-                        var parameter = _parameter[converter.CTID];
-                        result.AddProperty(parameter.GetValues(converter));
+                        result.AddProperty(parameter.GetValues());
                     }
                     return result;
                 }
+            }
+        }
+
+        class RunningParameter
+        {
+            private readonly ParameterDescriptor _descriptor;
+            private readonly ConverterTemplateBase _converter;
+
+            public RunningParameter( ParameterDescriptor descriptor, ConverterTemplateBase converter)
+            {
+                _descriptor = descriptor;
+                _converter = converter;
+            }
+
+            public string Name => _descriptor.Name;
+
+            public string SafeName => Name
+                .Replace("ä", "ae")
+                .Replace("ö", "oe")
+                .Replace("ü", "ue")
+                .Replace("Ä", "Ae")
+                .Replace("Ö", "Oe")
+                .Replace("Ü", "Ue")
+                .Replace("ß", "ss");
+
+            public bool IsDuplicate { get; set; }
+
+            public bool IsWritable => _descriptor.ReadOnlyConditionId == "False";
+
+            public bool HasValue => _converter.HasValue;
+
+            public IEnumerable<InfoRead> InfoReads => _converter.InfoReads;
+
+            public void ProcessDatapoint(ushort telegram, int? service, byte low, byte high, bool write)
+            {
+                if (service.HasValue)
+                {
+                    if (write)
+                    {
+                        if (_converter.ServiceWriteNumber != service.Value) return;
+                    }
+                    else
+                    {
+                        if (_converter.ServiceReadNumber != service.Value) return;
+                    }
+                }
+                if (!_converter.CanProcess(telegram)) return;
+                _converter.AddTelegram(telegram, low, high);
+            }
+
+            public IEnumerable<InfoWrite> GetWriteRequest(string name, JsonNode node)
+            {
+                if (!IsWritable) return Array.Empty<InfoWrite>();
+                if (SafeName != name) return Array.Empty<InfoWrite>();
+                if (!TryGetWriteValue(node, out var value)) return Array.Empty<InfoWrite>();
+                return _converter.GetWrite(value);
+            }
+
+            public bool TryGetWriteValue(JsonNode node, out JsonValue value)
+            {
+                value = node is JsonValue ? node.AsValue() : null;
+                if (IsDuplicate)
+                {
+                    if (node is not JsonObject jobject) return false;
+                    if (!jobject.TryGetPropertyValue(_descriptor.PTID.ToString(), out node)) return false;
+                }
+                if (_descriptor is ListParameterDescriptor listDescriptor)
+                {
+                    if (!String.IsNullOrEmpty(listDescriptor.KeyValueList))
+                    {
+                        if (node is JsonObject jobject)
+                        {
+                            if (jobject.TryGetPropertyValue("value", out var number))
+                            {
+                                value = number.AsValue();
+                            }
+                            else if (jobject.TryGetPropertyValue("text", out var text))
+                            {
+                                var names = listDescriptor.KeyValueList.Split(';');
+                                var name = text.ToString();
+                                for (int i = 1; i < names.Length; i += 2)
+                                {
+                                    if (names[i] == name)
+                                    {
+                                        value = JsonValue.Create(names[i - 1]);
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                return value is not null;
+            }
+
+            public KeyValuePair<string, JsonNode> GetValues()
+            {
+                JsonNode value = _converter.GetValue();
+                if (_descriptor is ListParameterDescriptor listDescriptor)
+                {
+                    if (!String.IsNullOrEmpty(listDescriptor.KeyValueList))
+                    {
+                        
+                        var names = listDescriptor.KeyValueList.Split(';');
+                        var key = value.ToString();
+                        for (int i = 0; i < names.Length - 1; i += 2)
+                        {
+                            if (names[i] == key)
+                            {
+                                value = new JsonObject
+                                {
+                                    ["value"] = value,
+                                    ["text"] = names[i + 1]
+                                };
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (IsDuplicate)
+                {
+                    value = new JsonObject
+                    {
+                        [_descriptor.PTID.ToString()] = value,
+                    };
+                }
+                return new KeyValuePair<string,JsonNode>(SafeName, value);
             }
         }
     }
