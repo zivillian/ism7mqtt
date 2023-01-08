@@ -13,9 +13,17 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("Type")]
         public string Type { get; set; }
 
-        public abstract IEnumerable<ushort> TelegramIds { get; }
+        [XmlElement("ServiceReadNumber")]
+        public int? ServiceReadNumber { get; set; }
+
+        [XmlElement("ServiceWriteNumber")]
+        public int ServiceWriteNumber { get; set; }
+
+        public abstract IEnumerable<InfoRead> InfoReads { get; }
 
         public abstract void AddTelegram(ushort telegram, byte low, byte high);
+
+        public abstract bool CanProcess(ushort telegram);
 
         public abstract bool HasValue { get; }
 

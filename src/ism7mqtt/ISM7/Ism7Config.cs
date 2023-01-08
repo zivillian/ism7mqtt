@@ -78,10 +78,10 @@ namespace ism7mqtt
             return true;
         }
 
-        public IEnumerable<ushort> GetTelegramIdsForDevice(string ba)
+        public IEnumerable<InfoRead> GetInfoReadForDevice(string ba)
         {
             var devices = _devices[Converter.FromHex(ba)];
-            return devices.SelectMany(x=>x.TelegramIds);
+            return devices.SelectMany(x => x.InfoReads);
         }
 
         public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberReadResp> data)
@@ -91,7 +91,7 @@ namespace ism7mqtt
                 var devices = _devices[Converter.FromHex(value.BusAddress)];
                 foreach (var device in devices)
                 {
-                    device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
+                    device.ProcessReadDatapoint(value.InfoNumber, value.ServiceNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
                 }
             }
             return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
@@ -106,7 +106,7 @@ namespace ism7mqtt
                     .ToList();
                 foreach (var device in devices)
                 {
-                    device.ProcessDatapoint(value.InfoNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
+                    device.ProcessWriteDatapoint(value.InfoNumber, value.ServiceNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
                 }
             }
             return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
@@ -129,7 +129,7 @@ namespace ism7mqtt
         public class Device
         {
             private readonly ImmutableDictionary<int, ParameterDescriptor> _parameter;
-            private readonly ImmutableDictionary<ushort, List<ConverterTemplateBase>> _converter;
+            private readonly ImmutableList<ConverterTemplateBase> _converter;
 
             public Device(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
@@ -140,10 +140,7 @@ namespace ism7mqtt
                 MqttTopic = $"Wolf/{ip}/{name}_{ba}";
 
                 _parameter = parameter.ToImmutableDictionary(x => x.PTID);
-                _converter = converter
-                    .SelectMany(x => x.TelegramIds, (x, y) => new {Id = y, Value = x})
-                    .ToLookup(x => x.Id, x => x.Value)
-                    .ToImmutableDictionary(x=>x.Key, x=>x.ToList());
+                _converter = converter.ToImmutableList();
                 EnsureUniqueParameterNames();
             }
 
@@ -167,7 +164,7 @@ namespace ism7mqtt
                 }
             }
 
-            public IEnumerable<ushort> TelegramIds => _converter.Select(x=>x.Key);
+            public IEnumerable<InfoRead> InfoReads => _converter.SelectMany(x => x.InfoReads);
 
             public IEnumerable<ParameterDescriptor> WritableParameters()
             {
@@ -176,11 +173,32 @@ namespace ism7mqtt
 
             public IEnumerable<ParameterDescriptor> Parameters => _parameter.Values;
 
-            public void ProcessDatapoint(ushort telegram, byte low, byte high)
+            public void ProcessReadDatapoint(ushort telegram, int? service, byte low, byte high)
             {
-                if (!_converter.TryGetValue(telegram, out var converters)) return;
-                foreach (var converter in converters)
+                ProcessDatapoint(telegram, service, low, high, false);
+            }
+
+            public void ProcessWriteDatapoint(ushort telegram, int? service, byte low, byte high)
+            {
+                ProcessDatapoint(telegram, service, low, high, true);
+            }
+
+            private void ProcessDatapoint(ushort telegram, int? service, byte low, byte high, bool write)
+            {
+                foreach (var converter in _converter)
                 {
+                    if (service.HasValue)
+                    {
+                        if (write)
+                        {
+                            if (converter.ServiceWriteNumber != service.Value) continue;
+                        }
+                        else
+                        {
+                            if (converter.ServiceReadNumber != service.Value) continue;
+                        }
+                    }
+                    if (!converter.CanProcess(telegram)) continue;
                     converter.AddTelegram(telegram, low, high);
                 }
             }
@@ -204,7 +222,7 @@ namespace ism7mqtt
                 foreach (var parameter in WritableParameters().Where(x => x.SafeName == name))
                 {
                     if (!parameter.TryGetValue(node, out var value)) continue;
-                    foreach (var converter in _converter.Values.SelectMany(x => x).Where(x => x.CTID == parameter.PTID))
+                    foreach (var converter in _converter.Where(x => x.CTID == parameter.PTID))
                     {
                         foreach (var write in converter.GetWrite(value))
                         {
@@ -218,7 +236,7 @@ namespace ism7mqtt
             {
                 get
                 {
-                    var converters = _converter.SelectMany(x=>x.Value)
+                    var converters = _converter
                         .Where(x => x.HasValue)
                         .Distinct()
                         .ToList();

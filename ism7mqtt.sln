@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.35
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7mqtt", "src\ism7mqtt\ism7mqtt.csproj", "{B7E33C2D-9BC2-4864-BC11-917C33EA0874}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7parameter", "src\ism7parameter\ism7parameter.csproj", "{FAF14727-7805-47E3-B603-26FA6A355BB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ism7proxy", "src\ism7proxy\ism7proxy.csproj", "{D2C1B231-0A5B-4199-B752-831AED6A3650}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7proxy", "src\ism7proxy\ism7proxy.csproj", "{D2C1B231-0A5B-4199-B752-831AED6A3650}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "oldism7proxy", "src\oldism7proxy\oldism7proxy.csproj", "{EFF9B1F8-C900-4E45-8F5B-99893672AC8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BouncyCastle.Crypto", "lib\bc-csharp\crypto\src\BouncyCastle.Crypto.csproj", "{9B9C5DFC-AC8A-4BC5-A306-1668A7EEAC8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{D2C1B231-0A5B-4199-B752-831AED6A3650}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2C1B231-0A5B-4199-B752-831AED6A3650}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C1B231-0A5B-4199-B752-831AED6A3650}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFF9B1F8-C900-4E45-8F5B-99893672AC8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFF9B1F8-C900-4E45-8F5B-99893672AC8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFF9B1F8-C900-4E45-8F5B-99893672AC8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFF9B1F8-C900-4E45-8F5B-99893672AC8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B9C5DFC-AC8A-4BC5-A306-1668A7EEAC8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B9C5DFC-AC8A-4BC5-A306-1668A7EEAC8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B9C5DFC-AC8A-4BC5-A306-1668A7EEAC8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B9C5DFC-AC8A-4BC5-A306-1668A7EEAC8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
