@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 
 namespace ism7mqtt.ISM7.Protocol
 {
@@ -6,7 +7,7 @@ namespace ism7mqtt.ISM7.Protocol
     public class InfoWrite
     {
         [XmlAttribute("se")]
-        public string Seq { get; set; }
+        public string Seq { get; set; } = String.Empty;
 
         [XmlAttribute("ba")]
         public string BusAddress { get; set; }
@@ -19,5 +20,13 @@ namespace ism7mqtt.ISM7.Protocol
 
         [XmlAttribute("dh")]
         public string DBHigh { get; set; }
+
+        [XmlAttribute("snr")]
+        public int ServiceNumber { get; set; } = -1;
+
+        public bool ShouldSerializeServiceNumber()
+        {
+            return ServiceNumber >= 0;
+        }
     }
 }

@@ -20,7 +20,12 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("HzkInstance")]
         public int HzkInstance { get; set; }
 
-        public override IEnumerable<ushort> TelegramIds => Array.Empty<ushort>();
+        public override IEnumerable<InfoRead> InfoReads => Array.Empty<InfoRead>();
+
+        public override bool CanProcess(ushort telegram)
+        {
+            return false;
+        }
 
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
