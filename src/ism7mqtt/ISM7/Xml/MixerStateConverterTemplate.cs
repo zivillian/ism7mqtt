@@ -41,7 +41,7 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override bool HasValue => _open.HasValue && _close.HasValue;
+        public override bool HasValue => _open.HasValue || _close.HasValue;
 
         public override JsonValue GetValue()
         {
