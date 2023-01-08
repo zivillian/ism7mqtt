@@ -17,9 +17,18 @@ namespace ism7mqtt.ISM7.Xml
         public ushort TelegramNrClose { get; set; }
 
         private ushort? _close;
-        
-        public override IEnumerable<ushort> TelegramIds => new[] {TelegramNrOpen, TelegramNrClose};
-        
+
+        public override IEnumerable<InfoRead> InfoReads => new[]
+        {
+            new InfoRead { InfoNumber = TelegramNrOpen, ServiceNumber = ServiceReadNumber ?? -1 },
+            new InfoRead { InfoNumber = TelegramNrClose, ServiceNumber = ServiceReadNumber ?? -1 }
+        };
+
+        public override bool CanProcess(ushort telegram)
+        {
+            return TelegramNrOpen == telegram || TelegramNrClose == telegram;
+        }
+
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
             if (telegram == TelegramNrOpen)

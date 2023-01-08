@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 
 namespace ism7mqtt.ISM7.Protocol
 {
@@ -22,5 +23,11 @@ namespace ism7mqtt.ISM7.Protocol
 
         [XmlAttribute("dh")]
         public string DBHigh { get; set; }
+
+        [XmlAttribute("snr")]
+        public string ServiceNumberAsText { get; set; }
+
+        [XmlIgnore]
+        public int? ServiceNumber => Int32.TryParse(ServiceNumberAsText, out var value) ? value : (int?)null;
     }
 }

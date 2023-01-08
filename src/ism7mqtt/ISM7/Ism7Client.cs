@@ -216,22 +216,21 @@ namespace ism7mqtt
         private async Task SubscribeAsync(string busAddress, CancellationToken cancellationToken)
         {
             var device = _devices[busAddress];
-            var ids = _config.GetTelegramIdsForDevice(device.Ba);
+            var infoReads = _config.GetInfoReadForDevice(device.Ba).ToList();
             var bundleId = NextBundleId();
             _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, OnPushResponseAsync);
+            foreach (var infoRead in infoReads)
+            {
+                infoRead.BusAddress = device.Ba;
+                infoRead.Intervall = Interval;
+            }
             await SendAsync(new TelegramBundleReq
             {
                 AbortOnError = false,
                 BundleId = bundleId,
                 GatewayId = "1",
                 TelegramBundleType = TelegramBundleType.push,
-                InfoReadTelegrams = ids.Select(x => new InfoRead
-                {
-                    BusAddress = device.Ba,
-                    InfoNumber = x,
-                    Intervall = Interval,
-                    Seq = String.Empty
-                }).ToList()
+                InfoReadTelegrams = infoReads
             }, cancellationToken);
         }
 
@@ -255,21 +254,19 @@ namespace ism7mqtt
             foreach (var device in _devices.Values)
             {
                 if (!_config.AddDevice(_ipAddress.ToString(), device.Ba)) continue;
-                var ids = _config.GetTelegramIdsForDevice(device.Ba);
+                var infoReads = _config.GetInfoReadForDevice(device.Ba).ToList();
                 var bundleId = NextBundleId();
                 _dispatcher.SubscribeOnce(
                     x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId,
                     OnInitialValuesAsync);
-                var infoReads = ids.Select(x=>new InfoRead
-                {
-                    BusAddress = device.Ba,
-                    InfoNumber = x,
-                    Seq = String.Empty
-                }).ToList();
                 if (infoReads.Count == 0)
                 {
                     //device without any valid parameter
                     continue;
+                }
+                foreach (var infoRead in infoReads)
+                {
+                    infoRead.BusAddress = device.Ba;
                 }
                 await SendAsync(new TelegramBundleReq
                 {
