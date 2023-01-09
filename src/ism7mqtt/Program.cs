@@ -166,6 +166,7 @@ namespace ism7mqtt
                 //json
                 data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
+                return client.OnCommandAsync(topic, data, cancellationToken);
             }
             else
             {
@@ -173,16 +174,9 @@ namespace ism7mqtt
                 var index = message.Topic.LastIndexOf("/set/");
                 var property = message.Topic.Substring(index + 5);
                 topic = message.Topic.Substring(0, index);
-                var propertyParts = property.Split('/').AsSpan();
-                data = new JsonObject{{propertyParts[^1], JsonValue.Create(message.ConvertPayloadToString())}};
-                propertyParts = propertyParts[..^1];
-                while (!propertyParts.IsEmpty)
-                {
-                    data = new JsonObject{{propertyParts[^1], data}};
-                    propertyParts = propertyParts[..^1];
-                }
+                var parts = property.Split('/');
+                return client.OnCommandAsync(topic, parts, message.ConvertPayloadToString(), cancellationToken);
             }
-            return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
         private static async Task OnMessage(IMqttClient client, Ism7Config config, bool debug, CancellationToken cancellationToken)

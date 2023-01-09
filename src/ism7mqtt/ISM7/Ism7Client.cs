@@ -86,23 +86,46 @@ namespace ism7mqtt
             return ssl;
         }
 
-        public async Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
+        public Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
         {
-            List<InfoWrite> writeRequests;
             try
             {
-                writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+                var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+                if (writeRequests.Count == 0)
+                {
+                    Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
+                    return Task.CompletedTask;
+                }
+                return OnCommandAsync(writeRequests, cancellationToken);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"error for topic '{mqttTopic}' with payload '{data.ToJsonString()}'\n{ex.Message}");
-                return;
+                return Task.CompletedTask;
             }
-            if (writeRequests.Count == 0)
+        }
+
+        public Task OnCommandAsync(string mqttTopic, ReadOnlyMemory<string> propertyParts, string value, CancellationToken cancellationToken)
+        {
+            try
             {
-                Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
-                return;
+                var writeRequests = _config.GetWriteRequest(mqttTopic, propertyParts, value).ToList();
+                if (writeRequests.Count == 0)
+                {
+                    Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{value}'");
+                    return Task.CompletedTask;
+                }
+                return OnCommandAsync(writeRequests, cancellationToken);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error for topic '{mqttTopic}' with payload '{value}'\n{ex.Message}");
+                return Task.CompletedTask;
+            }
+        }
+
+        private async Task OnCommandAsync(List<InfoWrite> writeRequests, CancellationToken cancellationToken)
+        {
             var request = new TelegramBundleReq
             {
                 AbortOnError = true,

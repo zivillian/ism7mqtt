@@ -50,7 +50,7 @@ namespace ism7mqtt.ISM7.Xml
             return JsonValue.Create(sb.ToString());
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }

@@ -54,40 +54,40 @@ namespace ism7mqtt.ISM7.Xml
             return result;
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             ushort data;
             switch (Type)
             {
                 case "US":
-                    if (!UInt16.TryParse(value.ToString(), out data)) yield break;
+                    if (!UInt16.TryParse(value, out data)) yield break;
                     break;
                 case "SS":
-                    if (!Int16.TryParse(value.ToString(), out var int16)) yield break;
+                    if (!Int16.TryParse(value, out var int16)) yield break;
                     data = (ushort) int16;
                     break;
                 case "SS10":
-                    if (!Double.TryParse(value.ToString(), out var parsed)) yield break;
+                    if (!Double.TryParse(value, out var parsed)) yield break;
                     data = (ushort) (parsed * 10);
                     break;
                 case "US10":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 10);
                     break;
                 case "SS100":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 100);
                     break;
                 case "SSPR":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * (1.0/256));
                     break;
                 case "US4":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 4);
                     break;
                 case "IntDiv60":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 60);
                     break;
                 default:

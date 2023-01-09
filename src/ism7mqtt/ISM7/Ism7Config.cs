@@ -114,6 +114,18 @@ namespace ism7mqtt
             return _devices.Values.SelectMany(x => x).Any(x => x.HasValue);
         }
 
+        public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, ReadOnlyMemory<string> propertyParts, string value)
+        {
+            foreach (var device in _devices.Values.SelectMany(x => x))
+            {
+                if (device.MqttTopic == mqttTopic)
+                {
+                    return device.GetWriteRequest(propertyParts, value);
+                }
+            }
+            return Array.Empty<InfoWrite>();
+        }
+
         public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JsonObject data)
         {
             foreach (var device in _devices.Values.SelectMany(x => x))
@@ -200,6 +212,17 @@ namespace ism7mqtt
                 foreach (var parameter in _parameter)
                 {
                     parameter.ProcessDatapoint(telegram, service, low, high, write);
+                }
+            }
+
+            public IEnumerable<InfoWrite> GetWriteRequest(ReadOnlyMemory<string> propertyParts, string value)
+            {
+                var results = WritableParameters().SelectMany(x => x.GetWriteRequest(propertyParts, value));
+                foreach (var result in results)
+                {
+                    result.BusAddress = WriteAddress;
+                    result.Seq = "";
+                    yield return result;
                 }
             }
 
@@ -313,6 +336,46 @@ namespace ism7mqtt
                 _converter.AddTelegram(telegram, low, high);
             }
 
+            public IEnumerable<InfoWrite> GetWriteRequest(ReadOnlyMemory<string> propertyParts, string value)
+            {
+                var parts = propertyParts.Span;
+                if (!IsWritable) return Array.Empty<InfoWrite>();
+                if (parts.IsEmpty) return Array.Empty<InfoWrite>();
+                if (MqttName != parts[0]) return Array.Empty<InfoWrite>();
+                parts = parts.Slice(1);
+                if (parts.IsEmpty) return Array.Empty<InfoWrite>();
+                if (IsDuplicate)
+                {
+                    if (_descriptor.PTID.ToString() != parts[0]) return Array.Empty<InfoWrite>();
+                    parts = parts.Slice(1);
+                }
+                if (_descriptor is ListParameterDescriptor listDescriptor)
+                {
+                    if (parts.IsEmpty) return Array.Empty<InfoWrite>();
+                    if (parts[0] == "text")
+                    {
+                        var names = listDescriptor.KeyValueList.Split(';');
+                        var name = value;
+                        bool validName = false;
+                        for (int i = 1; i < names.Length; i += 2)
+                        {
+                            if (names[i] == name)
+                            {
+                                value = names[i - 1];
+                                validName = true;
+                                break;
+                            }
+                        }
+                        if (!validName) return Array.Empty<InfoWrite>();
+                    }
+                    else if (parts[0] != "value")
+                    {
+                        return Array.Empty<InfoWrite>();
+                    }
+                }
+                return _converter.GetWrite(value);
+            }
+
             public IEnumerable<InfoWrite> GetWriteRequest(string name, JsonNode node)
             {
                 if (!IsWritable) return Array.Empty<InfoWrite>();
@@ -321,9 +384,9 @@ namespace ism7mqtt
                 return _converter.GetWrite(value);
             }
 
-            public bool TryGetWriteValue(JsonNode node, out JsonValue value)
+            public bool TryGetWriteValue(JsonNode node, out string value)
             {
-                value = node is JsonValue ? node.AsValue() : null;
+                value = node is JsonValue ? node.AsValue().ToString() : null;
                 if (IsDuplicate)
                 {
                     if (node is not JsonObject jobject) return false;
@@ -337,7 +400,7 @@ namespace ism7mqtt
                         {
                             if (jobject.TryGetPropertyValue("value", out var number))
                             {
-                                value = number.AsValue();
+                                value = number.AsValue().ToString();
                             }
                             else if (jobject.TryGetPropertyValue("text", out var text))
                             {
@@ -347,11 +410,10 @@ namespace ism7mqtt
                                 {
                                     if (names[i] == name)
                                     {
-                                        value = JsonValue.Create(names[i - 1]);
+                                        value = names[i - 1];
                                         break;
                                     }
                                 }
-
                             }
                         }
                     }

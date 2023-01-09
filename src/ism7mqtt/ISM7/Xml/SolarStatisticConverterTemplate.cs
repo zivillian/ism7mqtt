@@ -57,7 +57,7 @@ namespace ism7mqtt.ISM7.Xml
             return JsonValue.Create(value);
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             throw new NotImplementedException($"CTID '{CTID}' ({nameof(SolarStatisticConverterTemplate)}) is not yet implemented");
         }
