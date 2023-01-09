@@ -37,10 +37,10 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JsonValue GetValue()
         {
+            if (!HasValue)
+                throw new InvalidOperationException();
             if (_broken)
-            {
                 throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
-            }
             var sb = new StringBuilder(_letters.Count);
             foreach (var letter in _letters.OrderBy(x=>x.Item1).Select(x=>x.Item2))
             {

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
@@ -84,7 +86,7 @@ namespace ism7mqtt
             return devices.SelectMany(x => x.InfoReads);
         }
 
-        public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberReadResp> data)
+        public bool ProcessData(IEnumerable<InfonumberReadResp> data)
         {
             foreach (var value in data)
             {
@@ -94,10 +96,10 @@ namespace ism7mqtt
                     device.ProcessReadDatapoint(value.InfoNumber, value.ServiceNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
                 }
             }
-            return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
+            return _devices.Values.SelectMany(x => x).Any(x => x.HasValue);
         }
 
-        public IEnumerable<MqttMessage> ProcessData(IEnumerable<InfonumberWriteResp> data)
+        public bool ProcessData(IEnumerable<InfonumberWriteResp> data)
         {
             foreach (var value in data)
             {
@@ -109,7 +111,7 @@ namespace ism7mqtt
                     device.ProcessWriteDatapoint(value.InfoNumber, value.ServiceNumber, Converter.FromHex(value.DBLow), Converter.FromHex(value.DBHigh));   
                 }
             }
-            return _devices.Values.SelectMany(x => x).Select(x => x.Message).Where(x => x != null);
+            return _devices.Values.SelectMany(x => x).Any(x => x.HasValue);
         }
 
         public IEnumerable<InfoWrite> GetWriteRequest(string mqttTopic, JsonObject data)
@@ -123,7 +125,17 @@ namespace ism7mqtt
             }
             return Array.Empty<InfoWrite>();
         }
-        
+
+        public IEnumerable<JsonMessage> JsonMessages => _devices.Values
+            .SelectMany(x => x)
+            .Where(x => x.HasValue)
+            .Select(x => x.JsonMessage);
+
+        public IEnumerable<MqttMessage> MqttMessages => _devices.Values
+            .SelectMany(x => x)
+            .Where(x => x.HasValue)
+            .SelectMany(x => x.MqttMessages);
+
         class RunningDevice
         {
             private readonly List<RunningParameter> _parameter;
@@ -131,20 +143,28 @@ namespace ism7mqtt
             public RunningDevice(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
                 WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
-                MqttTopic = $"Wolf/{ip}/{name}_{ba}";
+                Name = $"{name}_{ba}";
+                IP = ip;
 
                 _parameter = new List<RunningParameter>();
                 foreach (var descriptor in parameter)
                 {
-                    _parameter.Add(new RunningParameter(descriptor, converter.First(x=>x.CTID == descriptor.PTID)));
+                    var conv = converter.FirstOrDefault(x=>x.CTID == descriptor.PTID);
+                    if (conv != null) _parameter.Add(new RunningParameter(descriptor, conv));
                 }
 
                 EnsureUniqueParameterNames();
             }
 
-            public string MqttTopic { get; }
+            public string MqttTopic => $"Wolf/{IP}/{Name}";
+
+            public string Name { get; }
+
+            public string IP { get; }
 
             public string WriteAddress { get; }
+
+            public bool HasValue => _parameter.Any(x => x.HasValue);
 
             private void EnsureUniqueParameterNames()
             {
@@ -202,7 +222,7 @@ namespace ism7mqtt
                 return WritableParameters().SelectMany(x => x.GetWriteRequest(name, node));
             }
 
-            public MqttMessage Message
+            public JsonMessage JsonMessage
             {
                 get
                 {
@@ -211,12 +231,44 @@ namespace ism7mqtt
                         .Distinct()
                         .ToList();
                     if (parameters.Count == 0) return null;
-                    var result = new MqttMessage(MqttTopic);
+                    var result = new JsonObject();
                     foreach (var parameter in parameters)
                     {
-                        result.AddProperty(parameter.GetValues());
+                        var property = parameter.GetJsonValue();
+                        if (result.TryGetPropertyValue(property.Key, out var value))
+                        {
+                            foreach (var prop in property.Value.AsObject())
+                            {
+                                value.AsObject().Add(prop.Key, prop.Value.Deserialize<JsonNode>());
+                            }
+                        }
+                        else
+                        {
+                            result.Add(property);
+                        }
                     }
-                    return result;
+                    return new JsonMessage(MqttTopic, result);
+                }
+            }
+
+            public IEnumerable<MqttMessage> MqttMessages
+            {
+                get 
+                {
+                    var parameters = _parameter
+                        .Where(x => x.HasValue)
+                        .Distinct();
+                    foreach (var parameter in parameters)
+                    {
+                        var properties = parameter.GetSingleValues();
+                        foreach (var property in properties)
+                        {
+                            property.AddPrefix(Name);
+                            property.AddPrefix(IP);
+                            property.AddPrefix("Wolf");
+                            yield return property;
+                        }
+                    }
                 }
             }
         }
@@ -234,14 +286,7 @@ namespace ism7mqtt
 
             public string Name => _descriptor.Name;
 
-            public string SafeName => Name
-                .Replace("ä", "ae")
-                .Replace("ö", "oe")
-                .Replace("ü", "ue")
-                .Replace("Ä", "Ae")
-                .Replace("Ö", "Oe")
-                .Replace("Ü", "Ue")
-                .Replace("ß", "ss");
+            public string MqttName => MqttEscape(Name);
 
             public bool IsDuplicate { get; set; }
 
@@ -271,7 +316,7 @@ namespace ism7mqtt
             public IEnumerable<InfoWrite> GetWriteRequest(string name, JsonNode node)
             {
                 if (!IsWritable) return Array.Empty<InfoWrite>();
-                if (SafeName != name) return Array.Empty<InfoWrite>();
+                if (Name != name) return Array.Empty<InfoWrite>();
                 if (!TryGetWriteValue(node, out var value)) return Array.Empty<InfoWrite>();
                 return _converter.GetWrite(value);
             }
@@ -314,14 +359,13 @@ namespace ism7mqtt
                 return value is not null;
             }
 
-            public KeyValuePair<string, JsonNode> GetValues()
+            public KeyValuePair<string, JsonNode> GetJsonValue()
             {
                 JsonNode value = _converter.GetValue();
                 if (_descriptor is ListParameterDescriptor listDescriptor)
                 {
                     if (!String.IsNullOrEmpty(listDescriptor.KeyValueList))
                     {
-                        
                         var names = listDescriptor.KeyValueList.Split(';');
                         var key = value.ToString();
                         for (int i = 0; i < names.Length - 1; i += 2)
@@ -345,7 +389,63 @@ namespace ism7mqtt
                         [_descriptor.PTID.ToString()] = value,
                     };
                 }
-                return new KeyValuePair<string,JsonNode>(SafeName, value);
+                return new KeyValuePair<string,JsonNode>(Name, value);
+            }
+
+            public IEnumerable<MqttMessage> GetSingleValues()
+            {
+                var json = _converter.GetValue();
+                var text = JsonSerializer.Serialize(json);
+                var result = new MqttMessage(MqttName, text);
+                if (IsDuplicate)
+                {
+                    result.AddSuffix(_descriptor.PTID.ToString());
+                }
+                return HandleListParameter(result);
+            }
+
+            private IEnumerable<MqttMessage> HandleListParameter(MqttMessage value)
+            {
+                if (_descriptor is ListParameterDescriptor listDescriptor)
+                {
+                    if (!String.IsNullOrEmpty(listDescriptor.KeyValueList))
+                    {
+                        var names = listDescriptor.KeyValueList.Split(';');
+                        var key = value.ToString();
+                        for (int i = 0; i < names.Length - 1; i += 2)
+                        {
+                            if (names[i] == key)
+                            {
+                                yield return value
+                                    .Clone()
+                                    .AddSuffix("value");
+                                yield return value
+                                    .Clone()
+                                    .AddSuffix("text")
+                                    .SetContent(names[i + 1]);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    yield return value;
+                }
+            }
+
+            private static string MqttEscape(string topic)
+            {
+                return topic
+                    .Replace("ä", "ae")
+                    .Replace("ö", "oe")
+                    .Replace("ü", "ue")
+                    .Replace("Ä", "Ae")
+                    .Replace("Ö", "Oe")
+                    .Replace("Ü", "Ue")
+                    .Replace("ß", "ss")
+                    .Replace('/', '_')
+                    .Replace(' ', '_');
             }
         }
     }

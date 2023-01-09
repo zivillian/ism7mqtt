@@ -38,6 +38,8 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JsonValue GetValue()
         {
+            if (!HasValue)
+                throw new InvalidOperationException();
             var values = _values.Values.ToList();
             var wh = values[0];
             ulong value = wh;

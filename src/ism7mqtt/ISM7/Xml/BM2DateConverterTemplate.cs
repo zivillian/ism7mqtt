@@ -22,6 +22,8 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JsonValue GetValue()
         {
+            if (!HasValue)
+                throw new InvalidOperationException();
             var result = JsonValue.Create(_value.Value);
             _value = null;
             return result;
