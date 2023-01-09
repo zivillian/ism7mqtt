@@ -21,7 +21,7 @@ namespace ism7mqtt
 {
     public class Ism7Client
     {
-        private readonly Func<MqttMessage, CancellationToken, Task> _messageHandler;
+        private readonly Func<Ism7Config, CancellationToken, Task> _messageHandler;
         private readonly IPAddress _ipAddress;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
@@ -36,7 +36,7 @@ namespace ism7mqtt
 
         public bool EnableDebug { get; set; }
 
-        public Ism7Client(Func<MqttMessage, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
+        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
         {
             _messageHandler = messageHandler;
             _ipAddress = ipAddress;
@@ -86,23 +86,46 @@ namespace ism7mqtt
             return ssl;
         }
 
-        public async Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
+        public Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
         {
-            List<InfoWrite> writeRequests;
             try
             {
-                writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+                var writeRequests = _config.GetWriteRequest(mqttTopic, data).ToList();
+                if (writeRequests.Count == 0)
+                {
+                    Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
+                    return Task.CompletedTask;
+                }
+                return OnCommandAsync(writeRequests, cancellationToken);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"error for topic '{mqttTopic}' with payload '{data.ToJsonString()}'\n{ex.Message}");
-                return;
+                return Task.CompletedTask;
             }
-            if (writeRequests.Count == 0)
+        }
+
+        public Task OnCommandAsync(string mqttTopic, ReadOnlyMemory<string> propertyParts, string value, CancellationToken cancellationToken)
+        {
+            try
             {
-                Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
-                return;
+                var writeRequests = _config.GetWriteRequest(mqttTopic, propertyParts, value).ToList();
+                if (writeRequests.Count == 0)
+                {
+                    Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{value}'");
+                    return Task.CompletedTask;
+                }
+                return OnCommandAsync(writeRequests, cancellationToken);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error for topic '{mqttTopic}' with payload '{value}'\n{ex.Message}");
+                return Task.CompletedTask;
+            }
+        }
+
+        private async Task OnCommandAsync(List<InfoWrite> writeRequests, CancellationToken cancellationToken)
+        {
             var request = new TelegramBundleReq
             {
                 AbortOnError = true,
@@ -124,10 +147,10 @@ namespace ism7mqtt
                 throw new InvalidDataException($"unexpected state '{resp.State}");
             
             
-            var datapoints = _config.ProcessData(resp.WriteTelegrams.Where(x => x.State == TelegrResponseState.OK));
-            foreach (var datapoint in datapoints)
+            var hasDatapoints = _config.ProcessData(resp.WriteTelegrams.Where(x => x.State == TelegrResponseState.OK));
+            if (hasDatapoints)
             {
-                await _messageHandler(datapoint, cancellationToken);
+                await _messageHandler(_config, cancellationToken);
             }
         }
 
@@ -242,10 +265,10 @@ namespace ism7mqtt
             if (resp.State != TelegrResponseState.OK)
                 throw new InvalidDataException($"unexpected state '{resp.State}");
             
-            var datapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
-            foreach (var datapoint in datapoints)
+            var hasDatapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
+            if (hasDatapoints)
             {
-                await _messageHandler(datapoint, cancellationToken);
+                await _messageHandler(_config, cancellationToken);
             }
         }
 
@@ -288,10 +311,10 @@ namespace ism7mqtt
                 throw new InvalidDataException($"unexpected state '{resp.State}");
             if (resp.Telegrams.Any())
             {
-                var datapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
-                foreach (var datapoint in datapoints)
+                var hasDatapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
+                if (hasDatapoints)
                 {
-                    await _messageHandler(datapoint, cancellationToken);
+                    await _messageHandler(_config, cancellationToken);
                 }
                 var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
                 await SubscribeAsync(busAddress, cancellationToken);

@@ -29,6 +29,6 @@ namespace ism7mqtt.ISM7.Xml
 
         public abstract JsonValue GetValue();
 
-        public abstract IEnumerable<InfoWrite> GetWrite(JsonValue value);
+        public abstract IEnumerable<InfoWrite> GetWrite(string value);
     }
 }

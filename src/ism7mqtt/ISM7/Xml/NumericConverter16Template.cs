@@ -25,75 +25,69 @@ namespace ism7mqtt.ISM7.Xml
             {
                 case "US":
                     result = JsonValue.Create(_value.Value);
-                    _value = null;
-                    return result;
+                    break;
                 case "SS":
                     result = JsonValue.Create((short)_value.Value);
-                    _value = null;
-                    return result;
+                    break;
                 case "SS10":
                     result = JsonValue.Create(((short)_value.Value) / 10.0);
-                    _value = null;
-                    return result;
+                    break;
                 case "US10":
                     result = JsonValue.Create(_value.Value / 10.0);
-                    _value = null;
-                    return result;
+                    break;
                 case "SS100":
                     result = JsonValue.Create(((short)_value.Value) / 100.0);
-                    _value = null;
-                    return result;
+                    break;
                 case "SSPR":
                     result = JsonValue.Create(((short) _value.Value) * (1.0 / 255));
-                    _value = null;
-                    return result;
+                    break;
                 case "US4":
                     result = JsonValue.Create(_value.Value / 4.0);
-                    _value = null;
-                    return result;
+                    break;
                 case "IntDiv60":
                     result = JsonValue.Create(_value.Value / 60.0);
-                    _value = null;
-                    return result;
+                    break;
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
             }
+            _value = null;
+            return result;
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             ushort data;
             switch (Type)
             {
                 case "US":
-                    if (!UInt16.TryParse(value.ToString(), out data)) yield break;
+                    if (!UInt16.TryParse(value, out data)) yield break;
                     break;
                 case "SS":
-                    if (!Int16.TryParse(value.ToString(), out var int16)) yield break;
+                    if (!Int16.TryParse(value, out var int16)) yield break;
                     data = (ushort) int16;
                     break;
                 case "SS10":
-                    if (!Double.TryParse(value.ToString(), out var parsed)) yield break;
+                    if (!Double.TryParse(value, out var parsed)) yield break;
                     data = (ushort) (parsed * 10);
                     break;
                 case "US10":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 10);
                     break;
                 case "SS100":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 100);
                     break;
                 case "SSPR":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * (1.0/256));
                     break;
                 case "US4":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 4);
                     break;
                 case "IntDiv60":
-                    if (!Double.TryParse(value.ToString(), out parsed)) yield break;
+                    if (!Double.TryParse(value, out parsed)) yield break;
                     data = (ushort) (parsed * 60);
                     break;
                 default:

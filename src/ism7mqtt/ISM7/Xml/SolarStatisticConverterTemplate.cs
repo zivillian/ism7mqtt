@@ -38,6 +38,8 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JsonValue GetValue()
         {
+            if (!HasValue)
+                throw new InvalidOperationException();
             var values = _values.Values.ToList();
             var wh = values[0];
             ulong value = wh;
@@ -55,9 +57,9 @@ namespace ism7mqtt.ISM7.Xml
             return JsonValue.Create(value);
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
-            throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
+            throw new NotImplementedException($"CTID '{CTID}' ({nameof(SolarStatisticConverterTemplate)}) is not yet implemented");
         }
     }
 }
