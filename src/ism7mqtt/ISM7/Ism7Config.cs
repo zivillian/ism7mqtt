@@ -474,6 +474,14 @@ namespace ism7mqtt
                     {
                         var names = listDescriptor.KeyValueList.Split(';');
                         var key = value.Content;
+                        if (key == "false")
+                        {
+                            key = "0";
+                        }
+                        else if (key == "true")
+                        {
+                            key = "1";
+                        }
                         for (int i = 0; i < names.Length - 1; i += 2)
                         {
                             if (names[i] == key)
