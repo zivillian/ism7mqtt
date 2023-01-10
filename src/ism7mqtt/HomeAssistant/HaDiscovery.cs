@@ -15,16 +15,17 @@ namespace ism7mqtt.HomeAssistant
             _config = config;
         }
 
-        public IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId)
+        public IEnumerable<JsonMessage> GetDiscoveryInfo(string discoveryId)
         {
             return _config.Devices.SelectMany(x => GetDiscoveryInfo(discoveryId, x));
         }
 
-        private IEnumerable<MqttMessage> GetDiscoveryInfo(string discoveryId, Ism7Config.Device device)
+        private IEnumerable<JsonMessage> GetDiscoveryInfo(string discoveryId, Ism7Config.RunningDevice device)
         {
-            List<MqttMessage> result = new List<MqttMessage>();
-            foreach (var descriptor in device.Parameters)
+            List<JsonMessage> result = new List<JsonMessage>();
+            foreach (var parameter in device.Parameters)
             {
+                var descriptor = parameter.Descriptor;
                 var type = GetHomeAssistantType(descriptor);
                 if (type == null) continue;
                 if (descriptor.ControlType == "DaySwitchTimes" || descriptor.ControlType.Contains("NO_DISPLAY")) continue;
@@ -32,65 +33,64 @@ namespace ism7mqtt.HomeAssistant
                 // Handle parameters with name-duplicates - their ID will be part of the topic
                 string deduplicator = "";
                 string deduplicatorLabel = "";
-                if (descriptor.IsDuplicate)
+                if (parameter.IsDuplicate)
                 {
                     deduplicator = $"/{descriptor.PTID}";
                     deduplicatorLabel = $"_{descriptor.PTID}";
                 }
                 
-                var discoveryName = GetDiscoveryName(descriptor);
+                var discoveryName = parameter.MqttName;
                 string uniqueId = $"{discoveryId}_{discoveryName}{deduplicatorLabel}";
                 string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
-                MqttMessage message = new MqttMessage(discoveryTopic);
-
-                message.AddProperty("unique_id", uniqueId);
+                var message = new JsonObject();
+                message.Add("unique_id", uniqueId);
 
                 var discoveryTopicSSuffix = GetDiscoveryTopicSuffix(descriptor);
                 string stateTopic = $"{device.MqttTopic}/{discoveryName}{deduplicator}{discoveryTopicSSuffix}";
-                message.AddProperty("state_topic", stateTopic);
+                message.Add("state_topic", stateTopic);
 
                 if (descriptor.IsWritable)
                 {
-                    string commandTopic = $"{device.MqttTopic}/set/{descriptor.SafeName}{deduplicator}{discoveryTopicSSuffix}";
-                    message.AddProperty("command_topic", commandTopic);
+                    string commandTopic = $"{device.MqttTopic}/set/{parameter.MqttName}{deduplicator}{discoveryTopicSSuffix}";
+                    message.Add("command_topic", commandTopic);
                 }
 
-                message.AddProperty("name", descriptor.Name);
-                message.AddProperty("object_id", $"{discoveryId}_{device.Name}_{descriptor.Name}{deduplicatorLabel}");
+                message.Add("name", descriptor.Name);
+                message.Add("object_id", $"{discoveryId}_{device.Name}_{descriptor.Name}{deduplicatorLabel}");
 
                 foreach (var (key, value) in GetDiscoveryProperties(descriptor))
                 {
-                    message.AddProperty(key, value);
+                    message.Add(key, value);
                 }
 
                 // Try to guess a suitable icon if none given
-                if (!message.Content.ContainsKey("icon"))
+                if (!message.ContainsKey("icon"))
                 {
                     if (descriptor.Name.ToLower().Contains("brenner"))
-                        message.AddProperty("icon", "mdi:fire");
+                        message.Add("icon", "mdi:fire");
                     else if (descriptor.Name.ToLower().Contains("solar"))
-                        message.AddProperty("icon", "mdi:solar-panel");
+                        message.Add("icon", "mdi:solar-panel");
                     else if (descriptor.Name.ToLower().Contains("ventil"))
-                        message.AddProperty("icon", "mdi:pipe-valve");
+                        message.Add("icon", "mdi:pipe-valve");
                     else if (descriptor.Name.ToLower().Contains("heizung"))
-                        message.AddProperty("icon", "mdi:radiator");
+                        message.Add("icon", "mdi:radiator");
                     else if (descriptor.Name.ToLower().Contains("pumpe"))
-                        message.AddProperty("icon", "mdi:pump");
+                        message.Add("icon", "mdi:pump");
                     if (descriptor.Name.ToLower().Contains("druck"))
-                        message.AddProperty("icon", "mdi:gauge");
+                        message.Add("icon", "mdi:gauge");
                 }
 
-                message.AddProperty("device", GetDiscoveryDeviceInfo(discoveryId, device));
-                result.Add(message);
+                message.Add("device", GetDiscoveryDeviceInfo(discoveryId, device));
+                result.Add(new JsonMessage(discoveryTopic, message));
             }
             return result;
         }
 
-        private JsonObject GetDiscoveryDeviceInfo(string discoveryId, Ism7Config.Device device)
+        private JsonObject GetDiscoveryDeviceInfo(string discoveryId, Ism7Config.RunningDevice device)
         {
             return new JsonObject
             {
-                { "configuration_url", $"http://{device.Ip}/" },
+                { "configuration_url", $"http://{device.IP}/" },
                 { "manufacturer", "Wolf" },
                 { "model", device.Name },
                 { "name", $"{discoveryId} {device.Name}" },
@@ -100,7 +100,7 @@ namespace ism7mqtt.HomeAssistant
                         new JsonArray
                         {
                             "ip_dev",
-                            $"{device.Ip}_{device.Name}"
+                            $"{device.IP}_{device.Name}"
                         }
                     }
                 }
@@ -216,11 +216,6 @@ namespace ism7mqtt.HomeAssistant
                 default:
                     yield break;
             }
-        }
-
-        private string GetDiscoveryName(ParameterDescriptor descriptor)
-        {
-            return Program.EscapeMqttTopic(descriptor.SafeName);
         }
     }
 }

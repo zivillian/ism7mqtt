@@ -17,7 +17,6 @@ namespace ism7mqtt
 {
     class Program
     {
-        private static bool _disableJson = false;
         private static bool _useSeparateTopics = false;
         private static bool _retain = false;
 
@@ -33,7 +32,6 @@ namespace ism7mqtt
             string parameter = "parameter.json";
             string mqttUsername = GetEnvString("ISM7_MQTTUSERNAME");
             string mqttPassword = GetEnvString("ISM7_MQTTPASSWORD");
-            _disableJson = GetEnvBool("ISM7_DISABLEJSON");
             _useSeparateTopics = GetEnvBool("ISM7_SEPARATE");
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
@@ -45,8 +43,7 @@ namespace ism7mqtt
                 {"t|parameter=", $"path to parameter.json - defaults to {parameter}", x => parameter = x},
                 {"mqttuser=", "MQTT username", x => mqttUsername = x},
                 {"mqttpass=", "MQTT password", x => mqttPassword = x},
-                {"s|separate", "send values to separate mqtt topics", x=> _useSeparateTopics = x != null},
-                {"disable-json", "disable json mqtt payload", x=> _disableJson = x != null},
+                {"s|separate", "send values to separate mqtt topics - also disables json payload", x=> _useSeparateTopics = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => _discoveryId = x},
@@ -119,7 +116,7 @@ namespace ism7mqtt
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
-                        var client = new Ism7Client((m, c) => OnMessage(mqttClient, m, enableDebug, c), parameter, IPAddress.Parse(ip))
+                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, IPAddress.Parse(ip))
                         {
                             Interval = interval,
                             EnableDebug = enableDebug
@@ -202,6 +199,7 @@ namespace ism7mqtt
                 //json
                 data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
+                return client.OnCommandAsync(topic, data, cancellationToken);
             }
             else
             {
@@ -209,19 +207,12 @@ namespace ism7mqtt
                 var index = message.Topic.LastIndexOf("/set/");
                 var property = message.Topic.Substring(index + 5);
                 topic = message.Topic.Substring(0, index);
-                var propertyParts = property.Split('/').AsSpan();
-                data = new JsonObject{{propertyParts[^1], JsonValue.Create(message.ConvertPayloadToString())}};
-                propertyParts = propertyParts[..^1];
-                while (!propertyParts.IsEmpty)
-                {
-                    data = new JsonObject{{propertyParts[^1], data}};
-                    propertyParts = propertyParts[..^1];
-                }
+                var parts = property.Split('/');
+                return client.OnCommandAsync(topic, parts, message.ConvertPayloadToString(), cancellationToken);
             }
-            return client.OnCommandAsync(topic, data, cancellationToken);
         }
 
-        private static async Task OnMessage(IMqttClient client, MqttMessage message, bool debug, CancellationToken cancellationToken)
+        private static async Task OnMessage(IMqttClient client, Ism7Config config, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
             {
@@ -231,67 +222,45 @@ namespace ism7mqtt
                 }
                 return;
             }
-            if (!_disableJson)
+            if (!_useSeparateTopics)
             {
-                var data = JsonSerializer.Serialize(message.Content);
-                var builder = new MqttApplicationMessageBuilder()
-                    .WithTopic(message.Path)
-                    .WithPayload(data)
-                    .WithContentType("application/json");
-                if (_retain)
-                    builder = builder.WithRetainFlag();
-                var payload = builder
-                    .Build();
-                if (debug)
+                var deviceMessages = config.JsonMessages;
+                foreach (var message in deviceMessages)
                 {
-                    Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                    var data = JsonSerializer.Serialize(message.Content);
+                    var builder = new MqttApplicationMessageBuilder()
+                        .WithTopic(message.Path)
+                        .WithPayload(data)
+                        .WithContentType("application/json");
+                    if (_retain)
+                        builder = builder.WithRetainFlag();
+                    var payload = builder
+                        .Build();
+                    if (debug)
+                    {
+                        Console.WriteLine($"publishing mqtt with topic '{message.Path}' '{data}'");
+                    }
+                    await client.PublishAsync(payload, cancellationToken);
                 }
-                await client.PublishAsync(payload, cancellationToken);
             }
-            if (_useSeparateTopics)
+            else
             {
-                foreach (var (name, data) in Flatten(message.Content))
+                var messages = config.MqttMessages;
+                foreach (var message in messages)
                 {
-                    var topic = $"{message.Path}/{name}";
+                    var topic = message.Path;
                     var builder = new MqttApplicationMessageBuilder().WithTopic(topic)
-                        .WithPayload(data);
+                        .WithPayload(message.Content);
                     if (_retain)
                         builder = builder.WithRetainFlag();
                     var payload = builder.Build();
                     if (debug)
                     {
-                        Console.WriteLine($"publishing mqtt with topic '{topic}' '{data}'");
+                        Console.WriteLine($"publishing mqtt with topic '{topic}' '{message.Content:X2}'");
                     }
                     await client.PublishAsync(payload, cancellationToken);
                 }
             }
-        }
-
-        private static IEnumerable<(string, string)> Flatten(JsonObject data)
-        {
-            foreach (var property in data)
-            {
-                var topic = EscapeMqttTopic(property.Key);
-                if (property.Value is JsonObject nested)
-                {
-                    foreach (var (path, value) in Flatten(nested))
-                    {
-                        yield return ($"{topic}/{path}", value);
-                    }
-                }
-                else
-                {
-                    yield return (topic, property.Value?.ToString());
-                }
-            }
-        }
-
-        public static string EscapeMqttTopic(string name)
-        {
-            return name.Replace(' ', '_')
-                .Replace('/', '_')
-                .Replace(".", String.Empty)
-                .Replace('+', '_');
         }
     }
 }

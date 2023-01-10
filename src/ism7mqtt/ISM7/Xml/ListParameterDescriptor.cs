@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using System.Text.Json.Nodes;
 
 namespace ism7mqtt.ISM7.Xml
 {
@@ -44,51 +43,6 @@ namespace ism7mqtt.ISM7.Xml
                 }
                 return _options;
             }
-        }
-
-        protected override JsonNode GetValueCore(ConverterTemplateBase converter)
-        {
-            var value = converter.GetValue();
-            var key = value.ToString();
-            // some list types have a binary/bool converter, even if it doesn't make much sense.. try to detect those cases
-            if (!IsBoolean && converter is BinaryReadOnlyConverterTemplate)
-            {
-                if (value.TryGetValue<bool>(out var valueBool))
-                {
-                    key = valueBool ? "1" : "0";
-                }
-            }
-
-            var text = Options.Where(x => x.Key == key).Select(x => x.Value).FirstOrDefault();
-            if (!String.IsNullOrEmpty(text))
-            {
-                return new JsonObject
-                {
-                    ["value"] = value,
-                    ["text"] = text
-                };
-            }
-            return value;
-        }
-
-        protected override JsonValue GetWrite(JsonNode node)
-        {
-            if (String.IsNullOrEmpty(KeyValueList)) return base.GetWrite(node);
-            if (node is not JsonObject jobject) return base.GetWrite(node);
-            if (jobject.TryGetPropertyValue("value", out var value))
-            {
-                return value.AsValue();
-            }
-            if (jobject.TryGetPropertyValue("text", out value))
-            {
-                var names = KeyValueList.Split(';');
-                var name = value.ToString();
-                for (int i = 1; i < names.Length; i += 2)
-                {
-                    if (names[i] == name) return JsonValue.Create(names[i - 1]);
-                }
-            }
-            return base.GetWrite(node);
         }
 
         private bool? _isBoolean;

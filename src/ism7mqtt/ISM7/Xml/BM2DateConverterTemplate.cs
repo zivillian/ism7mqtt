@@ -22,12 +22,14 @@ namespace ism7mqtt.ISM7.Xml
 
         public override JsonValue GetValue()
         {
+            if (!HasValue)
+                throw new InvalidOperationException();
             var result = JsonValue.Create(_value.Value.ToString());
             _value = null;
             return result;
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }

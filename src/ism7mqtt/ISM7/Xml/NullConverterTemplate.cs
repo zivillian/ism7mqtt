@@ -33,7 +33,7 @@ namespace ism7mqtt.ISM7.Xml
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }

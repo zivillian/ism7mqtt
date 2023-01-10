@@ -61,14 +61,14 @@ namespace ism7mqtt.ISM7.Xml
             }
         }
 
-        public override IEnumerable<InfoWrite> GetWrite(JsonValue value)
+        public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             ushort low;
             ushort high;
             switch (Type)
             {
                 case "UINT32":
-                    if (!UInt32.TryParse(value.ToString(), out var data)) yield break;
+                    if (!UInt32.TryParse(value, out var data)) yield break;
                     low = (ushort) (data & 0xffff);
                     high = (ushort) (data >> 16);
                     break;
