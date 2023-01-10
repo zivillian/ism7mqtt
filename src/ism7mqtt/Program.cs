@@ -35,6 +35,7 @@ namespace ism7mqtt
             _useSeparateTopics = GetEnvBool("ISM7_SEPARATE");
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
+            _discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
