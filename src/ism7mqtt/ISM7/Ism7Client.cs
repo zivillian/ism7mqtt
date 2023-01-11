@@ -97,7 +97,7 @@ namespace ism7mqtt
                 {
                     Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{data.ToJsonString()}'");
                     return Task.CompletedTask;
-            }
+                }
                 return OnCommandAsync(writeRequests, cancellationToken);
             }
             catch (Exception ex)
@@ -112,11 +112,11 @@ namespace ism7mqtt
             try
             {
                 var writeRequests = _config.GetWriteRequest(mqttTopic, propertyParts, value).ToList();
-            if (writeRequests.Count == 0)
-            {
+                if (writeRequests.Count == 0)
+                {
                     Console.WriteLine($"nothing to send for topic '{mqttTopic}' with payload '{value}'");
                     return Task.CompletedTask;
-            }
+                }
                 return OnCommandAsync(writeRequests, cancellationToken);
             }
             catch (Exception ex)
