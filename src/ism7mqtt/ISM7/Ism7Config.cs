@@ -343,9 +343,9 @@ namespace ism7mqtt
                 if (parts.IsEmpty) return Array.Empty<InfoWrite>();
                 if (MqttName != parts[0]) return Array.Empty<InfoWrite>();
                 parts = parts.Slice(1);
-                if (parts.IsEmpty) return Array.Empty<InfoWrite>();
                 if (IsDuplicate)
                 {
+                    if (parts.IsEmpty) return Array.Empty<InfoWrite>();
                     if (_descriptor.PTID.ToString() != parts[0]) return Array.Empty<InfoWrite>();
                     parts = parts.Slice(1);
                 }
