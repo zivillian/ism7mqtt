@@ -20,6 +20,17 @@ namespace ism7mqtt.HomeAssistant
             return _config.Devices.SelectMany(x => GetDiscoveryInfo(discoveryId, x));
         }
 
+        private string LaunderHomeassistantId(string id) {
+            id = id.Replace("ä", "ae").Replace("ö", "oe").Replace("ü", "ue").Replace("ß", "ss").Replace(' ', '_');
+            return new string((from c in id where char.IsLetterOrDigit(c) || c == ' ' || c == '_' select c).ToArray());
+        }
+
+        private string ToHaObjectId(string discoveryId, Ism7Config.RunningDevice device, ParameterDescriptor parameter)
+        {
+            var objectId = $"{discoveryId}_{device.Name}_{device.WriteAddress}_{parameter.PTID}_{parameter.Name}";
+            return LaunderHomeassistantId(objectId);
+        }
+
         private IEnumerable<JsonMessage> GetDiscoveryInfo(string discoveryId, Ism7Config.RunningDevice device)
         {
             List<JsonMessage> result = new List<JsonMessage>();
@@ -29,6 +40,7 @@ namespace ism7mqtt.HomeAssistant
                 var type = GetHomeAssistantType(descriptor);
                 if (type == null) continue;
                 if (descriptor.ControlType == "DaySwitchTimes" || descriptor.ControlType.Contains("NO_DISPLAY")) continue;
+                var uniqueId = ToHaObjectId(discoveryId, device, descriptor);
 
                 // Handle parameters with name-duplicates - their ID will be part of the topic
                 string deduplicator = "";
@@ -39,14 +51,12 @@ namespace ism7mqtt.HomeAssistant
                     deduplicatorLabel = $"_{descriptor.PTID}";
                 }
                 
-                var discoveryName = parameter.MqttName;
-                string uniqueId = $"{discoveryId}_{discoveryName}{deduplicatorLabel}";
                 string discoveryTopic = $"homeassistant/{type}/{uniqueId}/config";
                 var message = new JsonObject();
                 message.Add("unique_id", uniqueId);
 
                 var discoveryTopicSSuffix = GetDiscoveryTopicSuffix(descriptor);
-                string stateTopic = $"{device.MqttTopic}/{discoveryName}{deduplicator}{discoveryTopicSSuffix}";
+                string stateTopic = $"{device.MqttTopic}/{parameter.MqttName}{deduplicator}{discoveryTopicSSuffix}";
                 message.Add("state_topic", stateTopic);
 
                 if (descriptor.IsWritable)
@@ -56,7 +66,7 @@ namespace ism7mqtt.HomeAssistant
                 }
 
                 message.Add("name", descriptor.Name);
-                message.Add("object_id", $"{discoveryId}_{device.Name}_{descriptor.Name}{deduplicatorLabel}");
+                message.Add("object_id", uniqueId);
 
                 foreach (var (key, value) in GetDiscoveryProperties(descriptor))
                 {
