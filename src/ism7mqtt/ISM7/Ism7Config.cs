@@ -138,6 +138,8 @@ namespace ism7mqtt
             return Array.Empty<InfoWrite>();
         }
 
+        public IEnumerable<RunningDevice> Devices => _devices.SelectMany(x => x.Value);
+
         public IEnumerable<JsonMessage> JsonMessages => _devices.Values
             .SelectMany(x => x)
             .Where(x => x.HasValue)
@@ -148,15 +150,17 @@ namespace ism7mqtt
             .Where(x => x.HasValue)
             .SelectMany(x => x.MqttMessages);
 
-        class RunningDevice
+        public class RunningDevice
         {
             private readonly List<RunningParameter> _parameter;
 
             public RunningDevice(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
-                WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
-                Name = $"{name}_{ba}";
+                Name = name;
                 IP = ip;
+
+                WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
+                MqttTopic = $"Wolf/{ip}/{name}_{ba}";
 
                 _parameter = new List<RunningParameter>();
                 foreach (var descriptor in parameter)
@@ -168,7 +172,7 @@ namespace ism7mqtt
                 EnsureUniqueParameterNames();
             }
 
-            public string MqttTopic => $"Wolf/{IP}/{Name}";
+            public string MqttTopic { get; }
 
             public string Name { get; }
 
@@ -196,6 +200,8 @@ namespace ism7mqtt
             {
                 return _parameter.Where(x => x.IsWritable);
             }
+
+            public IEnumerable<RunningParameter> Parameters => _parameter;
 
             public void ProcessReadDatapoint(ushort telegram, int? service, byte low, byte high)
             {
@@ -276,7 +282,7 @@ namespace ism7mqtt
 
             public IEnumerable<MqttMessage> MqttMessages
             {
-                get 
+                get
                 {
                     var parameters = _parameter
                         .Where(x => x.HasValue)
@@ -286,9 +292,7 @@ namespace ism7mqtt
                         var properties = parameter.GetSingleValues();
                         foreach (var property in properties)
                         {
-                            property.AddPrefix(Name);
-                            property.AddPrefix(IP);
-                            property.AddPrefix("Wolf");
+                            property.AddPrefix(MqttTopic);
                             yield return property;
                         }
                     }
@@ -296,7 +300,7 @@ namespace ism7mqtt
             }
         }
 
-        class RunningParameter
+        public class RunningParameter
         {
             private readonly ParameterDescriptor _descriptor;
             private readonly ConverterTemplateBase _converter;
@@ -313,11 +317,13 @@ namespace ism7mqtt
 
             public bool IsDuplicate { get; set; }
 
-            public bool IsWritable => _descriptor.ReadOnlyConditionId == "False";
+            public bool IsWritable => _descriptor.IsWritable;
 
             public bool HasValue => _converter.HasValue;
 
             public IEnumerable<InfoRead> InfoReads => _converter.InfoReads;
+
+            public ParameterDescriptor Descriptor => _descriptor;
 
             public void ProcessDatapoint(ushort telegram, int? service, byte low, byte high, bool write)
             {
@@ -426,21 +432,17 @@ namespace ism7mqtt
                 JsonNode value = _converter.GetValue();
                 if (_descriptor is ListParameterDescriptor listDescriptor)
                 {
-                    if (!String.IsNullOrEmpty(listDescriptor.KeyValueList))
+                    if (listDescriptor.Options.Any())
                     {
-                        var names = listDescriptor.KeyValueList.Split(';');
                         var key = value.ToString();
-                        for (int i = 0; i < names.Length - 1; i += 2)
+                        var text = listDescriptor.Options.Where(x => x.Key == key).Select(x => x.Value).FirstOrDefault();
+                        if (!String.IsNullOrEmpty(text))
                         {
-                            if (names[i] == key)
+                            value = new JsonObject
                             {
-                                value = new JsonObject
-                                {
-                                    ["value"] = value,
-                                    ["text"] = names[i + 1]
-                                };
-                                break;
-                            }
+                                ["value"] = value,
+                                ["text"] = text
+                            };
                         }
                     }
                 }
@@ -470,31 +472,33 @@ namespace ism7mqtt
             {
                 if (_descriptor is ListParameterDescriptor listDescriptor)
                 {
-                    if (!String.IsNullOrEmpty(listDescriptor.KeyValueList))
+                    if (listDescriptor.Options.Any())
                     {
-                        var names = listDescriptor.KeyValueList.Split(';');
                         var key = value.Content;
-                        if (key == "false")
+                        // some list types have a binary/bool converter, even if it doesn't make much sense.. try to detect those cases
+                        if (!listDescriptor.IsBoolean && _converter is BinaryReadOnlyConverterTemplate)
                         {
-                            key = "0";
-                        }
-                        else if (key == "true")
-                        {
-                            key = "1";
-                        }
-                        for (int i = 0; i < names.Length - 1; i += 2)
-                        {
-                            if (names[i] == key)
+                            key = key switch
                             {
-                                yield return value
-                                    .Clone()
-                                    .AddSuffix("value");
-                                yield return value
-                                    .Clone()
-                                    .AddSuffix("text")
-                                    .SetContent(names[i + 1]);
-                                break;
-                            }
+                                "false" => "0",
+                                "true" => "1",
+                                _ => key
+                            };
+                        }
+                        var text = listDescriptor.Options.Where(x => x.Key == key).Select(x => x.Value).FirstOrDefault();
+                        if (!String.IsNullOrEmpty(text))
+                        {
+                            yield return value
+                                .Clone()
+                                .AddSuffix("value");
+                            yield return value
+                                .Clone()
+                                .AddSuffix("text")
+                                .SetContent(text);
+                        }
+                        else
+                        {
+                            yield return value;
                         }
                     }
                 }

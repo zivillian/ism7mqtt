@@ -36,6 +36,8 @@ namespace ism7mqtt
 
         public bool EnableDebug { get; set; }
 
+        public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
+
         public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
         {
             _messageHandler = messageHandler;
@@ -299,6 +301,10 @@ namespace ism7mqtt
                     TelegramBundleType = TelegramBundleType.pull,
                     InfoReadTelegrams = infoReads
                 }, cancellationToken);
+            }
+            if (OnInitializationFinishedAsync is not null)
+            {
+                await OnInitializationFinishedAsync(_config, cancellationToken);
             }
         }
 

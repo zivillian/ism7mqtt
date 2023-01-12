@@ -24,7 +24,7 @@ namespace ism7mqtt.ISM7.Xml
         {
             if (!HasValue)
                 throw new InvalidOperationException();
-            var result = JsonValue.Create(_value.Value);
+            var result = JsonValue.Create(_value.Value.ToString());
             _value = null;
             return result;
         }

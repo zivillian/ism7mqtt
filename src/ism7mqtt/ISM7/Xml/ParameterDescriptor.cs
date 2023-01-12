@@ -27,5 +27,7 @@ namespace ism7mqtt.ISM7.Xml
 
         [XmlElement("ControlType")]
         public string ControlType { get; set; }
+
+        public bool IsWritable => ReadOnlyConditionId == "False";
     }
 }

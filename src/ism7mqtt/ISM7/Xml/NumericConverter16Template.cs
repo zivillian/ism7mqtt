@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json.Nodes;
 using ism7mqtt.ISM7.Protocol;
 
@@ -67,27 +68,27 @@ namespace ism7mqtt.ISM7.Xml
                     data = (ushort) int16;
                     break;
                 case "SS10":
-                    if (!Double.TryParse(value, out var parsed)) yield break;
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed)) yield break;
                     data = (ushort) (parsed * 10);
                     break;
                 case "US10":
-                    if (!Double.TryParse(value, out parsed)) yield break;
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
                     data = (ushort) (parsed * 10);
                     break;
                 case "SS100":
-                    if (!Double.TryParse(value, out parsed)) yield break;
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
                     data = (ushort) (parsed * 100);
                     break;
                 case "SSPR":
-                    if (!Double.TryParse(value, out parsed)) yield break;
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
                     data = (ushort) (parsed * (1.0/256));
                     break;
                 case "US4":
-                    if (!Double.TryParse(value, out parsed)) yield break;
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
                     data = (ushort) (parsed * 4);
                     break;
                 case "IntDiv60":
-                    if (!Double.TryParse(value, out parsed)) yield break;
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
                     data = (ushort) (parsed * 60);
                     break;
                 default:
