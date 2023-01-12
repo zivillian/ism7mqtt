@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using ism7mqtt.ISM7.Xml;
 
 namespace ism7mqtt.HomeAssistant
@@ -21,8 +22,15 @@ namespace ism7mqtt.HomeAssistant
         }
 
         private string LaunderHomeassistantId(string id) {
-            id = id.Replace("ä", "ae").Replace("ö", "oe").Replace("ü", "ue").Replace("ß", "ss").Replace(' ', '_');
-            return new string((from c in id where char.IsLetterOrDigit(c) || c == ' ' || c == '_' select c).ToArray());
+            id = id.Replace("ä", "ae")
+                .Replace("ö", "oe")
+                .Replace("ü", "ue")
+                .Replace("Ä", "Ae")
+                .Replace("Ö", "Oe")
+                .Replace("Ü", "Ue")
+                .Replace("ß", "ss")
+                .Replace(' ', '_');
+            return Regex.Replace(id, "[^a-zA-Z0-9_ ]+", String.Empty, RegexOptions.Compiled);
         }
 
         private string ToHaObjectId(string discoveryId, Ism7Config.RunningDevice device, ParameterDescriptor parameter)
