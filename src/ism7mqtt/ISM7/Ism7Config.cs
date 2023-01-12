@@ -118,7 +118,7 @@ namespace ism7mqtt
         {
             foreach (var device in _devices.Values.SelectMany(x => x))
             {
-                if (mqttTopic.StartsWith(device.MqttTopic))
+                if (device.MqttTopic == mqttTopic)
                 {
                     return device.GetWriteRequest(propertyParts, value);
                 }
@@ -130,7 +130,7 @@ namespace ism7mqtt
         {
             foreach (var device in _devices.Values.SelectMany(x => x))
             {
-                if (mqttTopic.StartsWith(device.MqttTopic))
+                if (device.MqttTopic == mqttTopic)
                 {
                     return device.GetWriteRequest(data);
                 }
@@ -351,6 +351,7 @@ namespace ism7mqtt
                 parts = parts.Slice(1);
                 if (IsDuplicate)
                 {
+                    if (parts.IsEmpty) return Array.Empty<InfoWrite>();
                     if (_descriptor.PTID.ToString() != parts[0]) return Array.Empty<InfoWrite>();
                     parts = parts.Slice(1);
                 }
