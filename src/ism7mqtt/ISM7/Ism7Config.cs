@@ -519,7 +519,9 @@ namespace ism7mqtt
                     .Replace("Ü", "Ue")
                     .Replace("ß", "ss")
                     .Replace('/', '_')
-                    .Replace(' ', '_');
+                    .Replace(' ', '_')
+                    .Replace('+', '_')
+                    .Replace('#', '_');
             }
         }
     }
