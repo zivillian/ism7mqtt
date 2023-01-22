@@ -18,6 +18,8 @@ namespace ism7mqtt.ISM7.Xml
 
         private ushort? _low;
 
+        private bool _hasValue = false;
+
         public override IEnumerable<InfoRead> InfoReads => new[]
         {
             new InfoRead { InfoNumber = TelegramNrHigh, ServiceNumber = ServiceReadNumber ?? -1 },
@@ -39,9 +41,14 @@ namespace ism7mqtt.ISM7.Xml
             {
                 _high = (ushort) ((high << 8) | low);
             }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(telegram));
+            }
+            _hasValue = _high.HasValue && _low.HasValue;
         }
 
-        public override bool HasValue => _high.HasValue && _low.HasValue;
+        public override bool HasValue => _hasValue;
 
         public override JsonValue GetValue()
         {
@@ -53,8 +60,7 @@ namespace ism7mqtt.ISM7.Xml
             {
                 case "UINT32":
                     result = JsonValue.Create((uint) value);
-                    _high = null;
-                    _low = null;
+                    _hasValue = false;
                     return result;
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
