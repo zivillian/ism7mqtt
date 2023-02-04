@@ -20,4 +20,4 @@ If you want look at all the nasty details, I recommend taking a look at [dnSpy](
 
 ## Proxy
 
-ism7proxy can be used to intercept and dump the communication between smartset and ism7, but you need to patch `LuCon.WebPortal.StandaloneService.dll` to remove the certificate validation.
+ism7proxy can be used to intercept and dump the communication between smartset and ism7, but you need to patch [LuCon.WebPortal.StandaloneService.dll](https://github.com/zivillian/ism7mqtt/files/10361898/LuCon.WebPortal.StandaloneService.zip) to remove the certificate validation.
