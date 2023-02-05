@@ -39,6 +39,12 @@ jobs:
       run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/oldism7proxy/oldism7proxy.csproj
     - name: Publish oldism7proxy Linux ARM
       run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/oldism7proxy/oldism7proxy.csproj
+    - name: Publish smartsetlogdecryptor Windows
+      run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/SmartsetLogDecryptor/SmartsetLogDecryptor.csproj
+    - name: Publish smartsetlogdecryptor Linux
+      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/SmartsetLogDecryptor/SmartsetLogDecryptor.csproj
+    - name: Publish smartsetlogdecryptor Linux ARM
+      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/SmartsetLogDecryptor/SmartsetLogDecryptor.csproj
     - uses: actions/upload-artifact@v2
       with:
         name: ism7mqtt-win-x64
@@ -71,3 +77,15 @@ jobs:
       with:
         name: oldism7proxy-linux-arm
         path: src/oldism7proxy/bin/release/net6.0/linux-arm/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: SmartsetLogDecryptor-win-x64
+        path: src/SmartsetLogDecryptor/bin/release/net6.0/win-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: SmartsetLogDecryptor-linux-x64
+        path: src/SmartsetLogDecryptor/bin/release/net6.0/linux-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: SmartsetLogDecryptor-linux-arm
+        path: src/SmartsetLogDecryptor/bin/release/net6.0/linux-arm/publish
