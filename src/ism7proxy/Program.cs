@@ -43,7 +43,7 @@ namespace ism7proxy
             }
             try
             {
-                var server = new TcpListener(IPAddress.Loopback, 9092);
+                var server = new TcpListener(IPAddress.Any, 9092);
                 using (var cts = new CancellationTokenSource())
                 {
                     Console.CancelKeyPress += (s, e) =>
