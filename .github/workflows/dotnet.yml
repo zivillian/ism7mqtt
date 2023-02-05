@@ -79,13 +79,13 @@ jobs:
         path: src/oldism7proxy/bin/release/net6.0/linux-arm/publish
     - uses: actions/upload-artifact@v2
       with:
-        name: SmartsetLogDecryptor-win-x64
+        name: smartsetlogdecryptor-win-x64
         path: src/SmartsetLogDecryptor/bin/release/net6.0/win-x64/publish
     - uses: actions/upload-artifact@v2
       with:
-        name: SmartsetLogDecryptor-linux-x64
+        name: smartsetlogdecryptor-linux-x64
         path: src/SmartsetLogDecryptor/bin/release/net6.0/linux-x64/publish
     - uses: actions/upload-artifact@v2
       with:
-        name: SmartsetLogDecryptor-linux-arm
+        name: smartsetlogdecryptor-linux-arm
         path: src/SmartsetLogDecryptor/bin/release/net6.0/linux-arm/publish
