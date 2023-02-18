@@ -17,7 +17,7 @@ class Ism7TlsClient : DefaultTlsClient
         CipherSuite.TLS_RSA_WITH_NULL_MD5,
     };
 
-    public Ism7TlsClient() : base(new BcTlsCrypto())
+    public Ism7TlsClient() : base(new Ism7TlsCrypto())
     {
     }
 
