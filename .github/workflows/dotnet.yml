@@ -21,8 +21,6 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: remove Nerdbank.GitVersioning
-      run: dotnet remove lib/bc-csharp/crypto/src/BouncyCastle.Crypto.csproj package Nerdbank.GitVersioning
     - name: Publish ism7mqtt Windows
       run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7mqtt/ism7mqtt.csproj
     - name: Publish ism7mqtt Linux

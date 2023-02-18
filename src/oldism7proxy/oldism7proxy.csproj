@@ -8,11 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.1.0" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\lib\bc-csharp\crypto\src\BouncyCastle.Crypto.csproj" />
   </ItemGroup>
 
   <ItemGroup>
