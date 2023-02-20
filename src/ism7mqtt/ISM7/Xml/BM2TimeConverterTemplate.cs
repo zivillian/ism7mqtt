@@ -27,7 +27,10 @@ namespace ism7mqtt.ISM7.Xml
 
         public override IEnumerable<InfoWrite> GetWrite(string value)
         {
-            throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
+            var time = TimeSpan.Parse(value);
+            var high = time.Hours;
+            var low = time.Minutes;
+            yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{low:X2}", DBHigh = $"0x{high:X2}"};
         }
     }
 }
