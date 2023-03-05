@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "oldism7proxy", "src\oldism7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartsetLogDecryptor", "src\SmartsetLogDecryptor\SmartsetLogDecryptor.csproj", "{62E2D723-A57F-4807-AE13-86891DAB404F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7config", "src\ism7config\ism7config.csproj", "{D5848B3A-B1BB-4A46-BF78-B994343B67C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{62E2D723-A57F-4807-AE13-86891DAB404F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62E2D723-A57F-4807-AE13-86891DAB404F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62E2D723-A57F-4807-AE13-86891DAB404F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5848B3A-B1BB-4A46-BF78-B994343B67C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5848B3A-B1BB-4A46-BF78-B994343B67C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5848B3A-B1BB-4A46-BF78-B994343B67C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5848B3A-B1BB-4A46-BF78-B994343B67C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
