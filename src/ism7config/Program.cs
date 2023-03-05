@@ -77,8 +77,8 @@ internal class Program
             ConfigPath = "invalid",
             UseEncryption = false
         };
-        var converterTemplateService = new ConverterTemplateServiceImplISM(fileSystemSettings,x=>File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\converter.xml"));
-        var deviceTemplateService = new DeviceTemplateServiceImplISM(fileSystemSettings, x=> File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\device.xml"));
+        var converterTemplateService = new ConverterTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.ConverterTemplates));
+        var deviceTemplateService = new DeviceTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.DeviceTemplates));
         var nullLoggerFactory = new NullLoggerFactory();
         var bundleQueueWorker = new BetterBundleQueueWorker(nullLoggerFactory,
             new TelegrBundleRequestFactory(new TelegrBundleRequestFactorySettings(), deviceTemplateService),
@@ -89,10 +89,10 @@ internal class Program
         {
             switch (x)
             {
-                case "invalidparameter_order.xml":
-                    return File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\parameter_order.xml");
-                case "invalidparameter.xml":
-                    return File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\parameter.xml");
+                case "invalid\\parameter_order.xml":
+                    return new MemoryStream(Resources.parameter_order);
+                case "invalid\\parameter.xml":
+                    return new MemoryStream(Resources.ParameterTemplates);
                 default:
                     throw new NotImplementedException();
             }
@@ -110,18 +110,18 @@ internal class Program
         var provider = new ServiceProvider(bundleQueueWorker, parameterStore, unitOfWork);
         ServiceLocator.SetLocatorProvider(() => provider);
         var writerSettings = new BusconfigWriterSettings();
-        var busconfigWriter = new BusconfigWriter(converterTemplateService, 
-            new SchemaViewTemplateServiceImpl(fileSystemSettings, x => File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\schema_view.xml")), 
-            new AddressMappingProvider(), 
+        var busconfigWriter = new BusconfigWriter(converterTemplateService,
+            new SchemaViewTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.schema_view)),
+            new AddressMappingProvider(),
             deviceTemplateService,
             writerSettings,
             parameterTemplateService,
-            new DependentDefinitionTemplateServiceImpl(fileSystemSettings, x => File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\sub_dialogs.xml")),
+            new DependentDefinitionTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.sub_dialogs)),
             new ConditionPoolImpl(),
             new BusconfigInstanceProviderImpl(),
             eventPublisher,
             datalogCacheWriter,
-            new GuiTemplateServiceImpl(fileSystemSettings, x => File.OpenRead(@"K:\tmp\Wolf\base\assets\system-config\gui.xml")));
+            new GuiTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.gui)));
         var responseHandler = new ResponseHandler(busconfigWriter, faultMessageHandler);
 
         var gc = await nc.DoConnect(ip, IPAddress.Any, 9092, password, streamHandler);

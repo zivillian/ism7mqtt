@@ -5,8 +5,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\ism7mqtt\Resources\ConverterTemplates.xml" Link="Resources\convertertemplates.xml" />
+    <Content Include="..\ism7mqtt\Resources\DeviceTemplates.xml" Link="Resources\devicetemplates.xml" />
+    <Content Include="..\ism7mqtt\Resources\ParameterTemplates.xml" Link="Resources\parametertemplates.xml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
@@ -65,6 +70,21 @@
     <Reference Include="Wolf.SocketServer.ISMInterface">
       <HintPath>..\..\lib\Wolf.SocketServer.ISMInterface.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
