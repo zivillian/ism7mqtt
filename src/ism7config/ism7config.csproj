@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -19,57 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
     <PackageReference Include="NLog" Version="4.7.13" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="LuCon.Common.ConditionService">
-      <HintPath>..\..\lib\LuCon.Common.ConditionService.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Common.ConfigService">
-      <HintPath>..\..\lib\LuCon.Common.ConfigService.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Common.Declarations">
-      <HintPath>..\..\lib\LuCon.Common.Declarations.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Common.Logging">
-      <HintPath>..\..\lib\LuCon.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Common.PortalModel">
-      <HintPath>..\..\lib\LuCon.Common.PortalModel.dll</HintPath>
-    </Reference>
-    <Reference Include="lucon.common.secret">
-      <HintPath>..\..\lib\lucon.common.secret.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Common.ServiceBusInterface">
-      <HintPath>..\..\lib\LuCon.Common.ServiceBusInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Common.Utilities">
-      <HintPath>..\..\lib\LuCon.Common.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.LocalConnection.Droid">
-      <HintPath>..\..\lib\LuCon.LocalConnection.Droid.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.Mobile.Data.Android">
-      <HintPath>..\..\lib\LuCon.Mobile.Data.Android.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.SocketServer.GatewayInterface">
-      <HintPath>..\..\lib\LuCon.SocketServer.GatewayInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="LuCon.SocketServer.SocketServerBase">
-      <HintPath>..\..\lib\LuCon.SocketServer.SocketServerBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Wolf.Common.Busconfig">
-      <HintPath>..\..\lib\Wolf.Common.Busconfig.dll</HintPath>
-    </Reference>
-    <Reference Include="Wolf.Common.BusconfigInterface">
-      <HintPath>..\..\lib\Wolf.Common.BusconfigInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="Wolf.DRIVR.Model">
-      <HintPath>..\..\lib\Wolf.DRIVR.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="Wolf.SocketServer.ISMInterface">
-      <HintPath>..\..\lib\Wolf.SocketServer.ISMInterface.dll</HintPath>
-    </Reference>
+    <PackageReference Include="smartset.net" Version="3.0.52.1" />
   </ItemGroup>
 
   <ItemGroup>

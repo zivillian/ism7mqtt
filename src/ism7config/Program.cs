@@ -80,7 +80,7 @@ internal class Program
         var converterTemplateService = new ConverterTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.ConverterTemplates));
         var deviceTemplateService = new DeviceTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.DeviceTemplates));
         var nullLoggerFactory = new NullLoggerFactory();
-        var bundleQueueWorker = new BetterBundleQueueWorker(nullLoggerFactory,
+        var bundleQueueWorker = new BundleQueueWorker(nullLoggerFactory,
             new TelegrBundleRequestFactory(new TelegrBundleRequestFactorySettings(), deviceTemplateService),
             new BundleQueueWorkerSettings(),
             new GatewayConfigConverter(converterTemplateService));
@@ -134,7 +134,7 @@ internal class Program
         };
         gc.WriteObject(systemconfigRequest, typeof(SystemconfigRequest), EnXmlInterfaceType.SystemconfigRequest);
         int tries = 0;
-        while (tries < 60)
+        while (tries < 120)
         {
             if (gc.IsOnline)
             {
