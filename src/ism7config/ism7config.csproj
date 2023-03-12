@@ -4,13 +4,18 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="..\ism7mqtt\Resources\ConverterTemplates.xml" Link="Resources\convertertemplates.xml" />
     <Content Include="..\ism7mqtt\Resources\DeviceTemplates.xml" Link="Resources\devicetemplates.xml" />
     <Content Include="..\ism7mqtt\Resources\ParameterTemplates.xml" Link="Resources\parametertemplates.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\openssl.cnf" Link="openssl.cnf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

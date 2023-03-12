@@ -20,7 +20,7 @@ public class ServiceProvider : IServiceLocator
         _unitOfWork = unitOfWork;
     }
 
-    public object? GetService(Type serviceType)
+    public object GetService(Type serviceType)
     {
         return GetInstance(serviceType);
     }
