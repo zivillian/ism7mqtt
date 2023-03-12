@@ -60,11 +60,7 @@ internal class Program
         var unitOfWork = new InMemoryDatabase();
         var textService = new TextService();
         var nc = new NetworkConnector(unitOfWork, textService, new NetworkConnectorSettings{TcpClientConnectTimeoutMs = 1000}, new BusconfigPendingGatewaysSingleton());
-        var streamHandler = new SslStreamHandler
-        {
-            SslServerName = "ism7.server",
-            AuthenticateTimeoutMs = 10000
-        };
+        var streamHandler = new XplatStreamHandler();
 
         var gw = new GatewayBO
         {
