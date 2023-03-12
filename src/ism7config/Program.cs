@@ -46,7 +46,7 @@ internal class Program
             Console.Error.WriteLine("Try 'ism7config --help' for more information");
             return;
         }
-        if (showHelp)
+        if (showHelp || String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(password))
         {
             options.WriteOptionDescriptions(Console.Out);
             return;
@@ -72,9 +72,10 @@ internal class Program
             IsLocked = false,
             ConnectCounter = 0
         };
+        var configPath = "invalid";
         var fileSystemSettings = new FileSystemSettings
         {
-            ConfigPath = "invalid",
+            ConfigPath = configPath,
             UseEncryption = false
         };
         var converterTemplateService = new ConverterTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.ConverterTemplates));
@@ -87,15 +88,11 @@ internal class Program
         var datalogCacheWriter = new LocalDatalogCacheWriter();
         var parameterTemplateService = new ParameterTemplateServiceImpl(fileSystemSettings, x =>
         {
-            switch (x)
-            {
-                case "invalid\\parameter_order.xml":
-                    return new MemoryStream(Resources.parameter_order);
-                case "invalid\\parameter.xml":
-                    return new MemoryStream(Resources.ParameterTemplates);
-                default:
-                    throw new NotImplementedException();
-            }
+            if (x == Path.Combine(configPath, "parameter_order.xml"))
+                return new MemoryStream(Resources.parameter_order);
+            if (x == Path.Combine(configPath, "parameter.xml"))
+                return new MemoryStream(Resources.ParameterTemplates);
+            throw new NotImplementedException();
         });
         var faultMessageHandler = new FaultMessageHandler();
         var eventPublisher = new LocalDriverImpl();
