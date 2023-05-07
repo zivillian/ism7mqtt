@@ -59,7 +59,7 @@ internal class Program
 
         var unitOfWork = new InMemoryDatabase();
         var textService = new TextService();
-        var nc = new NetworkConnector(unitOfWork, textService, new NetworkConnectorSettings{TcpClientConnectTimeoutMs = 1000}, new BusconfigPendingGatewaysSingleton());
+        var nc = new NetworkConnector(unitOfWork, textService, new NetworkConnectorSettings{TcpClientConnectTimeoutMs = 10000}, new BusconfigPendingGatewaysSingleton());
         var streamHandler = new XplatStreamHandler();
 
         var gw = new GatewayBO
