@@ -40,7 +40,7 @@ public class XplatStreamHandler : IStreamHandler
                     //older linux or mac https://github.com/dotnet/runtime/issues/33649
                 }
             }
-            using var cts = new CancellationTokenSource(5000);
+            using var cts = new CancellationTokenSource(60000);
             await ssl.AuthenticateAsClientAsync(sslOptions, cts.Token);
             return ssl;
         }
