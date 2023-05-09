@@ -167,10 +167,10 @@ namespace ism7mqtt.HomeAssistant
                 case NumericParameterDescriptor numeric:
                     if (numeric.IsWritable)
                     {
-                        if (numeric.MinValueCondition != null)
-                            yield return("min", Double.Parse(numeric.MinValueCondition));
-                        if (numeric.MaxValueCondition != null)
-                            yield return ("max", Double.Parse(numeric.MaxValueCondition));
+                        if (numeric.MinValueCondition != null && Double.TryParse(numeric.MinValueCondition, out var min))
+                            yield return("min", min);
+                        if (numeric.MaxValueCondition != null && Double.TryParse(numeric.MaxValueCondition, out var max))
+                            yield return ("max", max);
                         if (numeric.StepWidth != null)
                             yield return ("step", numeric.StepWidth);
                     }
