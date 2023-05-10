@@ -12,6 +12,8 @@ namespace ism7mqtt.ISM7.Config
     {
         public string ReadBusAddress { get; set; }
 
+        public string WriteBusAddress { get; set; }
+
         public int DeviceTemplateId { get; set; }
 
         public List<int> Parameter { get; set; }

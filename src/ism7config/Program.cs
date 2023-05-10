@@ -141,6 +141,7 @@ internal class Program
                     {
                         Id = device.Id,
                         ReadBusAddress = device.ReadBusAddress,
+                        WriteBusAddress = device.WriteBusAddress,
                         DeviceTemplateId = device.DeviceTemplateId,
                         Parameters = parameterStore.Parameters
                             .Where(x=>x.Value.DeviceId == device.Id)

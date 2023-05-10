@@ -75,7 +75,7 @@ namespace ism7mqtt
             {
                 var device = _deviceTemplates.First(x => x.DTID == configDevice.DeviceTemplateId);
                 var tids = configDevice.Parameter.ToHashSet();
-                devices.Add(new RunningDevice(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
+                devices.Add(new RunningDevice(device.Name, ip, ba, configDevice.WriteBusAddress, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
             }
             return true;
         }
@@ -154,13 +154,13 @@ namespace ism7mqtt
         {
             private readonly List<RunningParameter> _parameter;
 
-            public RunningDevice(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
+            public RunningDevice(string name, string ip, string readBa, string writeBa, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
                 Name = name;
                 IP = ip;
 
-                WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
-                MqttTopic = $"Wolf/{ip}/{name}_{ba}";
+                WriteAddress = writeBa;
+                MqttTopic = $"Wolf/{ip}/{name}_{readBa}";
 
                 _parameter = new List<RunningParameter>();
                 foreach (var descriptor in parameter)
