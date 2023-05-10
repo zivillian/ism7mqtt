@@ -126,7 +126,7 @@ namespace ism7mqtt
 
                         if (_discoveryId != null)
                         {
-                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, c);
+                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, enableDebug, c);
                         }
                         await client.RunAsync(password, cts.Token);
                     }
@@ -168,9 +168,9 @@ namespace ism7mqtt
             return (int)parsed;
         }
 
-        private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, CancellationToken cancellationToken)
+        private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, bool debug, CancellationToken cancellationToken)
         {
-            var discovery = new HaDiscovery(config);
+            var discovery = new HaDiscovery(config) { EnableDebug = debug };
             foreach (var message in discovery.GetDiscoveryInfo(_discoveryId))
             {
                 var data = JsonSerializer.Serialize(message.Content);

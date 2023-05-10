@@ -11,6 +11,8 @@ namespace ism7mqtt.HomeAssistant
     {
         private readonly Ism7Config _config;
 
+        public bool EnableDebug { get; set; }
+
         public HaDiscovery(Ism7Config config)
         {
             _config = config;
@@ -167,10 +169,28 @@ namespace ism7mqtt.HomeAssistant
                 case NumericParameterDescriptor numeric:
                     if (numeric.IsWritable)
                     {
-                        if (numeric.MinValueCondition != null && Double.TryParse(numeric.MinValueCondition, out var min))
-                            yield return("min", min);
-                        if (numeric.MaxValueCondition != null && Double.TryParse(numeric.MaxValueCondition, out var max))
-                            yield return ("max", max);
+                        if (numeric.MinValueCondition != null)
+                        {
+                            if (Double.TryParse(numeric.MinValueCondition, out var min))
+                            {
+                                yield return("min", min);
+                            }
+                            else if (EnableDebug)
+                            {
+                                Console.WriteLine($"Cannot parse MinValueCondition '{numeric.MinValueCondition}' for PTID {descriptor.PTID}");
+                            }
+                        }
+                        if (numeric.MaxValueCondition != null)
+                        {
+                            if (Double.TryParse(numeric.MaxValueCondition, out var max))
+                            {
+                                yield return ("max", max);
+                            }
+                            else if (EnableDebug)
+                            {
+                                Console.WriteLine($"Cannot parse MaxValueCondition '{numeric.MaxValueCondition}' for PTID {descriptor.PTID}");
+                            }
+                        }
                         if (numeric.StepWidth != null)
                             yield return ("step", numeric.StepWidth);
                     }
