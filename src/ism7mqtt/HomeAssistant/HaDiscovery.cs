@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -171,7 +172,7 @@ namespace ism7mqtt.HomeAssistant
                     {
                         if (numeric.MinValueCondition != null)
                         {
-                            if (Double.TryParse(numeric.MinValueCondition, out var min))
+                            if (Double.TryParse(numeric.MinValueCondition, NumberStyles.Number, CultureInfo.InvariantCulture, out var min))
                             {
                                 yield return("min", min);
                             }
@@ -182,7 +183,7 @@ namespace ism7mqtt.HomeAssistant
                         }
                         if (numeric.MaxValueCondition != null)
                         {
-                            if (Double.TryParse(numeric.MaxValueCondition, out var max))
+                            if (Double.TryParse(numeric.MaxValueCondition, NumberStyles.Number, CultureInfo.InvariantCulture, out var max))
                             {
                                 yield return ("max", max);
                             }
