@@ -131,7 +131,7 @@ namespace ism7mqtt
             var request = new TelegramBundleReq
             {
                 AbortOnError = true,
-                BundleId = NextBundleId(),
+                BundleId = "1099",
                 GatewayId = "1",
                 TelegramBundleType = TelegramBundleType.write,
                 InfoWriteTelegrams = writeRequests
