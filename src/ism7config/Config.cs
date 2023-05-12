@@ -14,8 +14,6 @@ class Device
 
     public string ReadBusAddress { get; set; }
 
-    public string WriteBusAddress { get; set; }
-
     public int DeviceTemplateId { get; set; }
 
     [JsonIgnore]
