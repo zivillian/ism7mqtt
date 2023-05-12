@@ -227,7 +227,7 @@ namespace ism7mqtt
                 foreach (var result in results)
                 {
                     result.BusAddress = WriteAddress;
-                    result.Seq = "";
+                    result.Seq = "A;142";
                     yield return result;
                 }
             }
@@ -240,7 +240,7 @@ namespace ism7mqtt
                     foreach (var result in results)
                     {
                         result.BusAddress = WriteAddress;
-                        result.Seq = "";
+                        result.Seq = "A;142";
                         yield return result;
                     }
                 }
