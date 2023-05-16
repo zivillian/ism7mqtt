@@ -48,15 +48,15 @@ namespace ism7mqtt.ISM7.Xml
             JsonValue result;
             if (_open.HasValue && _open.Value != 0)
             {
-                result = JsonValue.Create("opened");
+                result = JsonValue.Create(2);
             }
             else if (_close.HasValue && _close.Value != 0)
             {
-                result = JsonValue.Create("closed");
+                result = JsonValue.Create(1);
             }
             else
             {
-                result = JsonValue.Create("-");
+                result = JsonValue.Create(0);
             }
             _open = null;
             _close = null;
