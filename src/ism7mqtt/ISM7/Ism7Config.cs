@@ -475,16 +475,6 @@ namespace ism7mqtt
                     if (listDescriptor.Options.Any())
                     {
                         var key = value.Content;
-                        // some list types have a binary/bool converter, even if it doesn't make much sense.. try to detect those cases
-                        if (!listDescriptor.IsBoolean && _converter is BinaryReadOnlyConverterTemplate)
-                        {
-                            key = key switch
-                            {
-                                "false" => "0",
-                                "true" => "1",
-                                _ => key
-                            };
-                        }
                         var text = listDescriptor.Options.Where(x => x.Key == key).Select(x => x.Value).FirstOrDefault();
                         if (!String.IsNullOrEmpty(text))
                         {

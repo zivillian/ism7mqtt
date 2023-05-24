@@ -129,10 +129,6 @@ namespace ism7mqtt.HomeAssistant
         {
             if (descriptor is ListParameterDescriptor list)
             {
-                if (!list.IsWritable && list.IsBoolean)
-                {
-                    return String.Empty;
-                }
                 return "/text";
             }
             else
@@ -193,42 +189,34 @@ namespace ism7mqtt.HomeAssistant
                     }
                     break;
                 case ListParameterDescriptor list:
-                    if (list.IsWritable)
+                    if (list.IsBoolean)
                     {
-                        if (list.IsBoolean)
+                        if (list.Options.Any(x => x.Value == "Ein"))
                         {
-                            if (list.Options.Any(x => x.Value == "Ein"))
-                            {
-                                yield return("payload_on", "Ein");
-                            }
-                            if (list.Options.Any(x => x.Value == "Aktiviert"))
-                            {
-                                yield return("payload_on", "Aktiviert");
-                            }
-                            if (list.Options.Any(x => x.Value == "Aus"))
-                            {
-                                yield return("payload_off", "Aus");
-                            }
-                            if (list.Options.Any(x => x.Value == "Deaktiviert"))
-                            {
-                                yield return("payload_off", "Deaktiviert");
-                            }
+                            yield return ("payload_on", "Ein");
                         }
-                        else
+                        if (list.Options.Any(x => x.Value == "Aktiviert"))
                         {
-                            var options = new JsonArray();
-                            foreach (var value in list.Options)
-                            {
-                                options.Add(value.Value);
-                            }
-                            yield return("options", options);
-
+                            yield return ("payload_on", "Aktiviert");
+                        }
+                        if (list.Options.Any(x => x.Value == "Aus"))
+                        {
+                            yield return ("payload_off", "Aus");
+                        }
+                        if (list.Options.Any(x => x.Value == "Deaktiviert"))
+                        {
+                            yield return ("payload_off", "Deaktiviert");
                         }
                     }
-                    else if (list.IsBoolean)
+                    else
                     {
-                        yield return("payload_on", "true");
-                        yield return("payload_off", "false");
+                        var options = new JsonArray();
+                        foreach (var value in list.Options)
+                        {
+                            options.Add(value.Value);
+                        }
+                        yield return ("options", options);
+
                     }
                     break;
                 default:
