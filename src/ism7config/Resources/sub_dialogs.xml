@@ -1,0 +1,4489 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DependentDefinitionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1">
+  <SolarStatisticTemplate Id="#SolarStatisticView">
+    <SolarStatisticParams>
+      <SolarStatisticParam PTID="310000">
+        <Name>Solarertrag Monat Januar</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310001">
+        <Name>Solarertrag Monat Februar</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310002">
+        <Name>Solarertrag Monat März</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310003">
+        <Name>Solarertrag Monat April</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310004">
+        <Name>Solarertrag Monat Mai</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310005">
+        <Name>Solarertrag Monat Juni</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310006">
+        <Name>Solarertrag Monat Juli</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310007">
+        <Name>Solarertrag Monat August</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310008">
+        <Name>Solarertrag Monat September</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310009">
+        <Name>Solarertrag Monat Oktober</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310010">
+        <Name>Solarertrag Monat November</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310011">
+        <Name>Solarertrag Monat Dezember</Name>
+        <SolarStatisticProgramType>Monthly</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310012">
+        <Name>Solarertrag Jahr 1 (aktuelles Jahr - 4)</Name>
+        <SolarStatisticProgramType>Annually</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310013">
+        <Name>Solarertrag Jahr 2</Name>
+        <SolarStatisticProgramType>Annually</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310014">
+        <Name>Solarertrag Jahr 3</Name>
+        <SolarStatisticProgramType>Annually</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310015">
+        <Name>Solarertrag Jahr 4</Name>
+        <SolarStatisticProgramType>Annually</SolarStatisticProgramType>
+      </SolarStatisticParam>
+      <SolarStatisticParam PTID="310016">
+        <Name>Solarertrag Jahr 5 (aktuelles Jahr)</Name>
+        <SolarStatisticProgramType>Annually</SolarStatisticProgramType>
+      </SolarStatisticParam>
+    </SolarStatisticParams>
+  </SolarStatisticTemplate>
+  <TimeProgramTemplates>
+    <TimeProgramTemplate Id="#TimeTableView.Heizkreis" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO_FR">
+              <Name>Mo bis Fr</Name>
+              <PTID>300000</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA_SU">
+              <Name>Sa bis So</Name>
+              <PTID>300001</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO_FR">
+              <Name>Mo bis Fr</Name>
+              <PTID>300002</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA_SU">
+              <Name>Sa bis So</Name>
+              <PTID>300003</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>300004</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>300005</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>300006</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>300007</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>300008</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>300009</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>300010</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableView.Warmwasser" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO_FR">
+              <Name>Mo bis Fr</Name>
+              <PTID>300016</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA_SU">
+              <Name>Sa bis So</Name>
+              <PTID>300017</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO_FR">
+              <Name>Mo bis Fr</Name>
+              <PTID>300023</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA_SU">
+              <Name>Sa bis So</Name>
+              <PTID>300024</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>300025</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>300026</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>300027</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>300028</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>300029</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>300030</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>300031</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableView.Zirkulation" ProgramType="Zirkulation">
+      <Name>Zirkulation</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO_FR">
+              <Name>Mo bis Fr</Name>
+              <PTID>300037</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA_SU">
+              <Name>Sa bis So</Name>
+              <PTID>300038</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO_FR">
+              <Name>Mo bis Fr</Name>
+              <PTID>300044</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA_SU">
+              <Name>Sa bis So</Name>
+              <PTID>300045</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>300046</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>300047</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>300048</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>300049</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>300050</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>300051</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>300052</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(0)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320000</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320001</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320002</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320003</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320004</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320005</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320006</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320007</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320008</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320009</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320010</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320011</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320012</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320013</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320014</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320015</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320016</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320017</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320018</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320019</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320020</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(0)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320021</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320022</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320023</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320024</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320025</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320026</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320027</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320028</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320029</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320030</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320031</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320032</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320033</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320034</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320035</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320036</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320037</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320038</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320039</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320040</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320041</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Zirkulation(0)" ProgramType="Zirkulation">
+      <Name>Zirkulation</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320042</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320043</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320044</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320045</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320046</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320047</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320048</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320049</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320050</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320051</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320052</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320053</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320054</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320055</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320056</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320057</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320058</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320059</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320060</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320061</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320062</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(1)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320063</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320064</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320065</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320066</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320067</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320068</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320069</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320070</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320071</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320072</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320073</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320074</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320075</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320076</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320077</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320078</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320079</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320080</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320081</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320082</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320083</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(1)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320084</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320085</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320086</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320087</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320088</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320089</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320090</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320091</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320092</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320093</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320094</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320095</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320096</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320097</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320098</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320099</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320100</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320101</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320102</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320103</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320104</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Zirkulation(1)" ProgramType="Zirkulation">
+      <Name>Zirkulation</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320105</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320106</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320107</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320108</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320109</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320110</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320111</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320112</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320113</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320114</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320115</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320116</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320117</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320118</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320119</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320120</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320121</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320122</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320123</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320124</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320125</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(2)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320126</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320127</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320128</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320129</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320130</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320131</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320132</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320133</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320134</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320135</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320136</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320137</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320138</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320139</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320140</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320141</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320142</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320143</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320144</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320145</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320146</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(2)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320147</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320148</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320149</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320150</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320151</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320152</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320153</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320154</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320155</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320156</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320157</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320158</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320159</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320160</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320161</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320162</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320163</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320164</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320165</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320166</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320167</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(3)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320168</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320169</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320170</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320171</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320172</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320173</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320174</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320175</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320176</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320177</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320178</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320179</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320180</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320181</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320182</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320183</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320184</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320185</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320186</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320187</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320188</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(3)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320189</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320190</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320191</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320192</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320193</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320194</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320195</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320196</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320197</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320198</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320199</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320200</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320201</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320202</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320203</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320204</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320205</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320206</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320207</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320208</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320209</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(4)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320210</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320211</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320212</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320213</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320214</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320215</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320216</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320217</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320218</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320219</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320220</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320221</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320222</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320223</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320224</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320225</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320226</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320227</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320228</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320229</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320230</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(4)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320231</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320232</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320233</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320234</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320235</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320236</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320237</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320238</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320239</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320240</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320241</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320242</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320243</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320244</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320245</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320246</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320247</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320248</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320249</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320250</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320251</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(5)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320252</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320253</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320254</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320255</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320256</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320257</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320258</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320259</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320260</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320261</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320262</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320263</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320264</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320265</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320266</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320267</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320268</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320269</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320270</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320271</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320272</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(5)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320273</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320274</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320275</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320276</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320277</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320278</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320279</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320280</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320281</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320282</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320283</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320284</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320285</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320286</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320287</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320288</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320289</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320290</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320291</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320292</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320293</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(6)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320294</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320295</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320296</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320297</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320298</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320299</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320300</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320301</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320302</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320303</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320304</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320305</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320306</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320307</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320308</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320309</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320310</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320311</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320312</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320313</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320314</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(6)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320315</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320316</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320317</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320318</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320319</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320320</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320321</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320322</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320323</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320324</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320325</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320326</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320327</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320328</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320329</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320330</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320331</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320332</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320333</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320334</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320335</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Heizkreis(7)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320336</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320337</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320338</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320339</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320340</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320341</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320342</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320343</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320344</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320345</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320346</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320347</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320348</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320349</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320350</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320351</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320352</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320353</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320354</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320355</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320356</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Warmwasser(7)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320357</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320358</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320359</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320360</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320361</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320362</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320363</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320364</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320365</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320366</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320367</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320368</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320369</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320370</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320371</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320372</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320373</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320374</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320375</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320376</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320377</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewBM-2.Lüftung(0)" ProgramType="Lueftung">
+      <Name>Lüftung</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm 1</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320378</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320379</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320380</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320381</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320382</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320383</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320384</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg2">
+          <Name>Zeitprogramm 2</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320385</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320386</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320387</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320388</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320389</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320390</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320391</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+        <ProgramGroup ProgramGroupType="TimeProg3">
+          <Name>Zeitprogramm 3</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>320392</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>320393</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>320394</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>320395</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>320396</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>320397</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>320398</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewRM-2.Heizkreis(0)" ProgramType="Heizkreis">
+      <Name>Heizkreis</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>400200</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>400201</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>400202</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>400203</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>400204</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>400205</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>400206</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewRM-2.Warmwasser(0)" ProgramType="Warmwasser">
+      <Name>Warmwasser</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>400207</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>400208</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>400209</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>400210</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>400211</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>400212</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>400213</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+    <TimeProgramTemplate Id="#TimeTableViewRM-2.Lüftung(0)" ProgramType="Lueftung">
+      <Name>Lüftung</Name>
+      <ProgramGroups>
+        <ProgramGroup ProgramGroupType="TimeProg1">
+          <Name>Zeitprogramm</Name>
+          <ProgramSwitchTimeBlocks>
+            <ProgramSwitchTimeBlock ProgramBlockType="MO">
+              <Name>Mo</Name>
+              <PTID>400214</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TU">
+              <Name>Di</Name>
+              <PTID>400215</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="WE">
+              <Name>Mi</Name>
+              <PTID>400216</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="TH">
+              <Name>Do</Name>
+              <PTID>400217</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="FR">
+              <Name>Fr</Name>
+              <PTID>400218</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SA">
+              <Name>Sa</Name>
+              <PTID>400219</PTID>
+            </ProgramSwitchTimeBlock>
+            <ProgramSwitchTimeBlock ProgramBlockType="SU">
+              <Name>So</Name>
+              <PTID>400220</PTID>
+            </ProgramSwitchTimeBlock>
+          </ProgramSwitchTimeBlocks>
+        </ProgramGroup>
+      </ProgramGroups>
+    </TimeProgramTemplate>
+  </TimeProgramTemplates>
+  <BM2PartyProgramTemplates>
+    <BM2PartyProgramTemplate Id="#BM2HeizenAbsenken.Heizen" ProgramType="Heat">
+      <Params>
+        <BM2PartyParam>
+          <Type>StopTime</Type>
+          <PTID>330000</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StopDate</Type>
+          <PTID>330001</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartTime</Type>
+          <PTID>330002</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartDate</Type>
+          <PTID>330003</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Time</Type>
+          <PTID>330004</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Date</Type>
+          <PTID>330005</PTID>
+        </BM2PartyParam>
+      </Params>
+    </BM2PartyProgramTemplate>
+    <BM2PartyProgramTemplate Id="#BM2HeizenAbsenken.Absenken" ProgramType="Lowering">
+      <Params>
+        <BM2PartyParam>
+          <Type>StopTime</Type>
+          <PTID>330006</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StopDate</Type>
+          <PTID>330007</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartTime</Type>
+          <PTID>330008</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartDate</Type>
+          <PTID>330009</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Time</Type>
+          <PTID>330010</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Date</Type>
+          <PTID>330011</PTID>
+        </BM2PartyParam>
+      </Params>
+    </BM2PartyProgramTemplate>
+    <BM2PartyProgramTemplate Id="#BM2HeizenAbsenken.ZeitwIntensivLueftung" ProgramType="TempVentilateIntense">
+      <Params>
+        <BM2PartyParam>
+          <Type>StopTime</Type>
+          <PTID>330012</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StopDate</Type>
+          <PTID>330013</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartTime</Type>
+          <PTID>330014</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartDate</Type>
+          <PTID>330015</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Time</Type>
+          <PTID>330016</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Date</Type>
+          <PTID>330017</PTID>
+        </BM2PartyParam>
+      </Params>
+    </BM2PartyProgramTemplate>
+    <BM2PartyProgramTemplate Id="#BM2HeizenAbsenken.ZeitwFeuchteschutz" ProgramType="TempMoistureProtection">
+      <Params>
+        <BM2PartyParam>
+          <Type>StopTime</Type>
+          <PTID>330018</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StopDate</Type>
+          <PTID>330019</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartTime</Type>
+          <PTID>330020</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>StartDate</Type>
+          <PTID>330021</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Time</Type>
+          <PTID>330022</PTID>
+        </BM2PartyParam>
+        <BM2PartyParam>
+          <Type>BM2Date</Type>
+          <PTID>330023</PTID>
+        </BM2PartyParam>
+      </Params>
+    </BM2PartyProgramTemplate>
+  </BM2PartyProgramTemplates>
+  <MessageBoxTemplates>
+    <MessageBoxTemplate Id="#MessageBox.BM2TimeProgVersionMessage">
+      <Text>Bitte beachten Sie: Das Zeitprogramm ist erst ab BM-2 Software Version 1.30 verfügbar.&lt;br/&gt;
+Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
+&lt;a target="_blank" href="http://www.wolf-heiztechnik.de/downloads/download-center/softwares/"&gt;http://www.wolf-heiztechnik.de/downloads/download-center/softwares/&lt;/a&gt;</Text>
+    </MessageBoxTemplate>
+  </MessageBoxTemplates>
+  <CircularSliderTemplates>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam0</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>340026</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>340001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturEinzeln0</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>340028</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>340001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam1</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360029</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360031</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam3</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360033</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam4</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360035</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam5</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360037</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam6</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360039</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturGemeinsam7</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360041</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.SollwertkorrekturEinzeln1bis7</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360050</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam0</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>350009</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>250003</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1216</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>290012</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1892</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>80001</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1217</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>180006</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1218</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>380011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1893</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>430011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_2827</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>440011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_2828</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>200011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1219</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>210016</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1220</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>280019</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1894</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>90003</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1221</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>100004</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1222</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>110006</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1223</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>120005</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1224</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>130007</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1225</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>140005</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1226</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>160024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1227</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>150024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1228</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>170024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1229</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>240004</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1230</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>270007</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1895</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturEinzeln0</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>350011</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>250003</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1216</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>290012</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1892</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>80001</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1217</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>180006</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1218</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>380011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1893</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>430011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_2827</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>440011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_2828</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>200011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1219</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>210016</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1220</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>280019</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1894</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>90003</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1221</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>100004</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1222</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>110006</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1223</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>120005</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1224</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>130007</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1225</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>140005</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1226</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>160024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1227</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>150024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1228</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>170024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1229</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>240004</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1230</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>270007</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1895</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam1</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370012</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>50067</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1896</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370014</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam3</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370016</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam4</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370018</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam5</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370020</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam6</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370022</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturGemeinsam7</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370024</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturEinzeln1bis7</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>370033</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>50067</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1896</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>40024</PTID>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1897</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.KlimaTemperatur</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>660443</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>660236</PTID>
+          <Name>Sollwert Temperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.KlimaVolumenstrom</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>660986</PTID>
+          <Name>Volumenstromanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>660264</PTID>
+          <Name>Sollwert Volumenstrom</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.KlimaDrehzahl</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>660983</PTID>
+          <Name>Drehzahlanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>660185</PTID>
+          <Name>Sollwert Drehzahl</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.KlimaDruck</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>660989</PTID>
+          <Name>Druckanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>660260</PTID>
+          <Name>Sollwert Druck</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.LueftungsstufeCWL</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>230050</PTID>
+          <Name>Lüftungsstufe</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>230014</PTID>
+          <Name>Luftdurchsatz Zuluft</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.LueftungsstufeCWL2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>390010</PTID>
+          <Name>Lüftungsstufe</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>390007</PTID>
+          <Name>Luftdurchsatz Zuluft</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam0</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>340035</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>340041</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln0</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>340038</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>340042</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam1</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360068</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360116</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360070</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360117</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam3</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360072</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360118</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam4</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360074</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360119</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam5</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360076</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360120</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam6</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360078</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360121</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturGemeinsam7</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360080</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360122</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln1</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360082</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360123</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360093</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360124</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln3</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360095</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360125</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln4</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360097</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360126</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln5</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360099</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360127</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln6</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360101</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360128</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturEinzeln7</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>360103</PTID>
+          <Name>Raumsolltemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360129</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.WarmwassersolltemperaturRM2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>420001</PTID>
+          <Name>Gewünschte Warmwassertemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>250003</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1216</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>290012</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1892</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>80001</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1217</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>180006</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1218</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>380011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1893</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>430011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_2827</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>440011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_2828</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>200011</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1219</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>210016</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1220</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>280019</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1894</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>90003</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1221</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>100004</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1222</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>110006</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1223</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>120005</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1224</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>130007</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1225</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>140005</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1226</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>160024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1227</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>150024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1228</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>170024</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1229</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>240004</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1230</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>270007</PTID>
+          <FixHeatCircuitNo>1</FixHeatCircuitNo>
+          <Name>Warmwassertemperatur</Name>
+          <ChooseCondition>C_1895</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.TagtemperaturRM2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>410001</PTID>
+          <Name>Tagtemperatur</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>410003</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.Lueftung_RM2_CWL</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>400045</PTID>
+          <Name>Lüftungsstufe</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>230014</PTID>
+          <FixHeatCircuitNo>0</FixHeatCircuitNo>
+          <Name>Luftdurchsatz Zuluft</Name>
+          <ChooseCondition>C_2861</ChooseCondition>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>390007</PTID>
+          <FixHeatCircuitNo>0</FixHeatCircuitNo>
+          <Name>Luftdurchsatz Zuluft</Name>
+          <ChooseCondition>C_2862</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.DFB0_1</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>450010</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360000</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.DFB0_2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>450011</PTID>
+          <Name>Tagtemperatur Heizen</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360000</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.DFB0_3</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>450012</PTID>
+          <Name>Tagtemperatur Kühlen</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360000</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.DFBX_1</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>450022</PTID>
+          <Name>Temperaturanpassung</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360001</PTID>
+          <Name>Außentemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.DFBX_2</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>450023</PTID>
+          <Name>Tagtemperatur Heizen</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360000</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+    <PTIDHierarchy>
+      <Name>#CircularSlider.DFBX_3</Name>
+      <Childs>
+        <PTIDHierarchy>
+          <PTID>450024</PTID>
+          <Name>Tagtemperatur Kühlen</Name>
+        </PTIDHierarchy>
+        <PTIDHierarchy>
+          <PTID>360000</PTID>
+          <Name>Raumtemperatur</Name>
+          <ChooseCondition>True</ChooseCondition>
+        </PTIDHierarchy>
+      </Childs>
+    </PTIDHierarchy>
+  </CircularSliderTemplates>
+  <ClimateProgram>
+    <Name>#TimeTableView_WRS-K</Name>
+    <Childs>
+      <PTIDHierarchy>
+        <Name>Wochenprogramm</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660780</PTID>
+            <Name>Montag</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660781</PTID>
+            <Name>Dienstag</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660782</PTID>
+            <Name>Mittwoch</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660783</PTID>
+            <Name>Donnerstag</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660784</PTID>
+            <Name>Freitag</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660785</PTID>
+            <Name>Samstag</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660786</PTID>
+            <Name>Sonntag</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Tagesprogramm 1</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660787</PTID>
+            <Name>Start Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660788</PTID>
+            <Name>Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660789</PTID>
+            <Name>Start Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660790</PTID>
+            <Name>Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660791</PTID>
+            <Name>Start Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660792</PTID>
+            <Name>Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660793</PTID>
+            <Name>Start Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660794</PTID>
+            <Name>Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660795</PTID>
+            <Name>Start Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660796</PTID>
+            <Name>Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660827</PTID>
+            <Name>Ventilatordrehzahl Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660828</PTID>
+            <Name>Ventilatordrehzahl Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660829</PTID>
+            <Name>Ventilatordrehzahl Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660830</PTID>
+            <Name>Ventilatordrehzahl Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660831</PTID>
+            <Name>Ventilatordrehzahl Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660832</PTID>
+            <Name>Ventilatorstufe Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660833</PTID>
+            <Name>Ventilatorstufe Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660834</PTID>
+            <Name>Ventilatorstufe Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660835</PTID>
+            <Name>Ventilatorstufe Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660836</PTID>
+            <Name>Ventilatorstufe Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660837</PTID>
+            <Name>Temperatur Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660838</PTID>
+            <Name>Temperatur Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660839</PTID>
+            <Name>Temperatur Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660840</PTID>
+            <Name>Temperatur Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660841</PTID>
+            <Name>Temperatur Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660842</PTID>
+            <Name>Frischluftanteil Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660843</PTID>
+            <Name>Frischluftanteil Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660844</PTID>
+            <Name>Frischluftanteil Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660845</PTID>
+            <Name>Frischluftanteil Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660846</PTID>
+            <Name>Frischluftanteil Zone 5</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Tagesprogramm 2</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660797</PTID>
+            <Name>Start Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660798</PTID>
+            <Name>Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660799</PTID>
+            <Name>Start Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660800</PTID>
+            <Name>Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660801</PTID>
+            <Name>Start Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660802</PTID>
+            <Name>Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660803</PTID>
+            <Name>Start Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660804</PTID>
+            <Name>Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660805</PTID>
+            <Name>Start Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660806</PTID>
+            <Name>Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660847</PTID>
+            <Name>Ventilatordrehzahl Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660848</PTID>
+            <Name>Ventilatordrehzahl Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660849</PTID>
+            <Name>Ventilatordrehzahl Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660850</PTID>
+            <Name>Ventilatordrehzahl Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660851</PTID>
+            <Name>Ventilatordrehzahl Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660852</PTID>
+            <Name>Ventilatorstufe Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660853</PTID>
+            <Name>Ventilatorstufe Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660854</PTID>
+            <Name>Ventilatorstufe Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660855</PTID>
+            <Name>Ventilatorstufe Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660856</PTID>
+            <Name>Ventilatorstufe Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660857</PTID>
+            <Name>Temperatur Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660858</PTID>
+            <Name>Temperatur Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660859</PTID>
+            <Name>Temperatur Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660860</PTID>
+            <Name>Temperatur Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660861</PTID>
+            <Name>Temperatur Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660862</PTID>
+            <Name>Frischluftanteil Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660863</PTID>
+            <Name>Frischluftanteil Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660864</PTID>
+            <Name>Frischluftanteil Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660865</PTID>
+            <Name>Frischluftanteil Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660866</PTID>
+            <Name>Frischluftanteil Zone 5</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Tagesprogramm 3</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660807</PTID>
+            <Name>Start Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660808</PTID>
+            <Name>Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660809</PTID>
+            <Name>Start Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660810</PTID>
+            <Name>Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660811</PTID>
+            <Name>Start Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660812</PTID>
+            <Name>Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660813</PTID>
+            <Name>Start Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660814</PTID>
+            <Name>Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660815</PTID>
+            <Name>Start Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660816</PTID>
+            <Name>Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660867</PTID>
+            <Name>Ventilatordrehzahl Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660868</PTID>
+            <Name>Ventilatordrehzahl Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660869</PTID>
+            <Name>Ventilatordrehzahl Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660870</PTID>
+            <Name>Ventilatordrehzahl Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660871</PTID>
+            <Name>Ventilatordrehzahl Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660872</PTID>
+            <Name>Ventilatorstufe Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660873</PTID>
+            <Name>Ventilatorstufe Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660874</PTID>
+            <Name>Ventilatorstufe Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660875</PTID>
+            <Name>Ventilatorstufe Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660876</PTID>
+            <Name>Ventilatorstufe Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660877</PTID>
+            <Name>Temperatur Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660878</PTID>
+            <Name>Temperatur Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660879</PTID>
+            <Name>Temperatur Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660880</PTID>
+            <Name>Temperatur Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660881</PTID>
+            <Name>Temperatur Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660882</PTID>
+            <Name>Frischluftanteil Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660883</PTID>
+            <Name>Frischluftanteil Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660884</PTID>
+            <Name>Frischluftanteil Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660885</PTID>
+            <Name>Frischluftanteil Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660886</PTID>
+            <Name>Frischluftanteil Zone 5</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Tagesprogramm 4</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660817</PTID>
+            <Name>Start Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660818</PTID>
+            <Name>Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660819</PTID>
+            <Name>Start Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660820</PTID>
+            <Name>Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660821</PTID>
+            <Name>Start Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660822</PTID>
+            <Name>Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660823</PTID>
+            <Name>Start Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660824</PTID>
+            <Name>Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660825</PTID>
+            <Name>Start Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660826</PTID>
+            <Name>Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660887</PTID>
+            <Name>Ventilatordrehzahl Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660888</PTID>
+            <Name>Ventilatordrehzahl Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660889</PTID>
+            <Name>Ventilatordrehzahl Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660890</PTID>
+            <Name>Ventilatordrehzahl Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660891</PTID>
+            <Name>Ventilatordrehzahl Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660892</PTID>
+            <Name>Ventilatorstufe Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660893</PTID>
+            <Name>Ventilatorstufe Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660894</PTID>
+            <Name>Ventilatorstufe Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660895</PTID>
+            <Name>Ventilatorstufe Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660896</PTID>
+            <Name>Ventilatorstufe Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660897</PTID>
+            <Name>Temperatur Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660898</PTID>
+            <Name>Temperatur Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660899</PTID>
+            <Name>Temperatur Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660900</PTID>
+            <Name>Temperatur Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660901</PTID>
+            <Name>Temperatur Zone 5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660902</PTID>
+            <Name>Frischluftanteil Zone 1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660903</PTID>
+            <Name>Frischluftanteil Zone 2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660904</PTID>
+            <Name>Frischluftanteil Zone 3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660905</PTID>
+            <Name>Frischluftanteil Zone 4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660906</PTID>
+            <Name>Frischluftanteil Zone 5</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Sollwerte</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660907</PTID>
+            <Name>Temperatur1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660908</PTID>
+            <Name>Temperatur2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660909</PTID>
+            <Name>Temperatur3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660910</PTID>
+            <Name>Temperatur4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660911</PTID>
+            <Name>Frischluftanteil1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660912</PTID>
+            <Name>Frischluftanteil2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660913</PTID>
+            <Name>Frischluftanteil3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660914</PTID>
+            <Name>Frischluftanteil4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660915</PTID>
+            <Name>Drehzahl1 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660916</PTID>
+            <Name>Drehzahl1 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660917</PTID>
+            <Name>Drehzahl2 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660918</PTID>
+            <Name>Drehzahl2 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660919</PTID>
+            <Name>Drehzahl3 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660920</PTID>
+            <Name>Drehzahl3 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660921</PTID>
+            <Name>Drehzahl4 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660922</PTID>
+            <Name>Drehzahl4 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660923</PTID>
+            <Name>Druck1 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660924</PTID>
+            <Name>Druck1 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660925</PTID>
+            <Name>Druck1 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660926</PTID>
+            <Name>Druck2 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660927</PTID>
+            <Name>Druck2 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660928</PTID>
+            <Name>Druck2 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660929</PTID>
+            <Name>Druck3 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660930</PTID>
+            <Name>Druck3 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660931</PTID>
+            <Name>Druck3 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660932</PTID>
+            <Name>Druck4 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660933</PTID>
+            <Name>Druck4 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660934</PTID>
+            <Name>Druck4 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660935</PTID>
+            <Name>Volumenstrom1 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660936</PTID>
+            <Name>Volumenstrom1 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660937</PTID>
+            <Name>Volumenstrom2 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660938</PTID>
+            <Name>Volumenstrom2 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660939</PTID>
+            <Name>Volumenstrom3 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660940</PTID>
+            <Name>Volumenstrom3 Abluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660941</PTID>
+            <Name>Volumenstrom4 Zuluftventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660942</PTID>
+            <Name>Volumenstrom4 Abluftventilator</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Urlaubsprogramm 1</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660943</PTID>
+            <Name>Start Uhrzeit UP1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660944</PTID>
+            <Name>End Uhrzeit UP1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660953</PTID>
+            <Name>Start UP1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660954</PTID>
+            <Name>Ende UP1</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660963</PTID>
+            <Name>UP1 Vorgabe Temperatur</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660964</PTID>
+            <Name>UP1 Vorgabe Frischluftanteil</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660965</PTID>
+            <Name>UP1 Vorgabe Ventilatorstufe</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660966</PTID>
+            <Name>UP1 Vorgabe Ventilatordrehzahl</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Urlaubsprogramm 2</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660945</PTID>
+            <Name>Start Uhrzeit UP2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660946</PTID>
+            <Name>End Uhrzeit UP2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660955</PTID>
+            <Name>Start UP2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660956</PTID>
+            <Name>Ende UP2</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660967</PTID>
+            <Name>UP2 Vorgabe Temperatur</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660968</PTID>
+            <Name>UP2 Vorgabe Frischluftanteil</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660969</PTID>
+            <Name>UP2 Vorgabe Ventilatorstufe</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660970</PTID>
+            <Name>UP2 Vorgabe Ventilatordrehzahl</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Urlaubsprogramm 3</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660947</PTID>
+            <Name>Start Uhrzeit UP3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660948</PTID>
+            <Name>End Uhrzeit UP3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660957</PTID>
+            <Name>Start UP3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660958</PTID>
+            <Name>Ende UP3</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660971</PTID>
+            <Name>UP3 Vorgabe Temperatur</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660972</PTID>
+            <Name>UP3 Vorgabe Frischluftanteil</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660973</PTID>
+            <Name>UP3 Vorgabe Ventilatorstufe</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660974</PTID>
+            <Name>UP3 Vorgabe Ventilatordrehzahl</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Urlaubsprogramm 4</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660949</PTID>
+            <Name>Start Uhrzeit UP4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660950</PTID>
+            <Name>End Uhrzeit UP4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660959</PTID>
+            <Name>Start UP4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660960</PTID>
+            <Name>Ende UP4</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660975</PTID>
+            <Name>UP4 Vorgabe Temperatur</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660976</PTID>
+            <Name>UP4 Vorgabe Frischluftanteil</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660977</PTID>
+            <Name>UP4 Vorgabe Ventilatorstufe</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660978</PTID>
+            <Name>UP4 Vorgabe Ventilatordrehzahl</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Urlaubsprogramm 5</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660951</PTID>
+            <Name>Start Uhrzeit UP5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660952</PTID>
+            <Name>End Uhrzeit UP5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660961</PTID>
+            <Name>Start UP5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660962</PTID>
+            <Name>Ende UP5</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660979</PTID>
+            <Name>UP5 Vorgabe Temperatur</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660980</PTID>
+            <Name>UP5 Vorgabe Frischluftanteil</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660981</PTID>
+            <Name>UP5 Vorgabe Ventilatorstufe</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660982</PTID>
+            <Name>UP5 Vorgabe Ventilatordrehzahl</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+      <PTIDHierarchy>
+        <Name>Dependencies</Name>
+        <Childs>
+          <PTIDHierarchy>
+            <PTID>660138</PTID>
+            <Name>Konfig_Ventilator</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660534</PTID>
+            <Name>max_setpoint</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660535</PTID>
+            <Name>min_setpoint</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660539</PTID>
+            <Name>fan_zu_max_voltage</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660538</PTID>
+            <Name>fan_zu_min_voltage</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660541</PTID>
+            <Name>fan_ab_max_voltage</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660540</PTID>
+            <Name>fan_ab_min_voltage</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660652</PTID>
+            <Name>p_zuluft_max</Name>
+          </PTIDHierarchy>
+          <PTIDHierarchy>
+            <PTID>660653</PTID>
+            <Name>p_abluft_max</Name>
+          </PTIDHierarchy>
+        </Childs>
+      </PTIDHierarchy>
+    </Childs>
+  </ClimateProgram>
+</DependentDefinitionConfig>
