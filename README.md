@@ -112,7 +112,7 @@ Please be aware that not all properties can be set - ism7mqtt tries to validate 
 
 ## Bugs / Missing Features
 
-If something is not working in your setup, you can get more output by using the debug switch `-d`. This will dump the communication with the ism7 (including your password). Please include a redacted version of this dump when opening an issue and also attach your smartset database file (%APPDATA%\Wolf GmbH\Smartset\App_Data\smartsetpc.sdf).
+If something is not working in your setup, you can get more output by using the debug switch `-d`. This will dump the communication with the ism7 (including your password). Please include a redacted version of this dump when opening an issue and also attach your parameter.json.
 
 ## Protocol
 
