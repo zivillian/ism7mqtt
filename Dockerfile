@@ -1,7 +1,8 @@
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
-COPY src/ism7mqtt/ ./
+COPY src/ism7mqtt/ ./ism7mqtt/
+COPY src/ism7config/ ./ism7config/
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
     RID=linux-musl-x64 ; \
@@ -10,7 +11,8 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
     elif [ "$TARGETARCH" = "arm" ]; then \
     RID=linux-musl-arm ; \
     fi \
-    && dotnet publish -c Release -o out -r $RID -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104
+    && dotnet publish -c Release -o out -r $RID --sc -nowarn:IL2026,IL2104 ism7mqtt/ism7mqtt.csproj \
+    && dotnet publish -c Release -o out -r $RID --sc -nowarn:IL2026,IL2104 ism7config/ism7config.csproj
 COPY openssl.cnf ./out/
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine
