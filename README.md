@@ -4,7 +4,11 @@ Get all statistics and values from your Wolf ISM7 and send them to an mqtt serve
 
 ## How?
 
-Run ism7parameter on a Windows machine where [Wolf SmartSet](https://www.wolf.eu/download-asset/22335) is installed and was connected to your ism7 at least once. This will create a parameter.json file which is needed for ism7mqtt.
+Create a parameter.json file which is needed for ism7mqtt by running the ism7config tool on any machine which can connect to your ism7. This only need's to be done once (or after you changed your your Wolf setup):
+
+```sh
+ism7config -i <ism7 ip/host> -p <ism7 password>
+```
 
 Run ism7mqtt on any machine which can connect to your ism7 and an mqtt server.
 
@@ -12,7 +16,7 @@ Run ism7mqtt on any machine which can connect to your ism7 and an mqtt server.
 ism7mqtt -m <mqttserver> -i <ism7 ip/host> -p <ism7 password>
 ```
 
-Do not forget to put the generated parameter.json next to the ism7client or specify the path with `-t .../parameter.json`.
+Do not forget to put the generated parameter.json next to ism7mqtt or specify the path with `-t .../parameter.json`.
 
 ### Docker
 
@@ -22,17 +26,21 @@ If you want to run this via docker, use:
 docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> zivillian/ism7mqtt:latest
 ```
 
+### HomeAssistant
+
+There is a HomeAssistant integration at [b3nn0/hassio-addon-ism7mqtt](https://github.com/b3nn0/hassio-addon-ism7mqtt).
+
 ## Firmware < 200
 
 The old firmware (Software < 200) uses a different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern os. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
 
 ## Cons
 
-The ism7 accepts only a single connection, so you cannot use the Smartset application while ism7mqtt is running.
+The ism7 accepts only a single connection, so you cannot use the Smartset application or mobile app while ism7mqtt is running.
 
 ## Configuration
 
-The parameter.json contains all devices and the corresponding properties for the installation extracted from smartset. You can remove any property which is not needed.
+The parameter.json contains all devices and the corresponding properties for the installation extracted from your setup. You can remove any property which is not needed.
 
 ## MQTT
 
