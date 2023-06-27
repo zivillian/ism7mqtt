@@ -18,17 +18,23 @@ COPY openssl.cnf ./out/
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine
 WORKDIR /app
 COPY --from=build-env /app/out .
-
-ENV OPENSSL_CONF=/app/openssl.cnf
-ENV ISM7_DEBUG=false
-ENV ISM7_MQTTHOST=
-ENV ISM7_IP=
-ENV ISM7_PASSWORD=
-ENV ISM7_MQTTUSERNAME=
-ENV ISM7_MQTTPASSWORD=
-ENV ISM7_DISABLEJSON=false
-ENV ISM7_RETAIN=false
-ENV ISM7_INTERVAL=60
-ENV ISM7_HOMEASSISTANT_ID=
+ENV \
+    # https://github.com/dotnet/announcements/issues/20
+    # ism7mqtt is only using the invariant culture, but the
+    # initializer of a smartset converter creates a german
+    # culture (which is not used but fails if only invariant
+    # is available)
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    OPENSSL_CONF=/app/openssl.cnf \
+    ISM7_DEBUG=false \
+    ISM7_MQTTHOST= \
+    ISM7_IP= \
+    ISM7_PASSWORD= \
+    ISM7_MQTTUSERNAME= \
+    ISM7_MQTTPASSWORD= \
+    ISM7_DISABLEJSON=false \
+    ISM7_RETAIN=false \
+    ISM7_INTERVAL=60 \
+    ISM7_HOMEASSISTANT_ID=
 
 ENTRYPOINT ["/app/ism7mqtt"]
