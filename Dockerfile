@@ -24,7 +24,7 @@ ENV \
     # initializer of a smartset converter creates a german
     # culture (which is not used but fails if only invariant
     # is available)
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY=false \
     OPENSSL_CONF=/app/openssl.cnf \
     ISM7_DEBUG=false \
     ISM7_MQTTHOST= \
