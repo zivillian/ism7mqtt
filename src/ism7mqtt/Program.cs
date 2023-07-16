@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -154,18 +155,18 @@ namespace ism7mqtt
         {
             var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
             if (value is null) return defaultValue;
-            var parsed = new BooleanConverter().ConvertFromString(value);
-            if (parsed is null) return defaultValue;
-            return (bool)parsed;
+            if (Boolean.TryParse(value, out var parsed))
+                return  parsed;
+            return defaultValue;
         }
 
         private static int GetEnvInt32(string name, int defaultValue = default)
         {
             var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
             if (value is null) return defaultValue;
-            var parsed = new Int32Converter().ConvertFromString(value);
-            if (parsed is null) return defaultValue;
-            return (int)parsed;
+            if (Int32.TryParse(value, out var parsed))
+                return parsed;
+            return defaultValue;
         }
 
         private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, CancellationToken cancellationToken)
