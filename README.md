@@ -4,7 +4,7 @@ Get all statistics and values from your Wolf ISM7 and send them to an mqtt serve
 
 ## How?
 
-Create a parameter.json file which is needed for ism7mqtt by running the ism7config tool on any machine which can connect to your ism7. This only need's to be done once (or after you changed your your Wolf setup):
+Create a parameter.json file which is needed for ism7mqtt by running the ism7config tool on any machine which can connect to your ism7. This only needs to be done once (or after you changed your your Wolf setup):
 
 ```sh
 ism7config -i <ism7 ip/host> -p <ism7 password>
@@ -28,11 +28,11 @@ docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -
 
 ### HomeAssistant
 
-There is a HomeAssistant integration at [b3nn0/hassio-addon-ism7mqtt](https://github.com/b3nn0/hassio-addon-ism7mqtt).
+There is a HomeAssistant integration available at [b3nn0/hassio-addon-ism7mqtt](https://github.com/b3nn0/hassio-addon-ism7mqtt).
 
 ## Firmware < 200
 
-The old firmware (Software < 200) uses a different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern os. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
+The old firmware (Software < 200) uses a different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern OS. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
 
 ## Cons
 
