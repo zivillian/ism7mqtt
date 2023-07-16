@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -126,7 +124,7 @@ namespace ism7mqtt
 
                         if (_discoveryId != null)
                         {
-                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, c);
+                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, enableDebug, c);
                         }
                         await client.RunAsync(password, cts.Token);
                     }
@@ -154,23 +152,23 @@ namespace ism7mqtt
         {
             var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
             if (value is null) return defaultValue;
-            var parsed = new BooleanConverter().ConvertFromString(value);
-            if (parsed is null) return defaultValue;
-            return (bool)parsed;
+            if (Boolean.TryParse(value, out var parsed))
+                return  parsed;
+            return defaultValue;
         }
 
         private static int GetEnvInt32(string name, int defaultValue = default)
         {
             var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
             if (value is null) return defaultValue;
-            var parsed = new Int32Converter().ConvertFromString(value);
-            if (parsed is null) return defaultValue;
-            return (int)parsed;
+            if (Int32.TryParse(value, out var parsed))
+                return parsed;
+            return defaultValue;
         }
 
-        private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, CancellationToken cancellationToken)
+        private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, bool debug, CancellationToken cancellationToken)
         {
-            var discovery = new HaDiscovery(config);
+            var discovery = new HaDiscovery(config) { EnableDebug = debug };
             foreach (var message in discovery.GetDiscoveryInfo(_discoveryId))
             {
                 var data = JsonSerializer.Serialize(message.Content);
