@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -10,6 +11,8 @@ namespace ism7mqtt.HomeAssistant
     public class HaDiscovery
     {
         private readonly Ism7Config _config;
+
+        public bool EnableDebug { get; set; }
 
         public HaDiscovery(Ism7Config config)
         {
@@ -168,9 +171,27 @@ namespace ism7mqtt.HomeAssistant
                     if (numeric.IsWritable)
                     {
                         if (numeric.MinValueCondition != null)
-                            yield return("min", Double.Parse(numeric.MinValueCondition));
+                        {
+                            if (Double.TryParse(numeric.MinValueCondition, NumberStyles.Number, CultureInfo.InvariantCulture, out var min))
+                            {
+                                yield return("min", min);
+                            }
+                            else if (EnableDebug)
+                            {
+                                Console.WriteLine($"Cannot parse MinValueCondition '{numeric.MinValueCondition}' for PTID {descriptor.PTID}");
+                            }
+                        }
                         if (numeric.MaxValueCondition != null)
-                            yield return ("max", Double.Parse(numeric.MaxValueCondition));
+                        {
+                            if (Double.TryParse(numeric.MaxValueCondition, NumberStyles.Number, CultureInfo.InvariantCulture, out var max))
+                            {
+                                yield return ("max", max);
+                            }
+                            else if (EnableDebug)
+                            {
+                                Console.WriteLine($"Cannot parse MaxValueCondition '{numeric.MaxValueCondition}' for PTID {descriptor.PTID}");
+                            }
+                        }
                         if (numeric.StepWidth != null)
                             yield return ("step", numeric.StepWidth);
                     }
