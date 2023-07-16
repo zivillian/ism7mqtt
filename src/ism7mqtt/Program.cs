@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -161,7 +162,7 @@ namespace ism7mqtt
         {
             var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
             if (value is null) return defaultValue;
-            if (Int32.TryParse(value, out var parsed))
+            if (Int32.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
                 return parsed;
             return defaultValue;
         }
