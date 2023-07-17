@@ -153,7 +153,7 @@ internal class Program
             await Task.Delay(1000);
             tries++;
         }
-        Console.Error.WriteLine("Timeout waiting for GW");
+        Console.Error.WriteLine($"{DateTime.Now}: Timeout waiting for GW");
     }
 
     private static string GetEnvString(string name, string defaultValue = default)
