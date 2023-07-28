@@ -137,6 +137,7 @@ internal class Program
                 };
                 foreach (var device in gc.Devices)
                 {
+                    if (device.DeviceTemplateId == 0) continue; //skip devices with invalid template id as seen in #64
                     config.Devices.Add(new Device
                     {
                         Id = device.Id,
