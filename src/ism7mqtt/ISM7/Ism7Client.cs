@@ -131,7 +131,7 @@ namespace ism7mqtt
             var request = new TelegramBundleReq
             {
                 AbortOnError = true,
-                BundleId = NextBundleId(),
+                BundleId = "1099",
                 GatewayId = "1",
                 TelegramBundleType = TelegramBundleType.write,
                 InfoWriteTelegrams = writeRequests
@@ -276,9 +276,11 @@ namespace ism7mqtt
 
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
+            var visibleDevices = new List<string>();
             foreach (var device in _devices.Values)
             {
                 if (!_config.AddDevice(_ipAddress.ToString(), device.Ba)) continue;
+                visibleDevices.Add(device.Ba);
                 var infoReads = _config.GetInfoReadForDevice(device.Ba).ToList();
                 var bundleId = NextBundleId();
                 _dispatcher.SubscribeOnce(
@@ -306,6 +308,19 @@ namespace ism7mqtt
             {
                 await OnInitializationFinishedAsync(_config, cancellationToken);
             }
+            var bn = NextBundleId();
+            await SendAsync(new TelegramBundleReq
+            {
+                AbortOnError = false,
+                BundleId = bn,
+                GatewayId = "1",
+                TelegramBundleType = TelegramBundleType.push,
+                EStRead = new TelegramBundleReq.ErrorStateRead
+                {
+                    Seq = bn,
+                    VisibleDeviceAdresses = String.Join(',', visibleDevices)
+                }
+            }, cancellationToken);
         }
 
         private async Task OnInitialValuesAsync(IResponse response, CancellationToken cancellationToken)
