@@ -167,7 +167,7 @@ namespace ism7mqtt
                 Name = name;
                 IP = ip;
 
-                WriteAddress = writeBusAddress;
+                WriteAddress = writeBusAddress ?? $"0x{(Converter.FromHex(readBusAddress) - 5):X2}";
                 MqttTopic = $"Wolf/{ip}/{name}_{readBusAddress}";
 
                 _parameter = new List<RunningParameter>();
