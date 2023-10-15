@@ -31,5 +31,10 @@ namespace ism7mqtt.ISM7.Xml
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
         }
+
+        public override ConverterTemplateBase Clone()
+        {
+            return Clone(new Bit4to7ConverterTemplate());
+        }
     }
 }

@@ -313,10 +313,10 @@ namespace ism7mqtt
             private readonly ParameterDescriptor _descriptor;
             private readonly ConverterTemplateBase _converter;
 
-            public RunningParameter( ParameterDescriptor descriptor, ConverterTemplateBase converter)
+            public RunningParameter(ParameterDescriptor descriptor, ConverterTemplateBase converter)
             {
                 _descriptor = descriptor;
-                _converter = converter;
+                _converter = converter.Clone();
             }
 
             public string Name => _descriptor.Name;

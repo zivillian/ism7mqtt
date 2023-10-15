@@ -84,5 +84,14 @@ namespace ism7mqtt.ISM7.Xml
             yield return new InfoWrite{InfoNumber = TelegramNrLow, DBLow = $"0x{(low & 0xff):X2}", DBHigh = $"0x{(low >> 8):X2}"};
             yield return new InfoWrite{InfoNumber = TelegramNrHigh, DBLow = $"0x{(high & 0xff):X2}", DBHigh = $"0x{(high >> 8):X2}"};
         }
+
+        public override ConverterTemplateBase Clone()
+        {
+            return Clone(new NumericConverter32Template
+            {
+                TelegramNrHigh = TelegramNrHigh,
+                TelegramNrLow = TelegramNrLow,
+            });
+        }
     }
 }

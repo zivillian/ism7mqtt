@@ -30,5 +30,16 @@ namespace ism7mqtt.ISM7.Xml
         public abstract JsonValue GetValue();
 
         public abstract IEnumerable<InfoWrite> GetWrite(string value);
+
+        public abstract ConverterTemplateBase Clone();
+
+        protected ConverterTemplateBase Clone(ConverterTemplateBase clone)
+        {
+            clone.CTID = CTID;
+            clone.Type = Type;
+            clone.ServiceReadNumber = ServiceReadNumber;
+            clone.ServiceWriteNumber = ServiceWriteNumber;
+            return clone;
+        }
     }
 }
