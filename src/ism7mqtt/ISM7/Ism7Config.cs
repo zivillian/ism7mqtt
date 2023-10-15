@@ -64,7 +64,16 @@ namespace ism7mqtt
             }
         }
 
-        public bool AddDevice(string ip, string ba)
+        public IEnumerable<string> AddAllDevices(string ip)
+        {
+            foreach (var ba in _config.Devices.Select(x=>x.ReadBusAddress).Distinct())
+            {
+                AddDevice(ip, ba);
+                yield return ba;
+            }
+        }
+
+        public void AddDevice(string ip, string ba)
         {
             if (!_devices.TryGetValue(Converter.FromHex(ba), out var devices))
             {
@@ -75,9 +84,8 @@ namespace ism7mqtt
             {
                 var device = _deviceTemplates.First(x => x.DTID == configDevice.DeviceTemplateId);
                 var tids = configDevice.Parameter.ToHashSet();
-                devices.Add(new RunningDevice(device.Name, ip, ba, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
+                devices.Add(new RunningDevice(device.Name, ip, configDevice.ReadBusAddress, configDevice.WriteBusAddress, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID))));
             }
-            return true;
         }
 
         public IEnumerable<InfoRead> GetInfoReadForDevice(string ba)
@@ -154,13 +162,13 @@ namespace ism7mqtt
         {
             private readonly List<RunningParameter> _parameter;
 
-            public RunningDevice(string name, string ip, string ba, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
+            public RunningDevice(string name, string ip, string readBusAddress, string writeBusAddress, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter)
             {
                 Name = name;
                 IP = ip;
 
-                WriteAddress = $"0x{(Converter.FromHex(ba) - 5):X2}";
-                MqttTopic = $"Wolf/{ip}/{name}_{ba}";
+                WriteAddress = writeBusAddress;
+                MqttTopic = $"Wolf/{ip}/{name}_{readBusAddress}";
 
                 _parameter = new List<RunningParameter>();
                 foreach (var descriptor in parameter)

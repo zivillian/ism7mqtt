@@ -24,7 +24,6 @@ namespace ism7mqtt
         private readonly Func<Ism7Config, CancellationToken, Task> _messageHandler;
         private readonly IPAddress _ipAddress;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
-        private readonly ConcurrentDictionary<string, SystemconfigResp.BusDevice> _devices = new ConcurrentDictionary<string, SystemconfigResp.BusDevice>();
         private readonly Ism7Config _config;
         private readonly Pipe _pipe;
         private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
@@ -240,13 +239,12 @@ namespace ism7mqtt
 
         private async Task SubscribeAsync(string busAddress, CancellationToken cancellationToken)
         {
-            var device = _devices[busAddress];
-            var infoReads = _config.GetInfoReadForDevice(device.Ba).ToList();
+            var infoReads = _config.GetInfoReadForDevice(busAddress).ToList();
             var bundleId = NextBundleId();
             _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, OnPushResponseAsync);
             foreach (var infoRead in infoReads)
             {
-                infoRead.BusAddress = device.Ba;
+                infoRead.BusAddress = busAddress;
                 infoRead.Intervall = Interval;
             }
             await SendAsync(new TelegramBundleReq
@@ -276,10 +274,9 @@ namespace ism7mqtt
 
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
-            foreach (var device in _devices.Values)
+            foreach (var busAddress in _config.AddAllDevices(_ipAddress.ToString()))
             {
-                if (!_config.AddDevice(_ipAddress.ToString(), device.Ba)) continue;
-                var infoReads = _config.GetInfoReadForDevice(device.Ba).ToList();
+                var infoReads = _config.GetInfoReadForDevice(busAddress).ToList();
                 var bundleId = NextBundleId();
                 _dispatcher.SubscribeOnce(
                     x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId,
@@ -291,7 +288,7 @@ namespace ism7mqtt
                 }
                 foreach (var infoRead in infoReads)
                 {
-                    infoRead.BusAddress = device.Ba;
+                    infoRead.BusAddress = busAddress;
                 }
                 await SendAsync(new TelegramBundleReq
                 {
@@ -321,27 +318,10 @@ namespace ism7mqtt
                 if (hasDatapoints)
                 {
                     await _messageHandler(_config, cancellationToken);
+                    var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
+                    await SubscribeAsync(busAddress, cancellationToken);
                 }
-                var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
-                await SubscribeAsync(busAddress, cancellationToken);
             }
-        }
-
-        private async Task GetConfigAsync(LoginResp session, CancellationToken cancellationToken)
-        {
-            _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.SystemconfigResp,
-                OnSystemConfigAsync);
-            await SendAsync(new SystemconfigReq {Sid = session.Sid}, cancellationToken);
-        }
-
-        private Task OnSystemConfigAsync(IResponse response, CancellationToken cancellationToken)
-        {
-            var resp = (SystemconfigResp)response;
-            foreach (var device in resp.BusConfig.Devices)
-            {
-                _devices.AddOrUpdate(device.Ba, device, (k, o) => device);
-            }
-            return LoadInitialValuesAsync(cancellationToken);
         }
 
         private ValueTask AuthenticateAsync(string password, CancellationToken cancellationToken)
@@ -356,7 +336,7 @@ namespace ism7mqtt
             var resp = (LoginResp)response;
             if (resp.State != LoginState.ok)
                 throw new InvalidDataException("invalid login state");
-            return GetConfigAsync(resp, cancellationToken);
+            return LoadInitialValuesAsync(cancellationToken);
         }
 
         private async Task KeepAliveAsync(CancellationToken cancellationToken)
