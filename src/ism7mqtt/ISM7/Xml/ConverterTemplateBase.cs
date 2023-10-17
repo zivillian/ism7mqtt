@@ -33,7 +33,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public abstract ConverterTemplateBase Clone();
 
-        protected ConverterTemplateBase Clone(ConverterTemplateBase clone)
+        protected virtual ConverterTemplateBase Clone(ConverterTemplateBase clone)
         {
             clone.CTID = CTID;
             clone.Type = Type;
