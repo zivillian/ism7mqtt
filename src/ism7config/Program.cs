@@ -135,17 +135,20 @@ internal class Program
                 {
                     Devices = new List<Device>()
                 };
-                foreach (var device in gc.Devices)
+                foreach (var device in gc.Devices.OrderBy(x => x.ReadBusAddress))
                 {
                     if (device.DeviceTemplateId == 0) continue; //skip devices with invalid template id as seen in #64
                     config.Devices.Add(new Device
                     {
                         Id = device.Id,
                         ReadBusAddress = device.ReadBusAddress,
+                        WriteBusAddress = device.WriteBusAddress,
                         DeviceTemplateId = device.DeviceTemplateId,
                         Parameters = parameterStore.Parameters
-                            .Where(x=>x.Value.DeviceId == device.Id)
-                            .Select(x=>new Parameter{ParameterId = x.Value.ParameterId / 100_000}).ToList()
+                            .Where(x => x.Value.DeviceId == device.Id)
+                            .Select(x => new Parameter { ParameterId = x.Value.ParameterId / 100_000 })
+                            .OrderBy(x => x.ParameterId)
+                            .ToList()
                     });
                 }
                 await File.WriteAllTextAsync(file, JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true }));

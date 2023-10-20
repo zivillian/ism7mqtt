@@ -96,5 +96,10 @@ namespace ism7mqtt.ISM7.Xml
             }
             yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{(data & 0xff):X2}", DBHigh = $"0x{(data >> 8):X2}"};
         }
+
+        public override ConverterTemplateBase Clone()
+        {
+            return Clone(new NumericConverter16Template());
+        }
     }
 }

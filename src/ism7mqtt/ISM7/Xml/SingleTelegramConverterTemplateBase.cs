@@ -30,5 +30,14 @@ namespace ism7mqtt.ISM7.Xml
         }
 
         protected abstract void AddTelegram(byte low, byte high);
+
+        protected override ConverterTemplateBase Clone(ConverterTemplateBase clone)
+        {
+            if (clone is SingleTelegramConverterTemplateBase single)
+            {
+                single.TelegramNr = TelegramNr;
+            }
+            return base.Clone(clone);
+        }
     }
 }

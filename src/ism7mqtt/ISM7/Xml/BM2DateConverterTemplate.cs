@@ -39,5 +39,10 @@ namespace ism7mqtt.ISM7.Xml
             var high = (byte)(bytes >> 8);
             yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{low:X2}", DBHigh = $"0x{high:X2}"};
         }
+
+        public override ConverterTemplateBase Clone()
+        {
+            return Clone(new BM2DateConverterTemplate());
+        }
     }
 }

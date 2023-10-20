@@ -22,5 +22,15 @@ namespace ism7mqtt.ISM7.Xml
         {
             return TelegramNumbers.Any(x => x == telegram);
         }
+
+        protected override ConverterTemplateBase Clone(ConverterTemplateBase clone)
+        {
+            base.Clone(clone);
+            if (clone is MultiTelegramConverterTemplateBase multi)
+            {
+                multi.TelegramNumbers = TelegramNumbers;
+            }
+            return clone;
+        }
     }
 }

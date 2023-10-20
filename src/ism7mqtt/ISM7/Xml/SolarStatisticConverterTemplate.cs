@@ -18,14 +18,7 @@ namespace ism7mqtt.ISM7.Xml
             if (Type == KwMwType || Type == KwType)
             {
                 var value = (uint)(high << 8) | low;
-                if (!_values.ContainsKey(telegram))
-                {
-                    _values.Add(telegram, value);
-                }
-                else
-                {
-                    _values[telegram] = value;
-                }
+                _values[telegram] = value;
                 _hasValue = true;
             }
             else
@@ -60,6 +53,11 @@ namespace ism7mqtt.ISM7.Xml
         public override IEnumerable<InfoWrite> GetWrite(string value)
         {
             throw new NotImplementedException($"CTID '{CTID}' ({nameof(SolarStatisticConverterTemplate)}) is not yet implemented");
+        }
+
+        public override ConverterTemplateBase Clone()
+        {
+            return Clone(new SolarStatisticConverterTemplate());
         }
     }
 }
