@@ -31,6 +31,12 @@ jobs:
       run: dotnet publish -c release -r linux-arm64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7mqtt/ism7mqtt.csproj
     - name: Publish ism7proxy Windows
       run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7proxy/ism7proxy.csproj
+    - name: Publish ism7proxy Linux
+      run: dotnet publish -c release -r linux-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7proxy/ism7proxy.csproj
+    - name: Publish ism7proxy Linux ARM
+      run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7proxy/ism7proxy.csproj
+    - name: Publish ism7proxy Linux ARM64
+      run: dotnet publish -c release -r linux-arm64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7proxy/ism7proxy.csproj
     - name: Publish oldism7proxy Windows
       run: dotnet publish -c release -r win-x64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/oldism7proxy/oldism7proxy.csproj
     - name: Publish oldism7proxy Linux
@@ -65,8 +71,20 @@ jobs:
         path: src/ism7mqtt/bin/release/net6.0/linux-arm64/publish
     - uses: actions/upload-artifact@v2
       with:
-        name: ism7proxy
+        name: ism7proxy-win-x64
         path: src/ism7proxy/bin/release/net6.0/win-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7proxy-linux-x64
+        path: src/ism7proxy/bin/release/net6.0/linux-x64/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7proxy-linux-arm
+        path: src/ism7proxy/bin/release/net6.0/linux-arm/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ism7proxy-linux-arm64
+        path: src/ism7proxy/bin/release/net6.0/linux-arm64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: oldism7proxy-win-x64
