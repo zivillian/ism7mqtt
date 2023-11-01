@@ -11,6 +11,7 @@ using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using MQTTnet.Protocol;
 
 namespace ism7mqtt
 {
@@ -18,6 +19,7 @@ namespace ism7mqtt
     {
         private static bool _useSeparateTopics = false;
         private static bool _retain = false;
+        private static MqttQualityOfServiceLevel _qos = MqttQualityOfServiceLevel.AtMostOnce;
 
         private static string _discoveryId = null;
 
@@ -31,6 +33,7 @@ namespace ism7mqtt
             string parameter = "parameter.json";
             string mqttUsername = GetEnvString("ISM7_MQTTUSERNAME");
             string mqttPassword = GetEnvString("ISM7_MQTTPASSWORD");
+            _qos = (MqttQualityOfServiceLevel)GetEnvInt32("ISM7_MQTTQOS", 0);
             _useSeparateTopics = GetEnvBool("ISM7_SEPARATE");
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
@@ -43,6 +46,7 @@ namespace ism7mqtt
                 {"t|parameter=", $"path to parameter.json - defaults to {parameter}", x => parameter = x},
                 {"mqttuser=", "MQTT username", x => mqttUsername = x},
                 {"mqttpass=", "MQTT password", x => mqttPassword = x},
+                {"mqttqos=", "MQTT QoS", (int x) => _qos = (MqttQualityOfServiceLevel)x},
                 {"s|separate", "send values to separate mqtt topics - also disables json payload", x=> _useSeparateTopics = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
@@ -177,7 +181,8 @@ namespace ism7mqtt
                     .WithTopic(message.Path)
                     .WithPayload(data)
                     .WithContentType("application/json")
-                    .WithRetainFlag();
+                    .WithRetainFlag()
+                    .WithQualityOfServiceLevel(_qos);
                 var payload = builder
                     .Build();
                 await mqttClient.PublishAsync(payload, cancellationToken);
@@ -231,7 +236,8 @@ namespace ism7mqtt
                     var builder = new MqttApplicationMessageBuilder()
                         .WithTopic(message.Path)
                         .WithPayload(data)
-                        .WithContentType("application/json");
+                        .WithContentType("application/json")
+                        .WithQualityOfServiceLevel(_qos);
                     if (_retain)
                         builder = builder.WithRetainFlag();
                     var payload = builder
@@ -249,8 +255,10 @@ namespace ism7mqtt
                 foreach (var message in messages)
                 {
                     var topic = message.Path;
-                    var builder = new MqttApplicationMessageBuilder().WithTopic(topic)
-                        .WithPayload(message.Content);
+                    var builder = new MqttApplicationMessageBuilder()
+                        .WithTopic(topic)
+                        .WithPayload(message.Content)
+                        .WithQualityOfServiceLevel(_qos);
                     if (_retain)
                         builder = builder.WithRetainFlag();
                     var payload = builder.Build();
