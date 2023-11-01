@@ -28,6 +28,7 @@ namespace ism7mqtt
             bool showHelp = false;
             bool enableDebug = GetEnvBool("ISM7_DEBUG");
             string mqttHost = GetEnvString("ISM7_MQTTHOST");
+            int mqttPort = GetEnvInt32("ISM7_MQTTPORT", 1883);
             string ip = GetEnvString("ISM7_IP");
             string password = GetEnvString("ISM7_PASSWORD");
             string parameter = "parameter.json";
@@ -47,6 +48,7 @@ namespace ism7mqtt
                 {"mqttuser=", "MQTT username", x => mqttUsername = x},
                 {"mqttpass=", "MQTT password", x => mqttPassword = x},
                 {"mqttqos=", "MQTT QoS", (int x) => _qos = (MqttQualityOfServiceLevel)x},
+                {"mqttport=", "MQTT port (defaults to 1883)", (int x) => mqttPort = x},
                 {"s|separate", "send values to separate mqtt topics - also disables json payload", x=> _useSeparateTopics = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
@@ -97,7 +99,7 @@ namespace ism7mqtt
                     using (var mqttClient = new MqttFactory().CreateMqttClient())
                     {
                         var mqttOptionBuilder = new MqttClientOptionsBuilder()
-                            .WithTcpServer(mqttHost)
+                            .WithTcpServer(mqttHost, mqttPort)
                             .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}");
                         if (!String.IsNullOrEmpty(mqttUsername) || !String.IsNullOrEmpty(mqttPassword))
                         {
