@@ -11,6 +11,7 @@ using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using MQTTnet.Formatter;
 using MQTTnet.Protocol;
 
 namespace ism7mqtt
@@ -100,7 +101,8 @@ namespace ism7mqtt
                     {
                         var mqttOptionBuilder = new MqttClientOptionsBuilder()
                             .WithTcpServer(mqttHost, mqttPort)
-                            .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}");
+                            .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}")
+                            .WithProtocolVersion(MqttProtocolVersion.V500);
                         if (!String.IsNullOrEmpty(mqttUsername) || !String.IsNullOrEmpty(mqttPassword))
                         {
                             mqttOptionBuilder = mqttOptionBuilder.WithCredentials(mqttUsername, mqttPassword);
@@ -131,7 +133,10 @@ namespace ism7mqtt
 
                         if (_discoveryId != null)
                         {
-                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, enableDebug, c);
+                            client.OnInitializationFinishedAsync = (config, c) => {
+                                _ = PublishDiscoveryLoop(config, mqttClient, enableDebug, c);
+                                return PublishDiscoveryInfo(config, mqttClient, enableDebug, c);
+                            };
                         }
                         await client.RunAsync(password, cts.Token);
                     }
@@ -173,17 +178,29 @@ namespace ism7mqtt
             return defaultValue;
         }
 
+        private static async Task PublishDiscoveryLoop(Ism7Config config, IMqttClient mqttClient, bool debug, CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                await Task.Delay(1700000, cancellationToken);
+                await PublishDiscoveryInfo(config, mqttClient, debug, cancellationToken);
+            }
+        }
+
         private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, bool debug, CancellationToken cancellationToken)
         {
             var discovery = new HaDiscovery(config) { EnableDebug = debug };
             foreach (var message in discovery.GetDiscoveryInfo(_discoveryId))
             {
                 var data = JsonSerializer.Serialize(message.Content);
+                // In order for removed devices to eventually disappear from HA, we expire the message after 1800s (30 minutes),
+                // but also re-send the messages every 1700s
                 var builder = new MqttApplicationMessageBuilder()
                     .WithTopic(message.Path)
                     .WithPayload(data)
                     .WithContentType("application/json")
                     .WithRetainFlag()
+                    .WithMessageExpiryInterval(1800)
                     .WithQualityOfServiceLevel(_qos);
                 var payload = builder
                     .Build();
