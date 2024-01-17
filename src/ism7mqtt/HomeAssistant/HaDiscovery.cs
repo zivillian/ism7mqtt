@@ -3,20 +3,51 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json.Nodes;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using ism7mqtt.ISM7.Xml;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Protocol;
 
 namespace ism7mqtt.HomeAssistant
 {
     public class HaDiscovery
     {
         private readonly Ism7Config _config;
+        private readonly IMqttClient _mqttClient;
+        private readonly string _discoveryId;
 
         public bool EnableDebug { get; set; }
+        public MqttQualityOfServiceLevel QosLevel { get; set; }
 
-        public HaDiscovery(Ism7Config config)
+        public HaDiscovery(Ism7Config config, IMqttClient mqttClient, string discoveryId)
         {
             _config = config;
+            _mqttClient = mqttClient;
+            _discoveryId = discoveryId;
+        }
+
+        public async Task PublishDiscoveryInfo(CancellationToken cancellationToken)
+        {
+            if (EnableDebug)
+            {
+                Console.WriteLine($"Publishing HA Discovery info for ID {_discoveryId}");
+            }
+            foreach (var message in GetDiscoveryInfo(_discoveryId))
+            {
+                var data = JsonSerializer.Serialize(message.Content);
+                var builder = new MqttApplicationMessageBuilder()
+                    .WithTopic(message.Path)
+                    .WithPayload(data)
+                    .WithContentType("application/json")
+                    .WithQualityOfServiceLevel(QosLevel);
+                var payload = builder
+                    .Build();
+                await _mqttClient.PublishAsync(payload, cancellationToken);
+            }
         }
 
         public IEnumerable<JsonMessage> GetDiscoveryInfo(string discoveryId)

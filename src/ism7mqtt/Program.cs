@@ -21,7 +21,7 @@ namespace ism7mqtt
         private static bool _retain = false;
         private static MqttQualityOfServiceLevel _qos = MqttQualityOfServiceLevel.AtMostOnce;
 
-        private static string _discoveryId = null;
+        private static HaDiscovery _haDiscovery = null;
 
         static async Task Main(string[] args)
         {
@@ -38,7 +38,7 @@ namespace ism7mqtt
             _useSeparateTopics = GetEnvBool("ISM7_SEPARATE");
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
-            _discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
+            string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -52,7 +52,7 @@ namespace ism7mqtt
                 {"s|separate", "send values to separate mqtt topics - also disables json payload", x=> _useSeparateTopics = x != null},
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
-                {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => _discoveryId = x},
+                {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -81,7 +81,7 @@ namespace ism7mqtt
                 return;
             }
 
-            if (_discoveryId != null)
+            if (discoveryId != null)
             {
                 _retain = true;
                 _useSeparateTopics = true;
@@ -129,9 +129,13 @@ namespace ism7mqtt
                         };
                         mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, enableDebug, cts.Token));
 
-                        if (_discoveryId != null)
+                        if (discoveryId != null)
                         {
-                            client.OnInitializationFinishedAsync = (config, c) => PublishDiscoveryInfo(config, mqttClient, enableDebug, c);
+                            client.OnInitializationFinishedAsync = (config, c) => {
+                                _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId) { EnableDebug = enableDebug, QosLevel = _qos };
+                                mqttClient.SubscribeAsync("homeassistant/status");
+                                return _haDiscovery.PublishDiscoveryInfo(c);
+                            };
                         }
                         await client.RunAsync(password, cts.Token);
                     }
@@ -173,24 +177,6 @@ namespace ism7mqtt
             return defaultValue;
         }
 
-        private static async Task PublishDiscoveryInfo(Ism7Config config, IMqttClient mqttClient, bool debug, CancellationToken cancellationToken)
-        {
-            var discovery = new HaDiscovery(config) { EnableDebug = debug };
-            foreach (var message in discovery.GetDiscoveryInfo(_discoveryId))
-            {
-                var data = JsonSerializer.Serialize(message.Content);
-                var builder = new MqttApplicationMessageBuilder()
-                    .WithTopic(message.Path)
-                    .WithPayload(data)
-                    .WithContentType("application/json")
-                    .WithRetainFlag()
-                    .WithQualityOfServiceLevel(_qos);
-                var payload = builder
-                    .Build();
-                await mqttClient.PublishAsync(payload, cancellationToken);
-            }
-        }
-
         private static Task OnMessage(Ism7Client client, MqttApplicationMessageReceivedEventArgs arg, bool debug, CancellationToken cancellationToken)
         {
             var message = arg.ApplicationMessage;
@@ -201,7 +187,12 @@ namespace ism7mqtt
             {
                 Console.WriteLine($"received mqtt with topic '{message.Topic}' '{message.ConvertPayloadToString()}'");
             }
-            if (message.Topic.EndsWith("/set"))
+            if (_haDiscovery != null && message.Topic == "homeassistant/status")
+            {
+                //ha startup, re-publish discovery info
+                return _haDiscovery.PublishDiscoveryInfo(cancellationToken);
+            }
+            else if (message.Topic.EndsWith("/set"))
             {
                 //json
                 data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
