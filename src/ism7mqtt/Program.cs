@@ -131,9 +131,14 @@ namespace ism7mqtt
 
                         if (discoveryId != null)
                         {
-                            client.OnInitializationFinishedAsync = (config, c) => {
-                                _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId) { EnableDebug = enableDebug, QosLevel = _qos };
-                                mqttClient.SubscribeAsync("homeassistant/status");
+                            await mqttClient.SubscribeAsync("homeassistant/status");
+                            client.OnInitializationFinishedAsync = (config, c) =>
+                            {
+                                _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId)
+                                {
+                                    EnableDebug = enableDebug, 
+                                    QosLevel = _qos
+                                };
                                 return _haDiscovery.PublishDiscoveryInfo(c);
                             };
                         }
@@ -181,21 +186,22 @@ namespace ism7mqtt
         {
             var message = arg.ApplicationMessage;
 
-            JsonObject data;
             string topic;
             if (debug)
             {
                 Console.WriteLine($"received mqtt with topic '{message.Topic}' '{message.ConvertPayloadToString()}'");
             }
-            if (_haDiscovery != null && message.Topic == "homeassistant/status")
+            if (message.Topic == "homeassistant/status")
             {
                 //ha startup, re-publish discovery info
+                if (_haDiscovery is null) return Task.CompletedTask;
                 return _haDiscovery.PublishDiscoveryInfo(cancellationToken);
             }
-            else if (message.Topic.EndsWith("/set"))
+
+            if (message.Topic.EndsWith("/set"))
             {
                 //json
-                data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
+                var data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
                 return client.OnCommandAsync(topic, data, cancellationToken);
             }
@@ -203,6 +209,7 @@ namespace ism7mqtt
             {
                 //single value
                 var index = message.Topic.LastIndexOf("/set/");
+                if (index < 0) return Task.CompletedTask;
                 var property = message.Topic.Substring(index + 5);
                 topic = message.Topic.Substring(0, index);
                 var parts = property.Split('/');

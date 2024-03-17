@@ -21,6 +21,7 @@ namespace ism7mqtt.HomeAssistant
         private readonly string _discoveryId;
 
         public bool EnableDebug { get; set; }
+
         public MqttQualityOfServiceLevel QosLevel { get; set; }
 
         public HaDiscovery(Ism7Config config, IMqttClient mqttClient, string discoveryId)
@@ -36,7 +37,7 @@ namespace ism7mqtt.HomeAssistant
             {
                 Console.WriteLine($"Publishing HA Discovery info for ID {_discoveryId}");
             }
-            foreach (var message in GetDiscoveryInfo(_discoveryId))
+            foreach (var message in GetDiscoveryInfo())
             {
                 var data = JsonSerializer.Serialize(message.Content);
                 var builder = new MqttApplicationMessageBuilder()
@@ -50,9 +51,9 @@ namespace ism7mqtt.HomeAssistant
             }
         }
 
-        public IEnumerable<JsonMessage> GetDiscoveryInfo(string discoveryId)
+        public IEnumerable<JsonMessage> GetDiscoveryInfo()
         {
-            return _config.Devices.SelectMany(x => GetDiscoveryInfo(discoveryId, x));
+            return _config.Devices.SelectMany(x => GetDiscoveryInfo(x));
         }
 
         private string LaunderHomeassistantId(string id) {
@@ -67,13 +68,13 @@ namespace ism7mqtt.HomeAssistant
             return Regex.Replace(id, "[^a-zA-Z0-9_ ]+", String.Empty, RegexOptions.Compiled);
         }
 
-        private string ToHaObjectId(string discoveryId, Ism7Config.RunningDevice device, ParameterDescriptor parameter)
+        private string ToHaObjectId(Ism7Config.RunningDevice device, ParameterDescriptor parameter)
         {
-            var objectId = $"{discoveryId}_{device.Name}_{device.WriteAddress}_{parameter.PTID}_{parameter.Name}";
+            var objectId = $"{_discoveryId}_{device.Name}_{device.WriteAddress}_{parameter.PTID}_{parameter.Name}";
             return LaunderHomeassistantId(objectId);
         }
 
-        private IEnumerable<JsonMessage> GetDiscoveryInfo(string discoveryId, Ism7Config.RunningDevice device)
+        private IEnumerable<JsonMessage> GetDiscoveryInfo(Ism7Config.RunningDevice device)
         {
             List<JsonMessage> result = new List<JsonMessage>();
             foreach (var parameter in device.Parameters)
@@ -82,7 +83,7 @@ namespace ism7mqtt.HomeAssistant
                 var type = GetHomeAssistantType(descriptor);
                 if (type == null) continue;
                 if (descriptor.ControlType == "DaySwitchTimes" || descriptor.ControlType.Contains("NO_DISPLAY")) continue;
-                var uniqueId = ToHaObjectId(discoveryId, device, descriptor);
+                var uniqueId = ToHaObjectId(device, descriptor);
 
                 // Handle parameters with name-duplicates - their ID will be part of the topic
                 string deduplicator = "";
@@ -132,20 +133,20 @@ namespace ism7mqtt.HomeAssistant
                         message.Add("icon", "mdi:gauge");
                 }
 
-                message.Add("device", GetDiscoveryDeviceInfo(discoveryId, device));
+                message.Add("device", GetDiscoveryDeviceInfo(device));
                 result.Add(new JsonMessage(discoveryTopic, message));
             }
             return result;
         }
 
-        private JsonObject GetDiscoveryDeviceInfo(string discoveryId, Ism7Config.RunningDevice device)
+        private JsonObject GetDiscoveryDeviceInfo(Ism7Config.RunningDevice device)
         {
             return new JsonObject
             {
                 { "configuration_url", $"http://{device.IP}/" },
                 { "manufacturer", "Wolf" },
                 { "model", device.Name },
-                { "name", $"{discoveryId} {device.Name}" },
+                { "name", $"{_discoveryId} {device.Name}" },
                 {
                     "connections", new JsonArray
                     {
