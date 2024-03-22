@@ -81,7 +81,7 @@ namespace ism7mqtt
                 return;
             }
 
-            if (discoveryId != null)
+            if (!String.IsNullOrEmpty(discoveryId))
             {
                 _retain = true;
                 _useSeparateTopics = true;
@@ -129,7 +129,7 @@ namespace ism7mqtt
                         };
                         mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, enableDebug, cts.Token));
 
-                        if (discoveryId != null)
+                        if (!String.IsNullOrEmpty(discoveryId))
                         {
                             await mqttClient.SubscribeAsync("homeassistant/status");
                             client.OnInitializationFinishedAsync = (config, c) =>
