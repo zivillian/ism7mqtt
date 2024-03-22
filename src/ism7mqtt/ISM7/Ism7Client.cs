@@ -22,7 +22,7 @@ namespace ism7mqtt
     public class Ism7Client
     {
         private readonly Func<Ism7Config, CancellationToken, Task> _messageHandler;
-        private readonly IPAddress _ipAddress;
+        private readonly string _host;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly Ism7Config _config;
         private readonly Pipe _pipe;
@@ -37,10 +37,10 @@ namespace ism7mqtt
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
-        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, IPAddress ipAddress)
+        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host)
         {
             _messageHandler = messageHandler;
-            _ipAddress = ipAddress;
+            _host = host;
             _config = new Ism7Config(parameterPath);
             _pipe = new Pipe();
         }
@@ -60,7 +60,7 @@ namespace ism7mqtt
         private async Task<SslStream> ConnectAsync(CancellationToken cancellationToken)
         {
             var tcp = new TcpClient();
-            await tcp.ConnectAsync(_ipAddress, 9092, cancellationToken);
+            await tcp.ConnectAsync(_host, 9092, cancellationToken);
             var certificate = new X509Certificate2(Resources.client);
             var ssl = new SslStream(tcp.GetStream(), false, (a, b, c, d) => true);
 
@@ -274,7 +274,7 @@ namespace ism7mqtt
 
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
-            foreach (var busAddress in _config.AddAllDevices(_ipAddress.ToString()))
+            foreach (var busAddress in _config.AddAllDevices(_host))
             {
                 var infoReads = _config.GetInfoReadForDevice(busAddress).ToList();
                 var bundleId = NextBundleId();
