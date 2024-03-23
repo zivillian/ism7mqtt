@@ -405,6 +405,7 @@ namespace ism7mqtt
                 {
                     if (node is not JsonObject jobject) return false;
                     if (!jobject.TryGetPropertyValue(_descriptor.PTID.ToString(), out node)) return false;
+                    value = node is JsonValue ? node.AsValue().ToString() : null;
                 }
                 if (_descriptor is ListParameterDescriptor listDescriptor)
                 {
