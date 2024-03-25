@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
@@ -237,6 +238,35 @@ namespace ism7mqtt
             return s.ToString();
         }
 
+        #region Debug
+
+        private static int GetEnvInt32(string name, int defaultValue = default)
+        {
+            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
+            if (value is null) return defaultValue;
+            if (Int32.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
+                return parsed;
+            return defaultValue;
+        }
+
+        private int _subscriptionLimit = -1;
+
+        private int SubscriptionLimit
+        {
+            get
+            {
+                if (_subscriptionLimit < 0)
+                {
+                    _subscriptionLimit = GetEnvInt32("ISM7_SUBSCR_LIMIT");
+                }
+                return _subscriptionLimit;
+            }
+        }
+
+        private int _subscriptionCount;
+
+        #endregion
+
         private async Task SubscribeAsync(string busAddress, CancellationToken cancellationToken)
         {
             var infoReads = _config.GetInfoReadForDevice(busAddress).ToList();
@@ -246,6 +276,20 @@ namespace ism7mqtt
             {
                 infoRead.BusAddress = busAddress;
                 infoRead.Intervall = Interval;
+            }
+            if (SubscriptionLimit > 0)
+            {
+                int remaining = SubscriptionLimit - _subscriptionCount;
+                if (remaining == 0)
+                {
+                    return;
+                }
+                if (remaining < infoReads.Count)
+                {
+                    infoReads = infoReads.Take(remaining).ToList();
+                }
+                _subscriptionCount += infoReads.Count;
+                Console.WriteLine($"Total subscribed infopoints: {_subscriptionCount}");
             }
             await SendAsync(new TelegramBundleReq
             {
