@@ -58,31 +58,46 @@ For each property of type ListParameter (basically all comboboxes) nested values
 
 Duplicate properties are reported as a sub property or topic with their numerical identifier (property id) to make them unique.
 
-## Writing
+## Writing MQTT
+Sending MQTT messages in order to set values involves using a general structure to publish messages.
 
-You can send values to ism7 via mqtt by publishing json to the topic
+> [!NOTE]
+> Please be aware that not all properties are writable. The ism7mqtt software attempts to validate whether a property can be set, but this may not always be accurate.
 
+Use this topic to send **JSON data**:
 ```txt
 Wolf/<ism7 ip address>/<device type>_<device bus address>/set
 ```
 
-The payload has the same structure as the published json - you can even set multiple values in one request.
-
-You can also publish single values to the corresponding MQTT topic:
-
+Use this topic to send **single values**:
 ```txt
 Wolf/<ism7 ip address>/<device type>_<device bus address>/set/<property name>/...
 ```
 
-If the property is nested, just append the parts to the end.
+### Example
+Goal: Switching heating mode on or off.
 
-So for a duplicate ListParameter publish either json to `Wolf/<ism7 ip address>/WWSystem_BM-2_0x35/set`
+
+Observing the MQTT output published via topic `Wolf/192.168.1.27/MK_BM-2_0x85` reveals the following structure:
 
 ```json
 {
     "Programmwahl": {
-        "35012":{
-            "value":1
+        "360051": {
+            "value": 0,
+            "text": "Standby"
+        },
+        "360058": 0
+    }
+}
+```
+You can now pick either property **value** or **text** to set a new heating mode. To do so you publish the following JSON payload to topic ```Wolf/192.168.1.27/MK_BM-2_0x85/set```
+
+```json
+{
+    "Programmwahl": {
+        "360051": {
+            "value": 0
         }
     }
 }
@@ -93,22 +108,34 @@ or
 ```json
 {
     "Programmwahl": {
-        "35012":{
-            "text":"Auto"
+        "360051": {
+            "text": "Standby"
         }
     }
 }
 ```
 
-or the values to the topics
 
+If done correctly ism7mqtt should greet you with the following messages (```-d``` debug enables additional xml output):
+```txt
+received mqtt with topic 'Wolf/192.168.1.27/MK_BM-2_0x85/set' '{"Programmwahl":{"360051":{"text":"Auto"}}}'
+> <?xml version="1.0" encoding="utf-16"?><tbreq xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" bn="11" gw="1" ae="true" ty="write"><iwr se="" ba="0x85" in="10100" dl="0x01" dh="0x00" /></tbreq>
+< ?<?xml version="1.0" encoding="utf-8"?><tbres bn="11" gw="" st="OK" ts="2024-04-19T22:09:22" emsg=""><iac se="0" ba="0x85" in="10100" dl="0x1" dh="0x0" st="OK"/></tbres>
+publishing mqtt with topic 'Wolf/192.168.1.27/MK_BM-2_0x85' '{"Programmwahl":{"360051":{"value":1,"text":"Auto"},"360058":1}}'
+```
+
+### Publishing Single Values
+For single value updates instead of JSON, publish directly to the corresponding MQTT topic.
+
+Append each part of a nested JSON property to the topic path:
+```txt
+Wolf/<ism7 ip address>/<device type>_<device bus address>/set/<property name>/...
+```
+Example topics to update single properties:
 ```txt
 Wolf/<ism7 ip address>/WWSystem_BM-2_0x35/set/Programmwahl/35012/value
-or
 Wolf/<ism7 ip address>/WWSystem_BM-2_0x35/set/Programmwahl/35012/text
 ```
-
-Please be aware that not all properties can be set - ism7mqtt tries to validate if a property is writable, but this may be incorrect.
 
 ## Bugs / Missing Features
 
