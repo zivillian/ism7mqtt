@@ -13,13 +13,13 @@ namespace ism7mqtt.ISM7.Protocol
 
         public byte[] Serialize()
         {
-            using var sw = new StringWriter();
-            var xmlWriter = XmlWriter.Create(sw, new XmlWriterSettings {Indent = false});
+            using var stringWriter = new Utf8StringWriter();
+            var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings {Indent = false});
 
             var serializer = _serializers.GetOrAdd(GetType(), x => new XmlSerializer(x));
             serializer.Serialize(xmlWriter, this);
-            sw.Flush();
-            var xml = sw.ToString();
+            stringWriter.Flush();
+            var xml = stringWriter.ToString();
             return Encoding.UTF8.GetBytes(xml);
         }
 

@@ -30,6 +30,7 @@ namespace ism7mqtt
         private int _nextBundleId = 0;
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
+        private int _nextSequenceId = 1;
 
         public int Interval { get; set; }
 
@@ -246,6 +247,7 @@ namespace ism7mqtt
             {
                 infoRead.BusAddress = busAddress;
                 infoRead.Intervall = Interval;
+                infoRead.Seq = generateNextSequenceValue();
             }
             await SendAsync(new TelegramBundleReq
             {
@@ -289,6 +291,7 @@ namespace ism7mqtt
                 foreach (var infoRead in infoReads)
                 {
                     infoRead.BusAddress = busAddress;
+                    infoRead.Seq = generateNextSequenceValue();
                 }
                 await SendAsync(new TelegramBundleReq
                 {
@@ -402,6 +405,10 @@ namespace ism7mqtt
         private XmlSerializer GetSerializer<T>()
         {
             return _serializers.GetOrAdd(typeof(T), x => new XmlSerializer(x));
+        }
+
+        private String generateNextSequenceValue() {
+            return "A;" + _nextSequenceId++;
         }
     }
 }
