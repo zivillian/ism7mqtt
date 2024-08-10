@@ -247,7 +247,7 @@ namespace ism7mqtt
             {
                 infoRead.BusAddress = busAddress;
                 infoRead.Intervall = Interval;
-                infoRead.Seq = GenerateNextSequenceValue();
+                infoRead.Seq = NextSequenceId();
             }
             await SendAsync(new TelegramBundleReq
             {
@@ -291,7 +291,7 @@ namespace ism7mqtt
                 foreach (var infoRead in infoReads)
                 {
                     infoRead.BusAddress = busAddress;
-                    infoRead.Seq = GenerateNextSequenceValue();
+                    infoRead.Seq = NextSequenceId();
                 }
                 await SendAsync(new TelegramBundleReq
                 {
@@ -381,7 +381,7 @@ namespace ism7mqtt
             return id.ToString();
         }
 
-        private string GenerateNextSequenceValue()
+        private string NextSequenceId()
         {
             var id = Interlocked.Increment(ref _nextSequenceId);
             return $"A;{id}";
