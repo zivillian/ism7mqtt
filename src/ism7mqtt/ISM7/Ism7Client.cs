@@ -30,6 +30,7 @@ namespace ism7mqtt
         private int _nextBundleId = 0;
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
+        private int _nextSequenceId = 1;
 
         public int Interval { get; set; }
 
@@ -246,6 +247,7 @@ namespace ism7mqtt
             {
                 infoRead.BusAddress = busAddress;
                 infoRead.Intervall = Interval;
+                infoRead.Seq = NextSequenceId();
             }
             await SendAsync(new TelegramBundleReq
             {
@@ -289,6 +291,7 @@ namespace ism7mqtt
                 foreach (var infoRead in infoReads)
                 {
                     infoRead.BusAddress = busAddress;
+                    infoRead.Seq = NextSequenceId();
                 }
                 await SendAsync(new TelegramBundleReq
                 {
@@ -376,6 +379,12 @@ namespace ism7mqtt
         {
             var id = Interlocked.Increment(ref _nextBundleId);
             return id.ToString();
+        }
+
+        private string NextSequenceId()
+        {
+            var id = Interlocked.Increment(ref _nextSequenceId);
+            return $"A;{id}";
         }
 
         private IResponse Deserialize(PayloadType type, Stream data)
