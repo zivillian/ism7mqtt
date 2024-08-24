@@ -1,10 +1,15 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Tls;
 using Org.BouncyCastle.Tls.Crypto;
 using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 
-namespace oldism7proxy;
+namespace ism7ssl;
 
 class Ism7TlsClient : DefaultTlsClient
 {
@@ -69,4 +74,12 @@ class Ism7TlsClient : DefaultTlsClient
     public override void NotifySelectedCipherSuite(int selectedCipherSuite)
     {
     }
+
+    public override void NotifyHandshakeComplete()
+    {
+        base.NotifyHandshakeComplete();
+        HandshakeComplete = true;
+    }
+
+    public bool HandshakeComplete { get; private set; }
 }

@@ -2,7 +2,7 @@
 using Org.BouncyCastle.Tls.Crypto;
 using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 
-namespace oldism7proxy;
+namespace ism7ssl;
 
 class Ism7TlsCrypto : BcTlsCrypto
 {

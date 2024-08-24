@@ -1,11 +1,12 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using System;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Tls;
 using Org.BouncyCastle.Tls.Crypto;
 using Org.BouncyCastle.Tls.Crypto.Impl;
 
-namespace oldism7proxy;
+namespace ism7ssl;
 
 /// <summary>A generic SSL 3.0 RC4 cipher.</summary>
 public class TlsRc4Cipher

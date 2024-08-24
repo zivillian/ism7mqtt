@@ -1,6 +1,6 @@
 ﻿using Org.BouncyCastle.Tls;
 
-namespace oldism7proxy;
+namespace ism7ssl;
 
 class Ism7TlsAuthentication : TlsAuthentication
 {

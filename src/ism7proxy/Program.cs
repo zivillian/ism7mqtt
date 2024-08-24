@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ism7ssl;
 using Mono.Options;
 
 namespace ism7proxy
@@ -57,29 +58,16 @@ namespace ism7proxy
                         using(var incoming = await server.AcceptTcpClientAsync(cts.Token))
                         using (var outgoing = new TcpClient(ip, 9092))
                         using(var sslServer = new SslStream(incoming.GetStream(), true, (a, b, c, d) => true))
-                        using(var sslClient = new SslStream(outgoing.GetStream(), false, (a, b, c, d) => true))
+                        using (var sslClient = new Ism7SslStream(outgoing.Client))
                         {
-                            var certificate = new X509Certificate2(Resources.client);
+                            var certificate = Ism7SslStream.Certificate;
                             await sslServer.AuthenticateAsServerAsync(new SslServerAuthenticationOptions
                             {
                                 ServerCertificate = certificate,
                                 ClientCertificateRequired = true
                             }, cts.Token);
-                            
-                            var sslOptions = new SslClientAuthenticationOptions
-                            {
-                                TargetHost = "ism7.server",
-                                ClientCertificates = new X509Certificate2Collection(certificate),
-                            };
-                            if (!OperatingSystem.IsWindows())
-                            {
-                                sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
-                                {
-                                    TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
-                                });
-                            }
 
-                            await sslClient.AuthenticateAsClientAsync(sslOptions, cts.Token);
+                            await sslClient.AuthenticateAsClientAsync(cts.Token);
                             var toServer = CopyAsync("< ", sslClient, sslServer, cts.Token);
                             var toClient = CopyAsync("> ", sslServer, sslClient, cts.Token);
                             await Task.WhenAny(toServer, toClient);

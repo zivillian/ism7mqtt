@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
-using System.Net;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -16,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Protocol;
+using ism7ssl;
 
 namespace ism7mqtt
 {
@@ -23,6 +22,7 @@ namespace ism7mqtt
     {
         private readonly Func<Ism7Config, CancellationToken, Task> _messageHandler;
         private readonly string _host;
+        private readonly bool _oldFw;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly Ism7Config _config;
         private readonly Pipe _pipe;
@@ -38,10 +38,11 @@ namespace ism7mqtt
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
-        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host)
+        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host, bool oldFw)
         {
             _messageHandler = messageHandler;
             _host = host;
+            _oldFw = oldFw;
             _config = new Ism7Config(parameterPath);
             _pipe = new Pipe();
         }
@@ -58,34 +59,17 @@ namespace ism7mqtt
             }
         }
 
-        private async Task<SslStream> ConnectAsync(CancellationToken cancellationToken)
+        private async Task<Stream> ConnectAsync(CancellationToken cancellationToken)
         {
             var tcp = new TcpClient();
-            await tcp.ConnectAsync(_host, 9092, cancellationToken);
-            var certificate = new X509Certificate2(Resources.client);
-            var ssl = new SslStream(tcp.GetStream(), false, (a, b, c, d) => true);
-
-            var sslOptions = new SslClientAuthenticationOptions
+            var port = _oldFw ? 9091 : 9092;
+            if (true)
             {
-                TargetHost = "ism7.server",
-                ClientCertificates = new X509Certificate2Collection(certificate),
-            };
-            if (!OperatingSystem.IsWindows())
-            {
-                try
-                {
-                    sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
-                    {
-                        TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
-                    });
-                }
-                catch (PlatformNotSupportedException)
-                {
-                    //older linux or mac https://github.com/dotnet/runtime/issues/33649
-                }
+                await tcp.ConnectAsync(_host, port, cancellationToken);
+                var ssl = new Ism7SslStream(tcp.Client);
+                await ssl.AuthenticateAsClientAsync(cancellationToken);
+                return ssl;
             }
-            await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
-            return ssl;
         }
 
         public Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
