@@ -12,9 +12,11 @@ namespace ism7mqtt.ISM7.Protocol
         private static readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private static readonly XmlSerializerNamespaces _serializerNamespaces = new XmlSerializerNamespaces();
 
-        static XmlPayload() {
+        static XmlPayload()
+        {
             _serializerNamespaces.Add("", "");
         }
+
         public byte[] Serialize()
         {
             using var sw = new Utf8StringWriter();
