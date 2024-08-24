@@ -22,7 +22,6 @@ namespace ism7mqtt
     {
         private readonly Func<Ism7Config, CancellationToken, Task> _messageHandler;
         private readonly string _host;
-        private readonly bool _oldFw;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly Ism7Config _config;
         private readonly Pipe _pipe;
@@ -38,11 +37,10 @@ namespace ism7mqtt
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
-        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host, bool oldFw)
+        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host)
         {
             _messageHandler = messageHandler;
             _host = host;
-            _oldFw = oldFw;
             _config = new Ism7Config(parameterPath);
             _pipe = new Pipe();
         }
@@ -62,10 +60,9 @@ namespace ism7mqtt
         private async Task<Stream> ConnectAsync(CancellationToken cancellationToken)
         {
             var tcp = new TcpClient();
-            var port = _oldFw ? 9091 : 9092;
             if (true)
             {
-                await tcp.ConnectAsync(_host, port, cancellationToken);
+                await tcp.ConnectAsync(_host, _config.TcpPort, cancellationToken);
                 var ssl = new Ism7SslStream(tcp.Client);
                 await ssl.AuthenticateAsClientAsync(cancellationToken);
                 return ssl;

@@ -39,7 +39,6 @@ namespace ism7mqtt
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
-            bool oldFw = GetEnvBool("ISM7_OLD_FIRMWARE");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -54,7 +53,6 @@ namespace ism7mqtt
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
-                {"o|oldfw", "Firmware < 200", x=>oldFw = x != null},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -124,7 +122,7 @@ namespace ism7mqtt
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
-                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip, oldFw)
+                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip)
                         {
                             Interval = interval,
                             EnableDebug = enableDebug

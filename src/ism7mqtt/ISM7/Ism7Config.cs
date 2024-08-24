@@ -34,6 +34,8 @@ namespace ism7mqtt
             _devices = new Dictionary<byte, List<RunningDevice>>();
         }
 
+        public int TcpPort => _config.TcpPort;
+
         private List<DeviceTemplate> LoadDeviceTemplates()
         {
             var serializer = new XmlSerializer(typeof(DeviceTemplateConfig));

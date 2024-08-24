@@ -10,6 +10,7 @@ public class XplatStreamHandler : IStreamHandler
     {
         try
         {
+            TcpPort = (ushort)port;
             var ssl = new Ism7SslStream(tcpClient.Client);
             using var cts = new CancellationTokenSource(60000);
             await ssl.AuthenticateAsClientAsync(cts.Token);
@@ -21,4 +22,6 @@ public class XplatStreamHandler : IStreamHandler
             throw;
         }
     }
+
+    public ushort TcpPort { get; private set; }
 }
