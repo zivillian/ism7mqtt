@@ -56,7 +56,30 @@ public class Ism7SslStream : Stream
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        throw new NotSupportedException("use async");
+        if (!MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> array))
+        {
+            throw new NotSupportedException("could not get array from buffer");
+        }
+
+        while (true)
+        {
+            var bytes = _protocol.GetAvailableInputBytes();
+            if (bytes > 0)
+            {
+                return _protocol.ReadInput(array.Array, array.Offset, array.Count);
+            }
+
+            var readBuffer = ArrayPool<byte>.Shared.Rent(8192);
+            bytes = _socket.Receive(readBuffer, SocketFlags.None);
+            if (bytes == 0)
+            {
+                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available == 0)
+                    throw new SocketException(10057);
+                return 0;
+            }
+            _protocol.OfferInput(readBuffer, 0, bytes);
+            ArrayPool<byte>.Shared.Return(readBuffer);
+        }
     }
 
     public override long Seek(long offset, SeekOrigin origin)
@@ -83,6 +106,20 @@ public class Ism7SslStream : Stream
     {
         get => throw new NotSupportedException();
         set => throw new NotSupportedException();
+    }
+
+    public override int ReadTimeout
+    {
+        get => _socket.ReceiveTimeout;
+        set => _socket.ReceiveTimeout = value;
+    }
+
+    public override bool CanTimeout => true;
+
+    public override int WriteTimeout
+    {
+        get => _socket.SendTimeout;
+        set => _socket.SendTimeout = value;
     }
 
     protected override void Dispose(bool disposing)
@@ -113,14 +150,16 @@ public class Ism7SslStream : Stream
             {
                 return _protocol.ReadInput(array.Array, array.Offset, array.Count);
             }
-            bytes = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken);
+            var readBuffer = ArrayPool<byte>.Shared.Rent(8192);
+            bytes = await _socket.ReceiveAsync(readBuffer, SocketFlags.None, cancellationToken);
             if (bytes == 0)
             {
                 if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available == 0)
                     throw new SocketException(10057);
                 return 0;
             }
-            _protocol.OfferInput(array.Array, array.Offset, bytes);
+            _protocol.OfferInput(readBuffer, 0, bytes);
+            ArrayPool<byte>.Shared.Return(readBuffer);
         }
     }
 
@@ -139,5 +178,69 @@ public class Ism7SslStream : Stream
             bytes = await _socket.SendAsync(data, SocketFlags.None, cancellationToken);
             data = data.Slice(bytes);
         }
+    }
+
+    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+    {
+        return AsApm(WriteAsync(buffer.AsMemory(offset, count)).AsTask(), callback, state);
+    }
+
+    public override void EndWrite(IAsyncResult asyncResult)
+    {
+        ((Task)asyncResult).Wait();
+    }
+
+    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+    {
+        return AsApm(ReadAsync(buffer.AsMemory(offset, count)).AsTask(), callback, state);
+    }
+
+    public override int EndRead(IAsyncResult asyncResult)
+    {
+        return ((Task<int>)asyncResult).Result;
+    }
+
+    //https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/interop-with-other-asynchronous-patterns-and-types#from-tap-to-apm
+    private static IAsyncResult AsApm(Task task, AsyncCallback callback, object state)
+    {
+        if (task == null)
+            throw new ArgumentNullException(nameof(task));
+
+        var tcs = new TaskCompletionSource(state);
+        task.ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+                tcs.TrySetException(t.Exception.InnerExceptions);
+            else if (t.IsCanceled)
+                tcs.TrySetCanceled();
+            else
+                tcs.TrySetResult();
+
+            if (callback != null)
+                callback(tcs.Task);
+        }, TaskScheduler.Default);
+        return tcs.Task;
+    }
+
+    //https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/interop-with-other-asynchronous-patterns-and-types#from-tap-to-apm
+    private static IAsyncResult AsApm<T>(Task<T> task, AsyncCallback callback, object state)
+    {
+        if (task == null)
+            throw new ArgumentNullException(nameof(task));
+
+        var tcs = new TaskCompletionSource<T>(state);
+        task.ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+                tcs.TrySetException(t.Exception.InnerExceptions);
+            else if (t.IsCanceled)
+                tcs.TrySetCanceled();
+            else
+                tcs.TrySetResult(t.Result);
+
+            if (callback != null)
+                callback(tcs.Task);
+        }, TaskScheduler.Default);
+        return tcs.Task;
     }
 }
