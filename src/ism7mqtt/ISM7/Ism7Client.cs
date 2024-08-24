@@ -262,9 +262,11 @@ namespace ism7mqtt
             var resp = (TelegramBundleResp) response;
             if (!String.IsNullOrEmpty(resp.Errormsg))
                 throw new InvalidDataException(resp.Errormsg);
-            //if (resp.State != TelegrResponseState.OK)
-            //    throw new InvalidDataException($"unexpected state '{resp.State}");
-            if(resp.State == TelegrResponseState.OK)
+            if (resp.State != TelegrResponseState.OK)
+            {
+                await Console.Error.WriteLineAsync($"unexpected state '{resp.State}");
+            }
+            else
             {
                 var hasDatapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
                 if (hasDatapoints)
