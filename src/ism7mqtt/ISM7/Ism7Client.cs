@@ -265,12 +265,16 @@ namespace ism7mqtt
             if (!String.IsNullOrEmpty(resp.Errormsg))
                 throw new InvalidDataException(resp.Errormsg);
             if (resp.State != TelegrResponseState.OK)
-                throw new InvalidDataException($"unexpected state '{resp.State}");
-            
-            var hasDatapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
-            if (hasDatapoints)
             {
-                await _messageHandler(_config, cancellationToken);
+                await Console.Error.WriteLineAsync($"unexpected state '{resp.State}");
+            }
+            else
+            {
+                var hasDatapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
+                if (hasDatapoints)
+                {
+                    await _messageHandler(_config, cancellationToken);
+                }
             }
         }
 
