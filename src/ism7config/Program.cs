@@ -162,7 +162,7 @@ internal class Program
                             .ToList()
                     });
                 }
-                await File.WriteAllTextAsync(file, JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true }));
+                await File.WriteAllTextAsync(file, JsonSerializer.Serialize(config, ConfigContext.Default.Config));
                 return;
             }
             await Task.Delay(1000);

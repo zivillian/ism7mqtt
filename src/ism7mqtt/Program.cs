@@ -6,6 +6,7 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using ism7mqtt.HomeAssistant;
+using ism7mqtt.ISM7.Config;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
@@ -199,7 +200,7 @@ namespace ism7mqtt
             if (message.Topic.EndsWith("/set"))
             {
                 //json
-                var data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
+                var data = JsonSerializer.Deserialize(message.ConvertPayloadToString(), JsonContext.Default.JsonObject);
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
                 return client.OnCommandAsync(topic, data, cancellationToken);
             }
@@ -230,11 +231,10 @@ namespace ism7mqtt
                 var deviceMessages = config.JsonMessages;
                 foreach (var message in deviceMessages)
                 {
-                    var data = JsonSerializer.Serialize(message.Content);
+                    var data = JsonSerializer.Serialize(message.Content, JsonContext.Default.JsonObject);
                     var builder = new MqttApplicationMessageBuilder()
                         .WithTopic(message.Path)
                         .WithPayload(data)
-                        .WithContentType("application/json")
                         .WithQualityOfServiceLevel(_qos);
                     if (_retain)
                         builder = builder.WithRetainFlag();

@@ -34,3 +34,9 @@ class Parameter
 {
     public long ParameterId { get; set; }
 }
+
+[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata, WriteIndented = true)]
+[JsonSerializable(typeof(Config))]
+partial class ConfigContext : JsonSerializerContext
+{
+}

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace ism7mqtt.ISM7.Config
 {
@@ -19,5 +21,14 @@ namespace ism7mqtt.ISM7.Config
         public int DeviceTemplateId { get; set; }
 
         public List<int> Parameter { get; set; }
+    }
+
+    [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
+    [JsonSerializable(typeof(ConfigRoot))]
+    [JsonSerializable(typeof(JsonObject))]
+    [JsonSerializable(typeof(JsonNode))]
+    [JsonSerializable(typeof(JsonValue))]
+    internal partial class JsonContext : JsonSerializerContext
+    {
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
@@ -29,7 +26,7 @@ namespace ism7mqtt
             _parameterTemplates = LoadParameterTemplates();
             if (File.Exists(filename))
             {
-                _config = JsonSerializer.Deserialize<ConfigRoot>(File.ReadAllText(filename));
+                _config = JsonSerializer.Deserialize(File.ReadAllText(filename), JsonContext.Default.ConfigRoot);
             }
             _devices = new Dictionary<byte, List<RunningDevice>>();
         }
@@ -278,7 +275,7 @@ namespace ism7mqtt
                         {
                             foreach (var prop in property.Value.AsObject())
                             {
-                                value.AsObject().Add(prop.Key, prop.Value.Deserialize<JsonNode>());
+                                value.AsObject().Add(prop.Key, prop.Value.Deserialize(JsonContext.Default.JsonNode));
                             }
                         }
                         else
@@ -470,7 +467,7 @@ namespace ism7mqtt
             public IEnumerable<MqttMessage> GetSingleValues()
             {
                 var json = _converter.GetValue();
-                var text = JsonSerializer.Serialize(json);
+                var text = JsonSerializer.Serialize(json, JsonContext.Default.JsonValue);
                 var result = new MqttMessage(MqttName, text);
                 if (IsDuplicate)
                 {

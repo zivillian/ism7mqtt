@@ -11,6 +11,7 @@ using ism7mqtt.ISM7.Xml;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
+using ism7mqtt.ISM7.Config;
 
 namespace ism7mqtt.HomeAssistant
 {
@@ -39,11 +40,10 @@ namespace ism7mqtt.HomeAssistant
             }
             foreach (var message in GetDiscoveryInfo())
             {
-                var data = JsonSerializer.Serialize(message.Content);
+                var data = JsonSerializer.Serialize(message.Content, JsonContext.Default.JsonObject);
                 var builder = new MqttApplicationMessageBuilder()
                     .WithTopic(message.Path)
                     .WithPayload(data)
-                    .WithContentType("application/json")
                     .WithQualityOfServiceLevel(QosLevel);
                 var payload = builder
                     .Build();
@@ -149,13 +149,13 @@ namespace ism7mqtt.HomeAssistant
                 { "name", $"{_discoveryId} {device.Name}" },
                 {
                     "connections", new JsonArray
-                    {
+                    (
                         new JsonArray
-                        {
+                        (
                             "ip_dev",
                             $"{device.IP}_{device.Name}"
-                        }
-                    }
+                        )
+                    )
                 }
             };
         }
@@ -266,7 +266,7 @@ namespace ism7mqtt.HomeAssistant
                         var options = new JsonArray();
                         foreach (var value in list.Options)
                         {
-                            options.Add(value.Value);
+                            options.Add((JsonNode)value.Value);
                         }
                         yield return ("options", options);
 
