@@ -60,13 +60,10 @@ namespace ism7mqtt
         private async Task<Stream> ConnectAsync(CancellationToken cancellationToken)
         {
             var tcp = new TcpClient();
-            if (true)
-            {
-                await tcp.ConnectAsync(_host, _config.TcpPort, cancellationToken);
-                var ssl = new Ism7SslStream(tcp.Client);
-                await ssl.AuthenticateAsClientAsync(cancellationToken);
-                return ssl;
-            }
+            await tcp.ConnectAsync(_host, _config.TcpPort, cancellationToken);
+            var ssl = new Ism7SslStream(tcp.Client);
+            await ssl.AuthenticateAsClientAsync(cancellationToken);
+            return ssl;
         }
 
         public Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
