@@ -57,6 +57,7 @@ namespace ism7mqtt.ISM7.Xml
 
         public override IEnumerable<InfoWrite> GetWrite(string value)
         {
+            if (!TelegramNr.HasValue) yield break;
             ushort data;
             switch (Type)
             {
@@ -94,7 +95,7 @@ namespace ism7mqtt.ISM7.Xml
                 default:
                     throw new NotImplementedException($"type '{Type}' for CTID '{CTID}' is not yet implemented");
             }
-            yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{(data & 0xff):X2}", DBHigh = $"0x{(data >> 8):X2}"};
+            yield return new InfoWrite{InfoNumber = TelegramNr.Value, DBLow = $"0x{(data & 0xff):X2}", DBHigh = $"0x{(data >> 8):X2}"};
         }
 
         public override ConverterTemplateBase Clone()

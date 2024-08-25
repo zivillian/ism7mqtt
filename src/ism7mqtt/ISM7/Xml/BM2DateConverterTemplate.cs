@@ -36,13 +36,14 @@ namespace ism7mqtt.ISM7.Xml
 
         public override IEnumerable<InfoWrite> GetWrite(string value)
         {
+            if (!TelegramNr.HasValue) yield break;
             var date = DateOnly.Parse(value);
             var bytes = date.Day - 1;
             bytes |= (date.Month - 1) << 5;
             bytes |= (date.Year - 2000) << 9;
             var low = (byte)(bytes & 0xff);
             var high = (byte)(bytes >> 8);
-            yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{low:X2}", DBHigh = $"0x{high:X2}"};
+            yield return new InfoWrite{InfoNumber = TelegramNr.Value, DBLow = $"0x{low:X2}", DBHigh = $"0x{high:X2}"};
         }
 
         public override ConverterTemplateBase Clone()

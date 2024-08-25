@@ -27,10 +27,11 @@ namespace ism7mqtt.ISM7.Xml
 
         public override IEnumerable<InfoWrite> GetWrite(string value)
         {
+            if (!TelegramNr.HasValue) yield break;
             var time = TimeSpan.Parse(value);
             var high = time.Hours;
             var low = time.Minutes;
-            yield return new InfoWrite{InfoNumber = TelegramNr, DBLow = $"0x{low:X2}", DBHigh = $"0x{high:X2}"};
+            yield return new InfoWrite{InfoNumber = TelegramNr.Value, DBLow = $"0x{low:X2}", DBHigh = $"0x{high:X2}"};
         }
 
         public override ConverterTemplateBase Clone()
