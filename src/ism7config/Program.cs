@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text.Json;
-using CommonServiceLocator;
 using LuCon.Common.ConditionService;
 using LuCon.Common.ConfigService;
 using LuCon.Common.Declarations;
@@ -10,8 +9,9 @@ using LuCon.Mobile.Data;
 using LuCon.SocketServer.GatewayInterface;
 using LuCon.SocketServer.SocketServerBase;
 using LuCon.WebPortal.StandaloneService;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Mono.Options;
+using NLog.Extensions.Logging;
 using Wolf.Common.Busconfig;
 using Wolf.SocketServer.ISMInterface;
 using LogLevel = NLog.LogLevel;
@@ -57,10 +57,10 @@ internal class Program
         var logconsole = new NLog.Targets.ConsoleTarget("logconsole");
         logconfig.AddRule(LogLevel.Trace, LogLevel.Fatal, logconsole);
         NLog.LogManager.Configuration = logconfig;
-
+        var loggerFactory = new NLogLoggerFactory();
         var unitOfWork = new InMemoryDatabase();
         var textService = new TextService();
-        var nc = new NetworkConnector(unitOfWork, textService, new NetworkConnectorSettings{TcpClientConnectTimeoutMs = 60000}, new BusconfigPendingGatewaysSingleton());
+        var nc = new NetworkConnector(loggerFactory.CreateLogger<NetworkConnector>(), unitOfWork, textService, new NetworkConnectorSettings{TcpClientConnectTimeoutMs = 60000}, new BusconfigPendingGatewaysSingleton());
         var streamHandler = new XplatStreamHandler();
 
         var gw = new GatewayBO
@@ -77,8 +77,7 @@ internal class Program
         };
         var converterTemplateService = new ConverterTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.ConverterTemplates));
         var deviceTemplateService = new DeviceTemplateServiceImplISM(fileSystemSettings, _ => new MemoryStream(Resources.DeviceTemplates));
-        var nullLoggerFactory = new NullLoggerFactory();
-        var bundleQueueWorker = new BundleQueueWorker(nullLoggerFactory,
+        var bundleQueueWorker = new BundleQueueWorker(loggerFactory,
             new TelegrBundleRequestFactory(new TelegrBundleRequestFactorySettings(), deviceTemplateService),
             new BundleQueueWorkerSettings(),
             new GatewayConfigConverter(converterTemplateService));
@@ -99,10 +98,10 @@ internal class Program
             parameterTemplateService,
             faultMessageHandler,
             deviceTemplateService,
-            nullLoggerFactory,
+            loggerFactory,
             eventPublisher);
         var provider = new ServiceProvider(bundleQueueWorker, parameterStore, unitOfWork);
-        ServiceLocator.SetLocatorProvider(() => provider);
+        GatewayContext.InitStaticServiceProviderOnceAtStartup(provider);
         var writerSettings = new BusconfigWriterSettings();
         var busconfigWriter = new BusconfigWriter(converterTemplateService,
             new SchemaViewTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.schema_view)),
@@ -115,7 +114,8 @@ internal class Program
             new BusconfigInstanceProviderImpl(),
             eventPublisher,
             datalogCacheWriter,
-            new GuiTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.gui)));
+            new GuiTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.gui)),
+            provider);
         var responseHandler = new ResponseHandler(busconfigWriter, faultMessageHandler);
 
         GatewayContext gc = null;
@@ -135,7 +135,7 @@ internal class Program
         {
             Sid = gc.GatewayID.ToString()
         };
-        gc.WriteObject(systemconfigRequest, typeof(SystemconfigRequest), EnXmlInterfaceType.SystemconfigRequest);
+        gc.WriteXMLObject(systemconfigRequest, typeof(SystemconfigRequest), EnXmlInterfaceType.SystemconfigRequest);
         int tries = 0;
         while (tries < 120)
         {
