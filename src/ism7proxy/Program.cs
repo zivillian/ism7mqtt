@@ -18,9 +18,11 @@ namespace ism7proxy
         {
             var showHelp = false;
             string ip = null;
+            int port = 9092;
             var options = new OptionSet
             {
                 {"i|ipAddress=", "Wolf Hostname or IP address", x => ip = x},
+                {"p|port=", "Wolf port (default 9092, older Firmware uses 9091)", (int x) => port = x},
                 {"h|help", "show help", x => showHelp = x != null},
             };
             try
@@ -56,7 +58,7 @@ namespace ism7proxy
                     while (!cts.IsCancellationRequested)
                     {
                         using(var incoming = await server.AcceptTcpClientAsync(cts.Token))
-                        using (var outgoing = new TcpClient(ip, 9092))
+                        using (var outgoing = new TcpClient(ip, port))
                         using(var sslServer = new SslStream(incoming.GetStream(), true, (a, b, c, d) => true))
                         using (var sslClient = new Ism7SslStream(outgoing.Client))
                         {
