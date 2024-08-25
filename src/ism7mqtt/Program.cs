@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using ism7mqtt.HomeAssistant;
+using ism7mqtt.ISM7.Config;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Options;
 using MQTTnet.Protocol;
 
 namespace ism7mqtt
@@ -106,7 +105,7 @@ namespace ism7mqtt
                             mqttOptionBuilder = mqttOptionBuilder.WithCredentials(mqttUsername, mqttPassword);
                         }
                         var mqttOptions = mqttOptionBuilder.Build();
-                        mqttClient.UseDisconnectedHandler(async e =>
+                        mqttClient.DisconnectedAsync += async e =>
                         {
                             Console.Error.WriteLine("mqtt disconnected - reconnecting in 5 seconds");
                             await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
@@ -118,7 +117,7 @@ namespace ism7mqtt
                             {
                                 Console.Error.WriteLine("reconnect failed");
                             }
-                        });
+                        };
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
@@ -127,7 +126,7 @@ namespace ism7mqtt
                             Interval = interval,
                             EnableDebug = enableDebug
                         };
-                        mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, enableDebug, cts.Token));
+                        mqttClient.ApplicationMessageReceivedAsync += x => OnMessage(client, x, enableDebug, cts.Token);
 
                         if (!String.IsNullOrEmpty(discoveryId))
                         {
@@ -201,7 +200,7 @@ namespace ism7mqtt
             if (message.Topic.EndsWith("/set"))
             {
                 //json
-                var data = JsonSerializer.Deserialize<JsonObject>(message.ConvertPayloadToString());
+                var data = JsonSerializer.Deserialize(message.ConvertPayloadToString(), JsonContext.Default.JsonObject);
                 topic = message.Topic.Substring(0, message.Topic.Length - 4);
                 return client.OnCommandAsync(topic, data, cancellationToken);
             }
@@ -232,11 +231,10 @@ namespace ism7mqtt
                 var deviceMessages = config.JsonMessages;
                 foreach (var message in deviceMessages)
                 {
-                    var data = JsonSerializer.Serialize(message.Content);
+                    var data = JsonSerializer.Serialize(message.Content, JsonContext.Default.JsonObject);
                     var builder = new MqttApplicationMessageBuilder()
                         .WithTopic(message.Path)
                         .WithPayload(data)
-                        .WithContentType("application/json")
                         .WithQualityOfServiceLevel(_qos);
                     if (_retain)
                         builder = builder.WithRetainFlag();

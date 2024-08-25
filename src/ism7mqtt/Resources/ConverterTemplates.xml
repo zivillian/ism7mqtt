@@ -7517,6 +7517,19 @@
       <TelegramNr>13050</TelegramNr>
       <Type>SS10</Type>
     </NumericConverter16Template>
+    <NumericConverter16Template CTID="270178">
+      <TelegramNr>10877</TelegramNr>
+      <Type>US</Type>
+    </NumericConverter16Template>
+    <NumericConverter16Template CTID="270179">
+      <TelegramNr>10878</TelegramNr>
+      <Type>US</Type>
+    </NumericConverter16Template>
+    <NumericConverter32Template CTID="270180">
+      <Type>UINT32</Type>
+      <TelegramNrHigh>10879</TelegramNrHigh>
+      <TelegramNrLow>10880</TelegramNrLow>
+    </NumericConverter32Template>
     <NumericConverter16Template CTID="280000">
       <TelegramNr>10075</TelegramNr>
       <Type>US</Type>
@@ -15082,6 +15095,19 @@
       <TelegramNr>13105</TelegramNr>
       <Type>SS10</Type>
     </NumericConverter16Template>
+    <NumericConverter16Template CTID="460180">
+      <TelegramNr>10877</TelegramNr>
+      <Type>US</Type>
+    </NumericConverter16Template>
+    <NumericConverter16Template CTID="460181">
+      <TelegramNr>10878</TelegramNr>
+      <Type>US</Type>
+    </NumericConverter16Template>
+    <NumericConverter32Template CTID="460182">
+      <Type>UINT32</Type>
+      <TelegramNrHigh>10879</TelegramNrHigh>
+      <TelegramNrLow>10880</TelegramNrLow>
+    </NumericConverter32Template>
     <ModbusHoldingBinaryReadOnlyConverterTemplate CTID="660001">
       <DatapointAddress>5038</DatapointAddress>
       <Bitnumber>0</Bitnumber>
@@ -21035,38 +21061,6 @@
       <DatapointAddress>775</DatapointAddress>
       <AlarmValueType>AlarmState</AlarmValueType>
     </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661145">
-      <DatapointAddress>780</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661146">
-      <DatapointAddress>782</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661147">
-      <DatapointAddress>776</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661148">
-      <DatapointAddress>778</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661149">
-      <DatapointAddress>781</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661150">
-      <DatapointAddress>783</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661151">
-      <DatapointAddress>777</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
-    <ModbusCoilBitConverterTemplate CTID="661152">
-      <DatapointAddress>779</DatapointAddress>
-      <AlarmValueType>AlarmState</AlarmValueType>
-    </ModbusCoilBitConverterTemplate>
     <ModbusNumericConverterTemplate CTID="661153">
       <DatapointAddress>5850</DatapointAddress>
       <Factor>1</Factor>
@@ -21094,6 +21088,759 @@
     <ModbusCoilBitConverterTemplate CTID="661158">
       <DatapointAddress>846</DatapointAddress>
     </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661159">
+      <DatapointAddress>96</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661160">
+      <DatapointAddress>5170</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661161">
+      <DatapointAddress>859</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661162">
+      <DatapointAddress>6097</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661163">
+      <DatapointAddress>6098</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661165">
+      <DatapointAddress>6133</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661166">
+      <DatapointAddress>812</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661167">
+      <DatapointAddress>813</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661168">
+      <DatapointAddress>814</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661169">
+      <DatapointAddress>815</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661170">
+      <DatapointAddress>816</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661171">
+      <DatapointAddress>817</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661172">
+      <DatapointAddress>818</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661173">
+      <DatapointAddress>819</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661174">
+      <DatapointAddress>5172</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661175">
+      <DatapointAddress>6136</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661176">
+      <DatapointAddress>6138</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661177">
+      <DatapointAddress>6140</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661178">
+      <DatapointAddress>6142</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661179">
+      <DatapointAddress>6144</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661180">
+      <DatapointAddress>6145</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661181">
+      <DatapointAddress>6139</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661182">
+      <DatapointAddress>6141</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661183">
+      <DatapointAddress>6143</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661184">
+      <DatapointAddress>712</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661185">
+      <DatapointAddress>713</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661186">
+      <DatapointAddress>714</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661187">
+      <DatapointAddress>715</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661188">
+      <DatapointAddress>716</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661189">
+      <DatapointAddress>717</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661190">
+      <DatapointAddress>6132</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661191">
+      <DatapointAddress>6132</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661192">
+      <DatapointAddress>718</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661193">
+      <DatapointAddress>719</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661194">
+      <DatapointAddress>720</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661195">
+      <DatapointAddress>6135</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661196">
+      <DatapointAddress>724</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661197">
+      <DatapointAddress>725</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661198">
+      <DatapointAddress>726</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661199">
+      <DatapointAddress>6146</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661200">
+      <DatapointAddress>730</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661201">
+      <DatapointAddress>731</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661202">
+      <DatapointAddress>732</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661203">
+      <DatapointAddress>6148</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661204">
+      <DatapointAddress>721</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661205">
+      <DatapointAddress>722</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661206">
+      <DatapointAddress>723</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661207">
+      <DatapointAddress>5137</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661208">
+      <DatapointAddress>727</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661209">
+      <DatapointAddress>728</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661210">
+      <DatapointAddress>729</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661211">
+      <DatapointAddress>6147</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661212">
+      <DatapointAddress>733</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661213">
+      <DatapointAddress>734</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661214">
+      <DatapointAddress>735</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>US</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661215">
+      <DatapointAddress>6149</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661216">
+      <DatapointAddress>857</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661217">
+      <DatapointAddress>135</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661218">
+      <DatapointAddress>140</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661219">
+      <DatapointAddress>860</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661220">
+      <DatapointAddress>861</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661221">
+      <DatapointAddress>862</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661222">
+      <DatapointAddress>863</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661223">
+      <DatapointAddress>864</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661224">
+      <DatapointAddress>865</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661225">
+      <DatapointAddress>866</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661226">
+      <DatapointAddress>867</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661227">
+      <DatapointAddress>868</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661228">
+      <DatapointAddress>869</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661229">
+      <DatapointAddress>870</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661230">
+      <DatapointAddress>871</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661231">
+      <DatapointAddress>872</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661232">
+      <DatapointAddress>873</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661233">
+      <DatapointAddress>874</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661234">
+      <DatapointAddress>875</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661235">
+      <DatapointAddress>876</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661236">
+      <DatapointAddress>877</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661237">
+      <DatapointAddress>878</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661238">
+      <DatapointAddress>879</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661239">
+      <DatapointAddress>880</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661240">
+      <DatapointAddress>881</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661241">
+      <DatapointAddress>882</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661242">
+      <DatapointAddress>883</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661243">
+      <DatapointAddress>884</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661244">
+      <DatapointAddress>885</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661245">
+      <DatapointAddress>886</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661246">
+      <DatapointAddress>887</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661247">
+      <DatapointAddress>888</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661248">
+      <DatapointAddress>889</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661249">
+      <DatapointAddress>890</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661250">
+      <DatapointAddress>891</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661251">
+      <DatapointAddress>892</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661252">
+      <DatapointAddress>893</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661253">
+      <DatapointAddress>894</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661254">
+      <DatapointAddress>895</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661255">
+      <DatapointAddress>896</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661256">
+      <DatapointAddress>897</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661257">
+      <DatapointAddress>898</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661258">
+      <DatapointAddress>899</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661259">
+      <DatapointAddress>900</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661260">
+      <DatapointAddress>901</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661261">
+      <DatapointAddress>902</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661262">
+      <DatapointAddress>903</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661263">
+      <DatapointAddress>904</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661264">
+      <DatapointAddress>905</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661265">
+      <DatapointAddress>906</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661266">
+      <DatapointAddress>907</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661267">
+      <DatapointAddress>908</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661268">
+      <DatapointAddress>909</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661269">
+      <DatapointAddress>910</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661270">
+      <DatapointAddress>911</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661271">
+      <DatapointAddress>912</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661272">
+      <DatapointAddress>913</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661273">
+      <DatapointAddress>914</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661274">
+      <DatapointAddress>915</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661275">
+      <DatapointAddress>916</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661276">
+      <DatapointAddress>917</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661277">
+      <DatapointAddress>918</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661278">
+      <DatapointAddress>919</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661279">
+      <DatapointAddress>920</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661280">
+      <DatapointAddress>921</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661281">
+      <DatapointAddress>922</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661282">
+      <DatapointAddress>923</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661283">
+      <DatapointAddress>924</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661284">
+      <DatapointAddress>925</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661285">
+      <DatapointAddress>926</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661286">
+      <DatapointAddress>927</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661287">
+      <DatapointAddress>928</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661288">
+      <DatapointAddress>929</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661289">
+      <DatapointAddress>930</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661290">
+      <DatapointAddress>931</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661291">
+      <DatapointAddress>932</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661292">
+      <DatapointAddress>933</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661293">
+      <DatapointAddress>934</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661294">
+      <DatapointAddress>935</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661295">
+      <DatapointAddress>936</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661296">
+      <DatapointAddress>937</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661297">
+      <DatapointAddress>938</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661298">
+      <DatapointAddress>939</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661299">
+      <DatapointAddress>940</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661300">
+      <DatapointAddress>941</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661301">
+      <DatapointAddress>942</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661302">
+      <DatapointAddress>943</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661303">
+      <DatapointAddress>944</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661304">
+      <DatapointAddress>945</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661305">
+      <DatapointAddress>946</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661306">
+      <DatapointAddress>947</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661307">
+      <DatapointAddress>948</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661308">
+      <DatapointAddress>949</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661309">
+      <DatapointAddress>950</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661310">
+      <DatapointAddress>951</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661311">
+      <DatapointAddress>952</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661312">
+      <DatapointAddress>953</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661313">
+      <DatapointAddress>954</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661314">
+      <DatapointAddress>955</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661315">
+      <DatapointAddress>956</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661316">
+      <DatapointAddress>957</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661317">
+      <DatapointAddress>958</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661318">
+      <DatapointAddress>959</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661319">
+      <DatapointAddress>960</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661320">
+      <DatapointAddress>961</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661321">
+      <DatapointAddress>962</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661322">
+      <DatapointAddress>963</DatapointAddress>
+      <AlarmValueType>AlarmState</AlarmValueType>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661323">
+      <DatapointAddress>6001</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusNumericConverterTemplate CTID="661324">
+      <DatapointAddress>6150</DatapointAddress>
+      <Factor>1</Factor>
+      <DecimalPlaces>0</DecimalPlaces>
+      <DataPointType>SS</DataPointType>
+    </ModbusNumericConverterTemplate>
+    <ModbusCoilBitConverterTemplate CTID="661325">
+      <DatapointAddress>964</DatapointAddress>
+    </ModbusCoilBitConverterTemplate>
+    <ModbusHoldingBinaryReadOnlyConverterTemplate CTID="661326">
+      <DatapointAddress>5058</DatapointAddress>
+      <Bitnumber>0</Bitnumber>
+    </ModbusHoldingBinaryReadOnlyConverterTemplate>
     <ModbusOrderNumberConverterTemplate CTID="670000">
       <ReadRegisterCount>5</ReadRegisterCount>
       <DatapointAddress>5863</DatapointAddress>

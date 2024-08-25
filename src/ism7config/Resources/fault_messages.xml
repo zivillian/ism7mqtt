@@ -1,98 +1,99 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <FaultMessageConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1">
   <FaultMessages>
-    <FaultMessage faultMessageTemplateId="1" code="1" dtids="100000 110000 80000 90000 120000 130000 140000 180000 200000 210000 250000 290000 380000 430000 440000" text="STB Übertemperatur" />
-    <FaultMessage faultMessageTemplateId="2" code="2" dtids="180000 200000 210000 250000 380000 430000 440000" text="TB Übertemperatur" />
-    <FaultMessage faultMessageTemplateId="3" code="3" dtids="180000 200000 210000 380000 430000 440000" text="dt-eSTB-Drift" />
+    <FaultMessage faultMessageTemplateId="1" code="1" dtids="100000 110000 80000 90000 120000 130000 140000 180000 200000 210000 250000 280000 290000 380000 430000 440000" text="STB Übertemperatur" />
+    <FaultMessage faultMessageTemplateId="2" code="2" dtids="180000 200000 210000 250000 280000 380000 430000 440000" text="TB Übertemperatur" />
+    <FaultMessage faultMessageTemplateId="3" code="3" dtids="180000 200000 210000 280000 380000 430000 440000" text="dt-eSTB-Drift" />
     <FaultMessage faultMessageTemplateId="4" code="3" dtids="250000" text="dt-Vorlauf-Rücklauf Drift" />
-    <FaultMessage faultMessageTemplateId="5" code="4" dtids="100000 110000 80000 90000 120000 130000 140000 180000 200000 210000 250000 290000 380000 430000 440000" text="Keine Flammenbildung" />
+    <FaultMessage faultMessageTemplateId="5" code="4" dtids="100000 110000 80000 90000 120000 130000 140000 180000 200000 210000 250000 280000 290000 380000 430000 440000" text="Keine Flammenbildung" />
     <FaultMessage faultMessageTemplateId="6" code="5" dtids="100000 110000 80000 90000 250000" text="Flammenausfall im Betrieb" />
-    <FaultMessage faultMessageTemplateId="7" code="5" dtids="180000 200000 210000 290000 380000 430000 440000" text="Flammenausfall" />
+    <FaultMessage faultMessageTemplateId="7" code="5" dtids="180000 200000 210000 280000 290000 380000 430000 440000" text="Flammenausfall" />
     <FaultMessage faultMessageTemplateId="8" code="6" dtids="100000 110000" text="STW Elektroniklimiting" />
     <FaultMessage faultMessageTemplateId="9" code="6" dtids="80000 90000" text="STW Übertemperatur" />
     <FaultMessage faultMessageTemplateId="10" code="6" dtids="120000 130000 140000 250000 290000" text="TW Übertemperatur" />
-    <FaultMessage faultMessageTemplateId="11" code="6" dtids="180000 200000 210000 380000 430000 440000" text="Übertemperatur Vorlauf" />
+    <FaultMessage faultMessageTemplateId="11" code="6" dtids="180000 200000 210000 280000 380000 430000 440000" text="Übertemperatur Vorlauf" />
     <FaultMessage faultMessageTemplateId="12" code="7" dtids="100000 110000" text="TTB failure" />
     <FaultMessage faultMessageTemplateId="13" code="7" dtids="80000" text="STBA Übertemperatur" />
-    <FaultMessage faultMessageTemplateId="14" code="7" dtids="90000 180000 200000 210000 380000 430000 440000" text="Abgasfühler Übertemperatur" />
+    <FaultMessage faultMessageTemplateId="14" code="7" dtids="90000 180000 200000 210000 280000 380000 430000 440000" text="Abgasfühler Übertemperatur" />
     <FaultMessage faultMessageTemplateId="15" code="7" dtids="250000" text="TB-Abgas-Übertemperatur" />
     <FaultMessage faultMessageTemplateId="16" code="8" dtids="100000 110000" text="Exhaust gas / Supply Air flap monitor error" />
-    <FaultMessage faultMessageTemplateId="17" code="8" dtids="90000 180000 200000 210000 380000 430000 440000" text="Abgasklappe schaltet nicht" />
+    <FaultMessage faultMessageTemplateId="17" code="8" dtids="90000 180000 200000 210000 280000 380000 430000 440000" text="Abgasklappe schaltet nicht" />
     <FaultMessage faultMessageTemplateId="18" code="8" dtids="120000 130000 140000" text="Abgasklappe / Zuluftklappe schaltet nicht" />
-    <FaultMessage faultMessageTemplateId="19" code="9" dtids="180000 200000 210000 380000 430000 440000" text="Fehlercode unbekannt" />
+    <FaultMessage faultMessageTemplateId="19" code="9" dtids="180000 200000 210000 280000 380000 430000 440000" text="Fehlercode unbekannt" />
     <FaultMessage faultMessageTemplateId="20" code="9" dtids="240000" text="Unbekannte Störung" />
     <FaultMessage faultMessageTemplateId="21" code="10" dtids="100000 110000" text="CH temperature sensor 2 failure" />
-    <FaultMessage faultMessageTemplateId="22" code="10" dtids="180000 200000 210000 380000 430000 440000" text="eSTB Fühler defekt" />
-    <FaultMessage faultMessageTemplateId="23" code="11" dtids="100000 110000 80000 90000 180000 200000 210000 250000 290000 380000 430000 440000" text="Flammenvortäuschung" />
+    <FaultMessage faultMessageTemplateId="22" code="10" dtids="180000 200000 210000 280000 380000 430000 440000" text="eSTB Fühler defekt" />
+    <FaultMessage faultMessageTemplateId="23" code="11" dtids="100000 110000 80000 90000 180000 200000 210000 250000 280000 290000 380000 430000 440000" text="Flammenvortäuschung" />
     <FaultMessage faultMessageTemplateId="24" code="12" dtids="100000 110000 80000" text="Vorlauffühler defekt" />
-    <FaultMessage faultMessageTemplateId="25" code="12" dtids="200000 90000 120000 130000 140000 180000 210000 240000 250000 270000 460000 290000 380000 430000 440000" text="Kesselfühler defekt" />
-    <FaultMessage faultMessageTemplateId="26" code="13" dtids="180000 200000 210000 380000 430000 440000" text="Abgastemperaturfühler defekt" />
+    <FaultMessage faultMessageTemplateId="25" code="12" dtids="200000 90000 120000 130000 140000 180000 210000 240000 250000 270000 280000 460000 290000 380000 430000 440000" text="Kesselfühler defekt" />
+    <FaultMessage faultMessageTemplateId="26" code="13" dtids="180000 200000 210000 280000 380000 430000 440000" text="Abgastemperaturfühler defekt" />
     <FaultMessage faultMessageTemplateId="27" code="13" dtids="250000" text="Abgasfühler defekt" />
     <FaultMessage faultMessageTemplateId="28" code="14" dtids="240000 250000 270000 460000 290000" text="WW-Fühler defekt" />
-    <FaultMessage faultMessageTemplateId="29" code="14" dtids="80000 90000 120000 130000 140000 180000 200000 210000 380000 430000 440000" text="Speicherfühler defekt" />
+    <FaultMessage faultMessageTemplateId="29" code="14" dtids="80000 90000 120000 130000 140000 180000 200000 210000 280000 380000 430000 440000" text="Speicherfühler defekt" />
     <FaultMessage faultMessageTemplateId="30" code="14" dtids="100000 110000" text="ST DHW sensor failure" />
-    <FaultMessage faultMessageTemplateId="31" code="15" dtids="30000 80000 90000 100000 110000 120000 130000 140000 180000 200000 210000 220000 240000 250000 270000 460000 290000 380000 430000 440000" text="Außenfühler defekt oder Wärmeerzeuger vom Netz getrennt" />
-    <FaultMessage faultMessageTemplateId="32" code="16" dtids="80000 180000 200000 210000 240000 250000 270000 460000 290000 380000 430000 440000" text="Rücklauffühler defekt" />
+    <FaultMessage faultMessageTemplateId="31" code="15" dtids="30000 80000 90000 100000 110000 120000 130000 140000 180000 200000 210000 220000 240000 250000 270000 280000 460000 290000 380000 430000 440000" text="Außenfühler defekt oder Wärmeerzeuger vom Netz getrennt" />
+    <FaultMessage faultMessageTemplateId="32" code="16" dtids="80000 180000 200000 210000 240000 250000 270000 280000 460000 290000 380000 430000 440000" text="Rücklauffühler defekt" />
     <FaultMessage faultMessageTemplateId="33" code="17" dtids="290000" text="Fehler Modulationsstrom" />
-    <FaultMessage faultMessageTemplateId="34" code="18" dtids="180000 200000 210000 380000 430000 440000" text="Externer Sicherheitskreis" />
-    <FaultMessage faultMessageTemplateId="35" code="19" dtids="180000 200000 210000 380000 430000 440000" text="Öldrucksensor defekt" />
+    <FaultMessage faultMessageTemplateId="34" code="18" dtids="180000 200000 210000 280000 380000 430000 440000" text="Externer Sicherheitskreis" />
+    <FaultMessage faultMessageTemplateId="35" code="19" dtids="180000 200000 210000 280000 380000 430000 440000" text="Öldrucksensor defekt" />
     <FaultMessage faultMessageTemplateId="36" code="20" dtids="80000" text="Fehler Gasventilkreis V1" />
-    <FaultMessage faultMessageTemplateId="37" code="20" dtids="180000 200000 210000 380000 430000 440000" text="Ventiltest fehlgeschlagen" />
+    <FaultMessage faultMessageTemplateId="37" code="20" dtids="180000 200000 210000 280000 380000 430000 440000" text="Ventiltest fehlgeschlagen" />
     <FaultMessage faultMessageTemplateId="38" code="21" dtids="80000" text="Fehler Gasventilkreis V2" />
     <FaultMessage faultMessageTemplateId="39" code="22" dtids="80000 90000 290000" text="Luftmangel" />
     <FaultMessage faultMessageTemplateId="40" code="22" dtids="100000 110000" text="APS stuck open" />
-    <FaultMessage faultMessageTemplateId="41" code="22" dtids="180000 200000 210000 380000 430000 440000" text="Luftdruck" />
+    <FaultMessage faultMessageTemplateId="41" code="22" dtids="180000 200000 210000 280000 380000 430000 440000" text="Luftdruck" />
     <FaultMessage faultMessageTemplateId="42" code="23" dtids="80000 90000 290000" text="Fehler Luftdruckwächter" />
     <FaultMessage faultMessageTemplateId="43" code="23" dtids="100000 110000" text="APS stuck closed" />
-    <FaultMessage faultMessageTemplateId="44" code="23" dtids="180000 200000 210000 380000 430000 440000" text="Luftdruck" />
+    <FaultMessage faultMessageTemplateId="44" code="23" dtids="180000 200000 210000 280000 380000 430000 440000" text="Luftdruck" />
     <FaultMessage faultMessageTemplateId="45" code="24" dtids="80000" text="Fehler Gebläse" />
     <FaultMessage faultMessageTemplateId="46" code="24" dtids="180000 200000 210000 380000 430000 440000" text="Drehzahl nicht erreicht" />
-    <FaultMessage faultMessageTemplateId="47" code="24" dtids="250000 290000" text="Gebläse Drehzahl zu gering" />
+    <FaultMessage faultMessageTemplateId="47" code="24" dtids="250000 280000 290000" text="Gebläse Drehzahl zu gering" />
     <FaultMessage faultMessageTemplateId="48" code="25" dtids="80000 90000" text="Fehler Gebläse" />
     <FaultMessage faultMessageTemplateId="49" code="25" dtids="100000 110000" text="Fan failure" />
     <FaultMessage faultMessageTemplateId="50" code="26" dtids="80000 90000" text="Fehler Gebläse" />
     <FaultMessage faultMessageTemplateId="51" code="26" dtids="100000 110000" text="Fan stopping failure" />
-    <FaultMessage faultMessageTemplateId="52" code="26" dtids="180000 200000 210000 380000 430000 440000" text="Stillstand-Drehzahl nicht erreicht" />
-    <FaultMessage faultMessageTemplateId="53" code="27" dtids="90000" text="Warmwasserfühler WWF defekt" />
+    <FaultMessage faultMessageTemplateId="52" code="26" dtids="180000 200000 210000 280000 380000 430000 440000" text="Stillstand-Drehzahl nicht erreicht" />
+    <FaultMessage faultMessageTemplateId="53" code="27" dtids="90000 280000" text="Warmwasserfühler WWF defekt" />
     <FaultMessage faultMessageTemplateId="54" code="27" dtids="180000 200000 210000 250000 290000 380000 430000 440000" text="Warmwasserauslauffühler defekt" />
+    <FaultMessage faultMessageTemplateId="215" code="29" dtids="280000" text="Differenzdrucksensor" />
     <FaultMessage faultMessageTemplateId="55" code="30" dtids="80000" text="CRC-Fehler Kessel" />
-    <FaultMessage faultMessageTemplateId="56" code="30" dtids="180000 200000 210000 380000 430000 440000" text="Parameter CRC Fehler" />
+    <FaultMessage faultMessageTemplateId="56" code="30" dtids="180000 200000 210000 280000 380000 430000 440000" text="Parameter CRC Fehler" />
     <FaultMessage faultMessageTemplateId="57" code="30" dtids="250000 290000" text="CRC Feuerungsautomat" />
     <FaultMessage faultMessageTemplateId="58" code="31" dtids="80000" text="CRC-Fehler Brenner" />
     <FaultMessage faultMessageTemplateId="59" code="32" dtids="240000" text="Spannungsfehler 23V" />
     <FaultMessage faultMessageTemplateId="60" code="32" dtids="80000" text="Spannungsfehler 24 V" />
-    <FaultMessage faultMessageTemplateId="61" code="32" dtids="180000 200000 210000 380000 430000 440000" text="24V Überwachung" />
+    <FaultMessage faultMessageTemplateId="61" code="32" dtids="180000 200000 210000 280000 380000 430000 440000" text="24V Überwachung" />
     <FaultMessage faultMessageTemplateId="62" code="32" dtids="250000 290000" text="VAC-Versorgung" />
     <FaultMessage faultMessageTemplateId="63" code="33" dtids="80000" text="CRC-Fehler Default-Werte" />
-    <FaultMessage faultMessageTemplateId="64" code="34" dtids="80000" text="CRC-Fehler BCC-ID-Data Inter" />
+    <FaultMessage faultMessageTemplateId="64" code="34" dtids="80000 280000" text="CRC-Fehler BCC-ID-Data Inter" />
     <FaultMessage faultMessageTemplateId="65" code="35" dtids="80000" text="BCC Fehler" />
-    <FaultMessage faultMessageTemplateId="66" code="35" dtids="180000 200000 210000 380000 430000 440000" text="BCC nicht korrekt aufgesteckt" />
+    <FaultMessage faultMessageTemplateId="66" code="35" dtids="180000 200000 210000 280000 380000 430000 440000" text="BCC nicht korrekt aufgesteckt" />
     <FaultMessage faultMessageTemplateId="67" code="35" dtids="240000" text="BCC fehlt" />
     <FaultMessage faultMessageTemplateId="68" code="36" dtids="80000" text="CRC-Fehler BCC-ID-Data" />
-    <FaultMessage faultMessageTemplateId="69" code="36" dtids="180000 200000 210000 380000 430000 440000" text="BCC defekt" />
+    <FaultMessage faultMessageTemplateId="69" code="36" dtids="180000 200000 210000 280000 380000 430000 440000" text="BCC defekt" />
     <FaultMessage faultMessageTemplateId="70" code="37" dtids="240000 270000 460000" text="BCC nicht kompatibel" />
     <FaultMessage faultMessageTemplateId="71" code="37" dtids="80000" text="Keine Übereinstimmung BCC-Firmware mit CGB" />
-    <FaultMessage faultMessageTemplateId="72" code="37" dtids="180000 200000 210000 380000 430000 440000" text="BCC nicht kompatibel" />
+    <FaultMessage faultMessageTemplateId="72" code="37" dtids="180000 200000 210000 280000 380000 430000 440000" text="BCC nicht kompatibel" />
     <FaultMessage faultMessageTemplateId="73" code="38" dtids="80000" text="BCC ungültig" />
-    <FaultMessage faultMessageTemplateId="74" code="38" dtids="180000 200000 210000 380000 430000 440000" text="Parametersatz des FA fehlerhaft" />
-    <FaultMessage faultMessageTemplateId="75" code="39" dtids="80000 180000 200000 210000 380000 430000 440000" text="BCC Systemfehler" />
+    <FaultMessage faultMessageTemplateId="74" code="38" dtids="180000 200000 210000 280000 380000 430000 440000" text="Parametersatz des FA fehlerhaft" />
+    <FaultMessage faultMessageTemplateId="75" code="39" dtids="80000 180000 200000 210000 280000 380000 430000 440000" text="BCC Systemfehler" />
     <FaultMessage faultMessageTemplateId="76" code="40" dtids="100000 110000" text="System pressure monitor error" />
     <FaultMessage faultMessageTemplateId="77" code="40" dtids="80000" text="Fehler Strömungsüberwachung" />
     <FaultMessage faultMessageTemplateId="78" code="40" dtids="90000" text="Wasserdruckmangel" />
     <FaultMessage faultMessageTemplateId="79" code="40" dtids="120000 130000 140000" text="Fehler Maximalthermostat Anlagendruckwächter" />
-    <FaultMessage faultMessageTemplateId="80" code="40" dtids="180000 200000 210000 380000 430000 440000" text="Fehler Strömung- /Druckerhöhungsprüfung" />
-    <FaultMessage faultMessageTemplateId="81" code="41" dtids="80000 180000 200000 210000 240000 380000 430000 440000" text="Strömungsüberwachung" />
+    <FaultMessage faultMessageTemplateId="80" code="40" dtids="180000 200000 210000 280000 380000 430000 440000" text="Fehler Strömung- /Druckerhöhungsprüfung" />
+    <FaultMessage faultMessageTemplateId="81" code="41" dtids="80000 180000 200000 210000 240000 280000 380000 430000 440000" text="Strömungsüberwachung" />
     <FaultMessage faultMessageTemplateId="82" code="41" dtids="100000 110000" text="CH flow monitor error" />
-    <FaultMessage faultMessageTemplateId="83" code="42" dtids="90000 180000 200000 210000 380000 430000 440000" text="Kondensatpumpe" />
+    <FaultMessage faultMessageTemplateId="83" code="42" dtids="90000 180000 200000 210000 280000 380000 430000 440000" text="Kondensatpumpe" />
     <FaultMessage faultMessageTemplateId="84" code="43" dtids="80000" text="Brennerstarts &gt;20/h" />
-    <FaultMessage faultMessageTemplateId="85" code="44" dtids="180000 200000 210000 380000 430000 440000" text="Abgasdruckschalter" />
+    <FaultMessage faultMessageTemplateId="85" code="44" dtids="180000 200000 210000 280000 380000 430000 440000" text="Abgasdruckschalter" />
     <FaultMessage faultMessageTemplateId="86" code="45" dtids="100000 110000" text="DWH floh sensor failure" />
     <FaultMessage faultMessageTemplateId="87" code="46" dtids="100000 110000" text="DWH temperature sensor failure" />
     <FaultMessage faultMessageTemplateId="88" code="47" dtids="250000" text="Fühlerprüfung Vorlauf / Rücklauf fehlgeschlagen" />
     <FaultMessage faultMessageTemplateId="89" code="52" dtids="100000 110000" text="ST DHW charging time exceeded" />
     <FaultMessage faultMessageTemplateId="90" code="52" dtids="90000 120000 130000 140000" text="Maximale Speicherladezeit überschritten" />
-    <FaultMessage faultMessageTemplateId="91" code="52" dtids="40000 50000 180000 200000 210000 240000 380000 430000 440000" text="Max. Speicherladezeit" />
-    <FaultMessage faultMessageTemplateId="92" code="53" dtids="180000 200000 210000 380000 430000 440000" text="IO-Regelabweichung" />
+    <FaultMessage faultMessageTemplateId="91" code="52" dtids="40000 50000 180000 200000 210000 240000 280000 380000 430000 440000" text="Max. Speicherladezeit" />
+    <FaultMessage faultMessageTemplateId="92" code="53" dtids="180000 200000 210000 280000 380000 430000 440000" text="IO-Regelabweichung" />
     <FaultMessage faultMessageTemplateId="93" code="54" dtids="180000 200000 210000 380000 430000 440000" text="SCOT Aktoren" />
     <FaultMessage faultMessageTemplateId="94" code="55" dtids="180000 200000 210000 380000 430000 440000" text="SCOT Systemfehler" />
     <FaultMessage faultMessageTemplateId="95" code="56" dtids="180000 200000 210000 380000 430000 440000" text="Kalibration Werksgrenze" />
@@ -106,9 +107,9 @@
     <FaultMessage faultMessageTemplateId="103" code="63" dtids="60000 70000" text="Funktionskontrolle Schwerkraftbremse" />
     <FaultMessage faultMessageTemplateId="104" code="64" dtids="60000 70000" text="Defekter Impulsgeber" />
     <FaultMessage faultMessageTemplateId="105" code="65" dtids="60000 70000" text="Funktionskontrolle Speicherstopp" />
-    <FaultMessage faultMessageTemplateId="106" code="66" dtids="180000 200000 210000 380000 430000 440000" text="Öldruck zwei Mal nicht erreicht" />
-    <FaultMessage faultMessageTemplateId="107" code="67" dtids="180000 200000 210000 380000 430000 440000" text="Verhältnis Öldruck zu Pumpendrehzahl zwei Mal unplausibel" />
-    <FaultMessage faultMessageTemplateId="108" code="69" dtids="210000" text="Zünddruck Öl wird nicht erreicht" />
+    <FaultMessage faultMessageTemplateId="106" code="66" dtids="180000 200000 210000 280000 380000 430000 440000" text="Öldruck zwei Mal nicht erreicht" />
+    <FaultMessage faultMessageTemplateId="107" code="67" dtids="180000 200000 210000 280000 380000 430000 440000" text="Verhältnis Öldruck zu Pumpendrehzahl zwei Mal unplausibel" />
+    <FaultMessage faultMessageTemplateId="108" code="69" dtids="210000 280000" text="Zünddruck Öl wird nicht erreicht" />
     <FaultMessage faultMessageTemplateId="109" code="70" dtids="120000 130000 140000" text="Vorlauffühler defekt" />
     <FaultMessage faultMessageTemplateId="110" code="70" dtids="40000 50000" text="Defekter Mischerkreis-/Rücklauffühler" />
     <FaultMessage faultMessageTemplateId="111" code="71" dtids="40000" text="Defekter Speicher-, Puffer- oder Bypassfühler an E1" />
@@ -119,7 +120,7 @@
     <FaultMessage faultMessageTemplateId="116" code="73" dtids="70000" text="Defekter Pufferfühler, Speicherfühler Speicher 2, Kollektorfühler Kollektor 2 oder Bypassfühler" />
     <FaultMessage faultMessageTemplateId="117" code="74" dtids="60000 70000" text="Für mehr als 10 min. kein DCF-Empfang" />
     <FaultMessage faultMessageTemplateId="118" code="78" dtids="180000 200000 210000 240000 270000 460000 290000 380000 430000 440000" text="Sammlerfühler defekt" />
-    <FaultMessage faultMessageTemplateId="119" code="78" dtids="90000" text="Fehler Sammlerfühler" />
+    <FaultMessage faultMessageTemplateId="119" code="78" dtids="90000 280000" text="Fehler Sammlerfühler" />
     <FaultMessage faultMessageTemplateId="120" code="78" dtids="100000 110000" text="Header temperature sensor failure" />
     <FaultMessage faultMessageTemplateId="121" code="78" dtids="50000" text="Defekter Sammlerfühler" />
     <FaultMessage faultMessageTemplateId="122" code="79" dtids="120000 130000 140000" text="Fehler Multifunktionsfühler (Sammlerfühler oder Rücklauffühler)" />
@@ -128,74 +129,75 @@
     <FaultMessage faultMessageTemplateId="125" code="79" dtids="60000" text="Defekter Kollektorfühler" />
     <FaultMessage faultMessageTemplateId="126" code="79" dtids="70000" text="Defekter Kollektorfühler Kollektor 1" />
     <FaultMessage faultMessageTemplateId="127" code="81" dtids="120000 130000 140000 40000 50000 60000 70000" text="EEPROM Fehler" />
-    <FaultMessage faultMessageTemplateId="128" code="83" dtids="180000 200000 210000 380000 430000 440000" text="Öldruck erreicht Ruhewert nicht" />
-    <FaultMessage faultMessageTemplateId="129" code="84" dtids="180000 200000 210000 380000 430000 440000" text="Ölpumpe erreicht keinen Stillstand" />
-    <FaultMessage faultMessageTemplateId="130" code="85" dtids="180000 200000 210000 380000 430000 440000" text="Relaistest fehlgeschlagen" />
+    <FaultMessage faultMessageTemplateId="128" code="83" dtids="180000 200000 210000 280000 380000 430000 440000" text="Öldruck erreicht Ruhewert nicht" />
+    <FaultMessage faultMessageTemplateId="129" code="84" dtids="180000 200000 210000 280000 380000 430000 440000" text="Ölpumpe erreicht keinen Stillstand" />
+    <FaultMessage faultMessageTemplateId="130" code="85" dtids="180000 200000 210000 280000 380000 430000 440000" text="Relaistest fehlgeschlagen" />
     <FaultMessage faultMessageTemplateId="131" code="85" dtids="250000 290000" text="Fehler Rückmeldung Ventil" />
     <FaultMessage faultMessageTemplateId="132" code="86" dtids="180000 200000 210000 380000 430000 440000" text="Zünddruck drei Mal nicht erreicht" />
-    <FaultMessage faultMessageTemplateId="133" code="90" dtids="180000 200000 210000 380000 430000 440000" text="Kommunikation zwischen Regelungsplatine und Feuerungsautomat gestört" />
-    <FaultMessage faultMessageTemplateId="134" code="91" dtids="40000 50000" text="Bus-Adresse" />
+    <FaultMessage faultMessageTemplateId="214" code="87" dtids="60000 70000" text="Solarstatistik Datum" />
+    <FaultMessage faultMessageTemplateId="133" code="90" dtids="180000 200000 210000 280000 380000 430000 440000" text="Kommunikation zwischen Regelungsplatine und Feuerungsautomat gestört" />
+    <FaultMessage faultMessageTemplateId="134" code="91" dtids="40000 50000 280000" text="Bus-Adresse" />
     <FaultMessage faultMessageTemplateId="135" code="91" dtids="120000 130000 140000" text="Fehler Buskennung belegt" />
     <FaultMessage faultMessageTemplateId="136" code="92" dtids="220000" text="BM2-System fehlt" />
-    <FaultMessage faultMessageTemplateId="137" code="95" dtids="210000 200000 180000 380000 430000 440000" text="Prog. Mode" />
+    <FaultMessage faultMessageTemplateId="137" code="95" dtids="210000 200000 180000 280000 380000 430000 440000" text="Prog. Mode" />
     <FaultMessage faultMessageTemplateId="138" code="96" dtids="210000 200000 180000 380000 430000 440000" text="Entriegelung" />
-    <FaultMessage faultMessageTemplateId="139" code="96" dtids="250000 290000" text="Reset" />
+    <FaultMessage faultMessageTemplateId="139" code="96" dtids="250000 280000 290000" text="Reset" />
     <FaultMessage faultMessageTemplateId="140" code="97" dtids="40000" text="Defekte Bypasspumpe" />
     <FaultMessage faultMessageTemplateId="141" code="98" dtids="120000 130000 140000" text="Fehler Widerstandstecker (R21)" />
     <FaultMessage faultMessageTemplateId="142" code="98" dtids="180000 200000 210000 380000 430000 440000" text="Flammenverstärker" />
     <FaultMessage faultMessageTemplateId="143" code="98" dtids="250000" text="Fehler Flammenerkennung" />
     <FaultMessage faultMessageTemplateId="144" code="99" dtids="180000 200000 210000 380000 430000 440000" text="Systemfehler" />
-    <FaultMessage faultMessageTemplateId="145" code="99" dtids="250000 290000" text="Systemfehler Feuerungsautomat" />
+    <FaultMessage faultMessageTemplateId="145" code="99" dtids="250000 280000 290000" text="Systemfehler Feuerungsautomat" />
+    <FaultMessage faultMessageTemplateId="180" code="100" dtids="230000 390000" text="Druck Zuluft" />
+    <FaultMessage faultMessageTemplateId="213" code="100" dtids="460000" text="Flow Switch ODU" />
     <FaultMessage faultMessageTemplateId="146" code="101" dtids="240000 270000 460000" text="E-Heizung" />
-    <FaultMessage faultMessageTemplateId="147" code="102" dtids="270000" text="Netzstörung" />
-    <FaultMessage faultMessageTemplateId="148" code="103" dtids="270000" text="Leistungselektronik" />
+    <FaultMessage faultMessageTemplateId="181" code="101" dtids="230000 390000" text="Druck Abluft" />
+    <FaultMessage faultMessageTemplateId="147" code="102" dtids="270000 460000" text="Netzstörung" />
+    <FaultMessage faultMessageTemplateId="148" code="103" dtids="270000 460000" text="Leistungselektronik" />
+    <FaultMessage faultMessageTemplateId="182" code="103" dtids="230000 390000" text="Bypass" />
     <FaultMessage faultMessageTemplateId="149" code="104" dtids="240000 270000 460000" text="Ventilator" />
     <FaultMessage faultMessageTemplateId="150" code="104" dtids="230000 390000" text="Abluftventilator defekt" />
     <FaultMessage faultMessageTemplateId="151" code="105" dtids="230000 390000" text="Zuluftventilator defekt" />
-    <FaultMessage faultMessageTemplateId="152" code="105" dtids="270000" text="Hochdruck Sensor" />
+    <FaultMessage faultMessageTemplateId="152" code="105" dtids="270000 460000" text="Hochdruck Sensor" />
     <FaultMessage faultMessageTemplateId="153" code="106" dtids="230000 390000" text="Außentemperaturfühler defekt" />
-    <FaultMessage faultMessageTemplateId="154" code="107" dtids="180000 200000 210000 240000 250000 270000 460000 290000 380000 430000 440000" text="Druck Heizkreis" />
+    <FaultMessage faultMessageTemplateId="154" code="107" dtids="180000 200000 210000 240000 250000 270000 280000 460000 290000 380000 430000 440000" text="Druck Heizkreis" />
     <FaultMessage faultMessageTemplateId="155" code="107" dtids="230000 390000" text="Ablufttemperaturfühler defekt" />
     <FaultMessage faultMessageTemplateId="156" code="108" dtids="240000 270000 460000" text="Niederdruck" />
     <FaultMessage faultMessageTemplateId="157" code="108" dtids="230000 390000" text="Temperaturfühler externe Temperatur defekt" />
     <FaultMessage faultMessageTemplateId="158" code="109" dtids="240000 270000 460000" text="Hochdruck" />
+    <FaultMessage faultMessageTemplateId="183" code="109" dtids="230000 390000" text="CO2-Sensor" />
     <FaultMessage faultMessageTemplateId="159" code="110" dtids="240000 270000 460000" text="T_Sauggas" />
     <FaultMessage faultMessageTemplateId="160" code="111" dtids="230000 390000" text="RH-Sensor defekt" />
     <FaultMessage faultMessageTemplateId="161" code="111" dtids="240000 270000 460000" text="T_Heißgas" />
     <FaultMessage faultMessageTemplateId="162" code="112" dtids="240000 270000 460000" text="T_Zuluft" />
-    <FaultMessage faultMessageTemplateId="163" code="116" dtids="150000 160000 170000 180000 200000 210000 240000 380000 430000 440000" text="ESM (E1)" />
-    <FaultMessage faultMessageTemplateId="164" code="116" dtids="270000" text="ESM" />
-    <FaultMessage faultMessageTemplateId="165" code="118" dtids="240000 270000 460000" text="PCB unterbr." />
-    <FaultMessage faultMessageTemplateId="166" code="119" dtids="240000 270000 460000" text="Abtauenergie" />
-    <FaultMessage faultMessageTemplateId="167" code="120" dtids="270000" text="Abtauzeit" />
-    <FaultMessage faultMessageTemplateId="168" code="124" dtids="240000" text="Drucksensor AWO" />
-    <FaultMessage faultMessageTemplateId="169" code="125" dtids="240000" text="T_Kessel AWO" />
-    <FaultMessage faultMessageTemplateId="170" code="125" dtids="270000" text="T_Kessel 2" />
-    <FaultMessage faultMessageTemplateId="171" code="126" dtids="240000" text="T_Verdampfer" />
-    <FaultMessage faultMessageTemplateId="172" code="127" dtids="240000" text="T_Kältemitteleintr." />
-    <FaultMessage faultMessageTemplateId="173" code="128" dtids="240000 270000 460000" text="ODU" />
-    <FaultMessage faultMessageTemplateId="174" code="129" dtids="240000 270000 460000" text="Verdichter" />
-    <FaultMessage faultMessageTemplateId="175" code="130" dtids="240000" text="Ungültiges Modell" />
-    <FaultMessage faultMessageTemplateId="176" code="131" dtids="240000" text="T_Wärmetauscher" />
-    <FaultMessage faultMessageTemplateId="177" code="132" dtids="240000" text="System" />
-    <FaultMessage faultMessageTemplateId="178" code="133" dtids="220000" text="Modul nicht kompatibel" />
-    <FaultMessage faultMessageTemplateId="179" code="999" dtids="230000 390000" text="Mikroschalter sind falsch eingestellt" />
-    <FaultMessage faultMessageTemplateId="180" code="100" dtids="230000 390000" text="Druck Zuluft" />
-    <FaultMessage faultMessageTemplateId="181" code="101" dtids="230000 390000" text="Druck Abluft" />
-    <FaultMessage faultMessageTemplateId="182" code="103" dtids="230000 390000" text="Bypass" />
-    <FaultMessage faultMessageTemplateId="183" code="109" dtids="230000 390000" text="CO2-Sensor" />
     <FaultMessage faultMessageTemplateId="184" code="113" dtids="230000 390000" text="Vorheizregister intern" />
     <FaultMessage faultMessageTemplateId="185" code="114" dtids="230000 390000" text="4-Stufenschalter" />
+    <FaultMessage faultMessageTemplateId="163" code="116" dtids="150000 160000 170000 180000 200000 210000 240000 280000 380000 430000 440000" text="ESM (E1)" />
+    <FaultMessage faultMessageTemplateId="164" code="116" dtids="270000 460000" text="ESM" />
+    <FaultMessage faultMessageTemplateId="165" code="118" dtids="240000 270000 460000" text="PCB unterbr." />
+    <FaultMessage faultMessageTemplateId="166" code="119" dtids="240000 270000 460000" text="Abtauenergie" />
+    <FaultMessage faultMessageTemplateId="167" code="120" dtids="270000 460000" text="Abtauzeit" />
     <FaultMessage faultMessageTemplateId="186" code="120" dtids="230000 390000" text="eBus Ausgang" />
     <FaultMessage faultMessageTemplateId="187" code="121" dtids="230000 390000" text="Wolf-Bus Ausgang überlastet" />
     <FaultMessage faultMessageTemplateId="188" code="122" dtids="230000 390000" text="interner ModBus" />
     <FaultMessage faultMessageTemplateId="189" code="123" dtids="230000 390000" text="externer ModBus" />
+    <FaultMessage faultMessageTemplateId="168" code="124" dtids="240000" text="Drucksensor AWO" />
     <FaultMessage faultMessageTemplateId="190" code="124" dtids="230000 390000" text="USB Ausgang überlastet" />
+    <FaultMessage faultMessageTemplateId="169" code="125" dtids="240000" text="T_Kessel AWO" />
+    <FaultMessage faultMessageTemplateId="170" code="125" dtids="270000 460000" text="T_Kessel 2" />
     <FaultMessage faultMessageTemplateId="191" code="125" dtids="230000 390000" text="LAN" />
+    <FaultMessage faultMessageTemplateId="171" code="126" dtids="240000 270000 460000" text="T_Verdampfer" />
     <FaultMessage faultMessageTemplateId="192" code="126" dtids="230000 390000" text="WiFi" />
+    <FaultMessage faultMessageTemplateId="172" code="127" dtids="240000" text="T_Kältemitteleintr." />
+    <FaultMessage faultMessageTemplateId="173" code="128" dtids="240000 270000 460000" text="ODU" />
+    <FaultMessage faultMessageTemplateId="174" code="129" dtids="240000 270000 460000" text="Verdichter" />
+    <FaultMessage faultMessageTemplateId="175" code="130" dtids="240000" text="Ungültiges Modell" />
     <FaultMessage faultMessageTemplateId="193" code="130" dtids="230000 390000" text="Ausgangssignal" />
+    <FaultMessage faultMessageTemplateId="176" code="131" dtids="240000" text="T_Wärmetauscher" />
     <FaultMessage faultMessageTemplateId="194" code="131" dtids="230000 390000" text="eBus Ausgang" />
+    <FaultMessage faultMessageTemplateId="177" code="132" dtids="240000" text="System" />
     <FaultMessage faultMessageTemplateId="195" code="132" dtids="230000 390000" text="Wolf-Bus Ausgang überlastet" />
+    <FaultMessage faultMessageTemplateId="178" code="133" dtids="220000 270000 460000" text="Modul nicht kompatibel" />
     <FaultMessage faultMessageTemplateId="196" code="133" dtids="230000 390000" text="USB Ausgang überlastet" />
     <FaultMessage faultMessageTemplateId="197" code="140" dtids="230000 390000" text="Schaltausgang" />
     <FaultMessage faultMessageTemplateId="198" code="141" dtids="230000 390000" text="Ausgang analog" />
@@ -213,8 +215,7 @@
     <FaultMessage faultMessageTemplateId="210" code="171" dtids="230000 390000" text="Vorheizregister extern" />
     <FaultMessage faultMessageTemplateId="211" code="172" dtids="230000 390000" text="Nachheizregister extern" />
     <FaultMessage faultMessageTemplateId="212" code="190" dtids="230000 390000" text="Selbsttest nicht in Ordnung" />
-    <FaultMessage faultMessageTemplateId="213" code="100" dtids="460000" text="Flow Switch ODU" />
-    <FaultMessage faultMessageTemplateId="214" code="87" dtids="60000 70000" text="Solarstatistik Datum" />
+    <FaultMessage faultMessageTemplateId="179" code="999" dtids="230000 390000" text="Mikroschalter sind falsch eingestellt" />
     <FaultMessage faultMessageTemplateId="670001" code="1" dtids="670000" text="Störung Pumpe KVS (aMPxKV)" mapping="12" />
     <FaultMessage faultMessageTemplateId="670002" code="2" dtids="670000" text="Datenbusstörung Erweiterungsmodul 1" mapping="13" />
     <FaultMessage faultMessageTemplateId="670003" code="3" dtids="670000" text="Datenbusstörung Erweiterungsmodul 2" mapping="14" />
@@ -432,14 +433,112 @@
     <FaultMessage faultMessageTemplateId="660125" code="125" dtids="660000" text="Volumenstrom Abluftventilator (sPLvAB2)" mapping="773" />
     <FaultMessage faultMessageTemplateId="660126" code="126" dtids="660000" text="Volumenstrom Abluftventilator (sPLvAB2)" mapping="774" />
     <FaultMessage faultMessageTemplateId="660127" code="127" dtids="660000" text="Volumenstrom Abluftventilator (sPLvAB2)" mapping="775" />
-    <FaultMessage faultMessageTemplateId="660130" code="130" dtids="660000" text="Zuluftventilator (aMVnXL) Datenbusstörung" mapping="780" />
-    <FaultMessage faultMessageTemplateId="660131" code="131" dtids="660000" text="Abluftventilator (aMVnXR) Datenbusstörung" mapping="782" />
-    <FaultMessage faultMessageTemplateId="660128" code="128" dtids="660000" text="Störung Zuluftventilator (aMVnXL)" mapping="776" />
-    <FaultMessage faultMessageTemplateId="660129" code="129" dtids="660000" text="Störung Abluftventilator (aMVnXR)" mapping="778" />
-    <FaultMessage faultMessageTemplateId="660134" code="134" dtids="660000" text="Zuluftventilator (aMVnXR) Datenbusstörung" mapping="781" />
-    <FaultMessage faultMessageTemplateId="660135" code="135" dtids="660000" text="Abluftventilator (aMVnXL) Datenbusstörung" mapping="783" />
-    <FaultMessage faultMessageTemplateId="660132" code="132" dtids="660000" text="Störung Zuluftventilator (aMVnXR)" mapping="777" />
-    <FaultMessage faultMessageTemplateId="660133" code="133" dtids="660000" text="Störung Abluftventilator (aMVnXL)" mapping="779" />
-    <FaultMessage faultMessageTemplateId="660136" code="136" dtids="660000" text="Luftqualitätssensor vor WRG fehlerhaft oder nicht angeschlossen" mapping="96" />
+    <FaultMessage faultMessageTemplateId="660136" code="136" dtids="660000" text="Luftqualitätssensor fehlerhaft oder nicht angeschlossen" mapping="96" />
+    <FaultMessage faultMessageTemplateId="660137" code="137" dtids="660000" text="GLT-Raumtemperatur nicht plausibel" mapping="135" />
+    <FaultMessage faultMessageTemplateId="660138" code="138" dtids="660000" text="Sicherheitstemperaturbegrenzer Vorerhitzer" mapping="140" />
+    <FaultMessage faultMessageTemplateId="660139" code="139" dtids="660000" text="Zuluftventilator (aMVxZU) Undefinierte Störung" mapping="860" />
+    <FaultMessage faultMessageTemplateId="660140" code="140" dtids="660000" text="Zuluftventilator (aMVxZU) Geschwindigkeit oder Bremsstrom zu hoch" mapping="861" />
+    <FaultMessage faultMessageTemplateId="660141" code="141" dtids="660000" text="Zuluftventilator (aMVxZU) Temperatur zu hoch" mapping="862" />
+    <FaultMessage faultMessageTemplateId="660142" code="142" dtids="660000" text="Zuluftventilator (aMVxZU) Sicherheitsabschaltung" mapping="863" />
+    <FaultMessage faultMessageTemplateId="660143" code="143" dtids="660000" text="Zuluftventilator (aMVxZU) Überstrom" mapping="864" />
+    <FaultMessage faultMessageTemplateId="660144" code="144" dtids="660000" text="Zuluftventilator (aMVxZU) Motor blockiert" mapping="865" />
+    <FaultMessage faultMessageTemplateId="660145" code="145" dtids="660000" text="Zuluftventilator (aMVxZU) Hallsensor" mapping="866" />
+    <FaultMessage faultMessageTemplateId="660146" code="146" dtids="660000" text="Zuluftventilator (aMVxZU) Phasenausfall oder Netzspannung zu niedrig" mapping="867" />
+    <FaultMessage faultMessageTemplateId="660147" code="147" dtids="660000" text="Zuluftventilator (aMVxZU) Netzspannung zu hoch" mapping="868" />
+    <FaultMessage faultMessageTemplateId="660148" code="148" dtids="660000" text="Zuluftventilator (aMVxZU) Zwischenkreisspannung zu niedrig" mapping="869" />
+    <FaultMessage faultMessageTemplateId="660149" code="149" dtids="660000" text="Zuluftventilator (aMVxZU) Zwischenkreisspannung zu hoch" mapping="870" />
+    <FaultMessage faultMessageTemplateId="660150" code="150" dtids="660000" text="Zuluftventilator (aMVxZU) Erdschluss" mapping="871" />
+    <FaultMessage faultMessageTemplateId="660151" code="151" dtids="660000" text="Zuluftventilator (aMVxZU) IGBT Fehler" mapping="872" />
+    <FaultMessage faultMessageTemplateId="660152" code="152" dtids="660000" text="Zuluftventilator (aMVxZU2) Undefinierte Störung" mapping="873" />
+    <FaultMessage faultMessageTemplateId="660153" code="153" dtids="660000" text="Zuluftventilator (aMVxZU2) Geschwindigkeit oder Bremsstrom zu hoch" mapping="874" />
+    <FaultMessage faultMessageTemplateId="660154" code="154" dtids="660000" text="Zuluftventilator (aMVxZU2) Temperatur zu hoch" mapping="875" />
+    <FaultMessage faultMessageTemplateId="660155" code="155" dtids="660000" text="Zuluftventilator (aMVxZU2) Sicherheitsabschaltung" mapping="876" />
+    <FaultMessage faultMessageTemplateId="660156" code="156" dtids="660000" text="Zuluftventilator (aMVxZU2) Überstrom" mapping="877" />
+    <FaultMessage faultMessageTemplateId="660157" code="157" dtids="660000" text="Zuluftventilator (aMVxZU2) Motor blockiert" mapping="878" />
+    <FaultMessage faultMessageTemplateId="660158" code="158" dtids="660000" text="Zuluftventilator (aMVxZU2) Hallsensor" mapping="879" />
+    <FaultMessage faultMessageTemplateId="660159" code="159" dtids="660000" text="Zuluftventilator (aMVxZU2) Phasenausfall oder Netzspannung zu niedrig" mapping="880" />
+    <FaultMessage faultMessageTemplateId="660160" code="160" dtids="660000" text="Zuluftventilator (aMVxZU2) Netzspannung zu hoch" mapping="881" />
+    <FaultMessage faultMessageTemplateId="660161" code="161" dtids="660000" text="Zuluftventilator (aMVxZU2) Zwischenkreisspannung zu niedrig" mapping="882" />
+    <FaultMessage faultMessageTemplateId="660162" code="162" dtids="660000" text="Zuluftventilator (aMVxZU2) Zwischenkreisspannung zu hoch" mapping="883" />
+    <FaultMessage faultMessageTemplateId="660163" code="163" dtids="660000" text="Zuluftventilator (aMVxZU2) Erdschluss" mapping="884" />
+    <FaultMessage faultMessageTemplateId="660164" code="164" dtids="660000" text="Zuluftventilator (aMVxZU2) IGBT Fehler" mapping="885" />
+    <FaultMessage faultMessageTemplateId="660165" code="165" dtids="660000" text="Zuluftventilator (aMVxZU3) Undefinierte Störung" mapping="886" />
+    <FaultMessage faultMessageTemplateId="660166" code="166" dtids="660000" text="Zuluftventilator (aMVxZU3) Geschwindigkeit oder Bremsstrom zu hoch" mapping="887" />
+    <FaultMessage faultMessageTemplateId="660167" code="167" dtids="660000" text="Zuluftventilator (aMVxZU3) Temperatur zu hoch" mapping="888" />
+    <FaultMessage faultMessageTemplateId="660168" code="168" dtids="660000" text="Zuluftventilator (aMVxZU3) Sicherheitsabschaltung" mapping="889" />
+    <FaultMessage faultMessageTemplateId="660169" code="169" dtids="660000" text="Zuluftventilator (aMVxZU3) Überstrom" mapping="890" />
+    <FaultMessage faultMessageTemplateId="660170" code="170" dtids="660000" text="Zuluftventilator (aMVxZU3) Motor blockiert" mapping="891" />
+    <FaultMessage faultMessageTemplateId="660171" code="171" dtids="660000" text="Zuluftventilator (aMVxZU3) Hallsensor" mapping="892" />
+    <FaultMessage faultMessageTemplateId="660172" code="172" dtids="660000" text="Zuluftventilator (aMVxZU3) Phasenausfall oder Netzspannung zu niedrig" mapping="893" />
+    <FaultMessage faultMessageTemplateId="660173" code="173" dtids="660000" text="Zuluftventilator (aMVxZU3) Netzspannung zu hoch" mapping="894" />
+    <FaultMessage faultMessageTemplateId="660174" code="174" dtids="660000" text="Zuluftventilator (aMVxZU3) Zwischenkreisspannung zu niedrig" mapping="895" />
+    <FaultMessage faultMessageTemplateId="660175" code="175" dtids="660000" text="Zuluftventilator (aMVxZU3) Zwischenkreisspannung zu hoch" mapping="896" />
+    <FaultMessage faultMessageTemplateId="660176" code="176" dtids="660000" text="Zuluftventilator (aMVxZU3) Erdschluss" mapping="897" />
+    <FaultMessage faultMessageTemplateId="660177" code="177" dtids="660000" text="Zuluftventilator (aMVxZU3) IGBT Fehler" mapping="898" />
+    <FaultMessage faultMessageTemplateId="660178" code="178" dtids="660000" text="Zuluftventilator (aMVxZU4) Undefinierte Störung" mapping="899" />
+    <FaultMessage faultMessageTemplateId="660179" code="179" dtids="660000" text="Zuluftventilator (aMVxZU4) Geschwindigkeit oder Bremsstrom zu hoch" mapping="900" />
+    <FaultMessage faultMessageTemplateId="660180" code="180" dtids="660000" text="Zuluftventilator (aMVxZU4) Temperatur zu hoch" mapping="901" />
+    <FaultMessage faultMessageTemplateId="660181" code="181" dtids="660000" text="Zuluftventilator (aMVxZU4) Sicherheitsabschaltung" mapping="902" />
+    <FaultMessage faultMessageTemplateId="660182" code="182" dtids="660000" text="Zuluftventilator (aMVxZU4) Überstrom" mapping="903" />
+    <FaultMessage faultMessageTemplateId="660183" code="183" dtids="660000" text="Zuluftventilator (aMVxZU4) Motor blockiert" mapping="904" />
+    <FaultMessage faultMessageTemplateId="660184" code="184" dtids="660000" text="Zuluftventilator (aMVxZU4) Hallsensor" mapping="905" />
+    <FaultMessage faultMessageTemplateId="660185" code="185" dtids="660000" text="Zuluftventilator (aMVxZU4) Phasenausfall oder Netzspannung zu niedrig" mapping="906" />
+    <FaultMessage faultMessageTemplateId="660186" code="186" dtids="660000" text="Zuluftventilator (aMVxZU4) Netzspannung zu hoch" mapping="907" />
+    <FaultMessage faultMessageTemplateId="660187" code="187" dtids="660000" text="Zuluftventilator (aMVxZU4) Zwischenkreisspannung zu niedrig" mapping="908" />
+    <FaultMessage faultMessageTemplateId="660188" code="188" dtids="660000" text="Zuluftventilator (aMVxZU4) Zwischenkreisspannung zu hoch" mapping="909" />
+    <FaultMessage faultMessageTemplateId="660189" code="189" dtids="660000" text="Zuluftventilator (aMVxZU4) Erdschluss" mapping="910" />
+    <FaultMessage faultMessageTemplateId="660190" code="190" dtids="660000" text="Zuluftventilator (aMVxZU4) IGBT Fehler" mapping="911" />
+    <FaultMessage faultMessageTemplateId="660191" code="191" dtids="660000" text="Abluftventilator (aMVxAB) Undefinierte Störung" mapping="912" />
+    <FaultMessage faultMessageTemplateId="660192" code="192" dtids="660000" text="Abluftventilator (aMVxAB) Geschwindigkeit oder Bremsstrom zu hoch" mapping="913" />
+    <FaultMessage faultMessageTemplateId="660193" code="193" dtids="660000" text="Abluftventilator (aMVxAB) Temperatur zu hoch" mapping="914" />
+    <FaultMessage faultMessageTemplateId="660194" code="194" dtids="660000" text="Abluftventilator (aMVxAB) Sicherheitsabschaltung" mapping="915" />
+    <FaultMessage faultMessageTemplateId="660195" code="195" dtids="660000" text="Abluftventilator (aMVxAB) Überstrom" mapping="916" />
+    <FaultMessage faultMessageTemplateId="660196" code="196" dtids="660000" text="Abluftventilator (aMVxAB) Motor blockiert" mapping="917" />
+    <FaultMessage faultMessageTemplateId="660197" code="197" dtids="660000" text="Abluftventilator (aMVxAB) Hallsensor" mapping="918" />
+    <FaultMessage faultMessageTemplateId="660198" code="198" dtids="660000" text="Abluftventilator (aMVxAB) Phasenausfall oder Netzspannung zu niedrig" mapping="919" />
+    <FaultMessage faultMessageTemplateId="660199" code="199" dtids="660000" text="Abluftventilator (aMVxAB) Netzspannung zu hoch" mapping="920" />
+    <FaultMessage faultMessageTemplateId="660200" code="200" dtids="660000" text="Abluftventilator (aMVxAB) Zwischenkreisspannung zu niedrig" mapping="921" />
+    <FaultMessage faultMessageTemplateId="660201" code="201" dtids="660000" text="Abluftventilator (aMVxAB) Zwischenkreisspannung zu hoch" mapping="922" />
+    <FaultMessage faultMessageTemplateId="660202" code="202" dtids="660000" text="Abluftventilator (aMVxAB) Erdschluss" mapping="923" />
+    <FaultMessage faultMessageTemplateId="660203" code="203" dtids="660000" text="Abluftventilator (aMVxAB) IGBT Fehler" mapping="924" />
+    <FaultMessage faultMessageTemplateId="660204" code="204" dtids="660000" text="Abluftventilator (aMVxAB2) Undefinierte Störung" mapping="925" />
+    <FaultMessage faultMessageTemplateId="660205" code="205" dtids="660000" text="Abluftventilator (aMVxAB2) Geschwindigkeit oder Bremsstrom zu hoch" mapping="926" />
+    <FaultMessage faultMessageTemplateId="660206" code="206" dtids="660000" text="Abluftventilator (aMVxAB2) Temperatur zu hoch" mapping="927" />
+    <FaultMessage faultMessageTemplateId="660207" code="207" dtids="660000" text="Abluftventilator (aMVxAB2) Sicherheitsabschaltung" mapping="928" />
+    <FaultMessage faultMessageTemplateId="660208" code="208" dtids="660000" text="Abluftventilator (aMVxAB2) Überstrom" mapping="929" />
+    <FaultMessage faultMessageTemplateId="660209" code="209" dtids="660000" text="Abluftventilator (aMVxAB2) Motor blockiert" mapping="930" />
+    <FaultMessage faultMessageTemplateId="660210" code="210" dtids="660000" text="Abluftventilator (aMVxAB2) Hallsensor" mapping="931" />
+    <FaultMessage faultMessageTemplateId="660211" code="211" dtids="660000" text="Abluftventilator (aMVxAB2) Phasenausfall oder Netzspannung zu niedrig" mapping="932" />
+    <FaultMessage faultMessageTemplateId="660212" code="212" dtids="660000" text="Abluftventilator (aMVxAB2) Netzspannung zu hoch" mapping="933" />
+    <FaultMessage faultMessageTemplateId="660213" code="213" dtids="660000" text="Abluftventilator (aMVxAB2) Zwischenkreisspannung zu niedrig" mapping="934" />
+    <FaultMessage faultMessageTemplateId="660214" code="214" dtids="660000" text="Abluftventilator (aMVxAB2) Zwischenkreisspannung zu hoch" mapping="935" />
+    <FaultMessage faultMessageTemplateId="660215" code="215" dtids="660000" text="Abluftventilator (aMVxAB2) Erdschluss" mapping="936" />
+    <FaultMessage faultMessageTemplateId="660216" code="216" dtids="660000" text="Abluftventilator (aMVxAB2) IGBT Fehler" mapping="937" />
+    <FaultMessage faultMessageTemplateId="660217" code="217" dtids="660000" text="Abluftventilator (aMVxAB3) Undefinierte Störung" mapping="938" />
+    <FaultMessage faultMessageTemplateId="660218" code="218" dtids="660000" text="Abluftventilator (aMVxAB3) Geschwindigkeit oder Bremsstrom zu hoch" mapping="939" />
+    <FaultMessage faultMessageTemplateId="660219" code="219" dtids="660000" text="Abluftventilator (aMVxAB3) Temperatur zu hoch" mapping="940" />
+    <FaultMessage faultMessageTemplateId="660220" code="220" dtids="660000" text="Abluftventilator (aMVxAB3) Sicherheitsabschaltung" mapping="941" />
+    <FaultMessage faultMessageTemplateId="660221" code="221" dtids="660000" text="Abluftventilator (aMVxAB3) Überstrom" mapping="942" />
+    <FaultMessage faultMessageTemplateId="660222" code="222" dtids="660000" text="Abluftventilator (aMVxAB3) Motor blockiert" mapping="943" />
+    <FaultMessage faultMessageTemplateId="660223" code="223" dtids="660000" text="Abluftventilator (aMVxAB3) Hallsensor" mapping="944" />
+    <FaultMessage faultMessageTemplateId="660224" code="224" dtids="660000" text="Abluftventilator (aMVxAB3) Phasenausfall oder Netzspannung zu niedrig" mapping="945" />
+    <FaultMessage faultMessageTemplateId="660225" code="225" dtids="660000" text="Abluftventilator (aMVxAB3) Netzspannung zu hoch" mapping="946" />
+    <FaultMessage faultMessageTemplateId="660226" code="226" dtids="660000" text="Abluftventilator (aMVxAB3) Zwischenkreisspannung zu niedrig" mapping="947" />
+    <FaultMessage faultMessageTemplateId="660227" code="227" dtids="660000" text="Abluftventilator (aMVxAB3) Zwischenkreisspannung zu hoch" mapping="948" />
+    <FaultMessage faultMessageTemplateId="660228" code="228" dtids="660000" text="Abluftventilator (aMVxAB3) Erdschluss" mapping="949" />
+    <FaultMessage faultMessageTemplateId="660229" code="229" dtids="660000" text="Abluftventilator (aMVxAB3) IGBT Fehler" mapping="950" />
+    <FaultMessage faultMessageTemplateId="660230" code="230" dtids="660000" text="Abluftventilator (aMVxAB4) Undefinierte Störung" mapping="951" />
+    <FaultMessage faultMessageTemplateId="660231" code="231" dtids="660000" text="Abluftventilator (aMVxAB4) Geschwindigkeit oder Bremsstrom zu hoch" mapping="952" />
+    <FaultMessage faultMessageTemplateId="660232" code="232" dtids="660000" text="Abluftventilator (aMVxAB4) Temperatur zu hoch" mapping="953" />
+    <FaultMessage faultMessageTemplateId="660233" code="233" dtids="660000" text="Abluftventilator (aMVxAB4) Sicherheitsabschaltung" mapping="954" />
+    <FaultMessage faultMessageTemplateId="660234" code="234" dtids="660000" text="Abluftventilator (aMVxAB4) Überstrom" mapping="955" />
+    <FaultMessage faultMessageTemplateId="660235" code="235" dtids="660000" text="Abluftventilator (aMVxAB4) Motor blockiert" mapping="956" />
+    <FaultMessage faultMessageTemplateId="660236" code="236" dtids="660000" text="Abluftventilator (aMVxAB4) Hallsensor" mapping="957" />
+    <FaultMessage faultMessageTemplateId="660237" code="237" dtids="660000" text="Abluftventilator (aMVxAB4) Phasenausfall oder Netzspannung zu niedrig" mapping="958" />
+    <FaultMessage faultMessageTemplateId="660238" code="238" dtids="660000" text="Abluftventilator (aMVxAB4) Netzspannung zu hoch" mapping="959" />
+    <FaultMessage faultMessageTemplateId="660239" code="239" dtids="660000" text="Abluftventilator (aMVxAB4) Zwischenkreisspannung zu niedrig" mapping="960" />
+    <FaultMessage faultMessageTemplateId="660240" code="240" dtids="660000" text="Abluftventilator (aMVxAB4) Zwischenkreisspannung zu hoch" mapping="961" />
+    <FaultMessage faultMessageTemplateId="660241" code="241" dtids="660000" text="Abluftventilator (aMVxAB4) Erdschluss" mapping="962" />
+    <FaultMessage faultMessageTemplateId="660242" code="242" dtids="660000" text="Abluftventilator (aMVxAB4) IGBT Fehler" mapping="963" />
   </FaultMessages>
 </FaultMessageConfig>

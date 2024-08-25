@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish ism7mqtt Windows
@@ -45,51 +45,51 @@ jobs:
       run: dotnet publish -c release -r linux-arm -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7config/ism7config.csproj
     - name: Publish ism7config Linux ARM64
       run: dotnet publish -c release -r linux-arm64 -p:PublishTrimmed=True --sc -nowarn:IL2026,IL2104 src/ism7config/ism7config.csproj
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7mqtt-win-x64
-        path: src/ism7mqtt/bin/release/net6.0/win-x64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7mqtt/bin/release/net8.0/win-x64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7mqtt-linux-x64
-        path: src/ism7mqtt/bin/release/net6.0/linux-x64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7mqtt/bin/release/net8.0/linux-x64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7mqtt-linux-arm
-        path: src/ism7mqtt/bin/release/net6.0/linux-arm/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7mqtt/bin/release/net8.0/linux-arm/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7mqtt-linux-arm64
-        path: src/ism7mqtt/bin/release/net6.0/linux-arm64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7mqtt/bin/release/net8.0/linux-arm64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7proxy-win-x64
-        path: src/ism7proxy/bin/release/net6.0/win-x64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7proxy/bin/release/net8.0/win-x64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7proxy-linux-x64
-        path: src/ism7proxy/bin/release/net6.0/linux-x64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7proxy/bin/release/net8.0/linux-x64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7proxy-linux-arm
-        path: src/ism7proxy/bin/release/net6.0/linux-arm/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7proxy/bin/release/net8.0/linux-arm/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7proxy-linux-arm64
-        path: src/ism7proxy/bin/release/net6.0/linux-arm64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7proxy/bin/release/net8.0/linux-arm64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7config-win-x64
-        path: src/ism7config/bin/release/net6.0/win-x64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7config/bin/release/net8.0/win-x64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7config-linux-x64
-        path: src/ism7config/bin/release/net6.0/linux-x64/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7config/bin/release/net8.0/linux-x64/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7config-linux-arm
-        path: src/ism7config/bin/release/net6.0/linux-arm/publish
-    - uses: actions/upload-artifact@v2
+        path: src/ism7config/bin/release/net8.0/linux-arm/publish
+    - uses: actions/upload-artifact@v4
       with:
         name: ism7config-linux-arm64
-        path: src/ism7config/bin/release/net6.0/linux-arm64/publish
+        path: src/ism7config/bin/release/net8.0/linux-arm64/publish

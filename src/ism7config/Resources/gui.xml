@@ -31,6 +31,8 @@
       <ParameterReference ParameterDescriptorId="710006" DTID="710000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="710007" DTID="710000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="710008" DTID="710000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WPS_BHKW_&lt;#X#&gt;_Anzeigewerte">
       <TabName>WPS-BHKW &lt;#X#&gt;</TabName>
@@ -54,6 +56,8 @@
       <ParameterReference ParameterDescriptorId="700071" DTID="700000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="700072" DTID="700000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="700073" DTID="700000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>Yield</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Betriebsdaten">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -73,6 +77,8 @@
       <ParameterReference ParameterDescriptorId="660163" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660164" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660165" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Aktive_Sonderbetriebsarten">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -104,6 +110,8 @@
       <ParameterReference ParameterDescriptorId="661048" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661049" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661117" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Grundeinstellungen">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -157,6 +165,8 @@
       <ParameterReference ParameterDescriptorId="660440" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660441" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660714" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Manueller_Betrieb">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -177,6 +187,8 @@
       <ParameterReference ParameterDescriptorId="660702" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660703" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660704" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Temperatur">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -206,6 +218,8 @@
       <ParameterReference ParameterDescriptorId="661052" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661053" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661054" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Luftfeuchte">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -234,6 +248,8 @@
       <ParameterReference ParameterDescriptorId="660256" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660705" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660257" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Volumenstrom">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -262,6 +278,8 @@
       <ParameterReference ParameterDescriptorId="660987" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660988" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660766" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Frischluftanteil">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -274,6 +292,8 @@
       <ParameterReference ParameterDescriptorId="660456" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660457" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660188" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Luftqualität">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -286,6 +306,8 @@
       <ParameterReference ParameterDescriptorId="660258" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660259" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661154" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Luftdruck">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -312,6 +334,8 @@
       <ParameterReference ParameterDescriptorId="660996" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661086" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661087" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Komponenten">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -326,8 +350,50 @@
       <ParameterReference ParameterDescriptorId="661042" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661043" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661044" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661160" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660185" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661165" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661184" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661185" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661186" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661190" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661176" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661192" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661193" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661194" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661195" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661177" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661196" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661197" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661198" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661199" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661178" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661200" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661201" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661202" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661203" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661174" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660186" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661175" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661187" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661188" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661189" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661191" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661181" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661204" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661205" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661206" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661207" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661182" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661208" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661209" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661210" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661211" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661183" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661212" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661213" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661214" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661215" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660187" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660188" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661112" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
@@ -390,6 +456,19 @@
       <ParameterReference ParameterDescriptorId="661000" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661001" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661113" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661161" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661162" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661163" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661166" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661167" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661168" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661169" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661170" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661171" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661172" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661173" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661179" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661180" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661002" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661003" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661004" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
@@ -422,6 +501,8 @@
       <ParameterReference ParameterDescriptorId="661106" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661107" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661092" DTID="660000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_&lt;#X#&gt;_Alarme">
       <TabName>WRS-K &lt;#X#&gt;</TabName>
@@ -431,6 +512,8 @@
       <ViewType>SVGPluginView</ViewType>
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Gemeinsame_Einstellungen">
       <TabName>Heizung</TabName>
@@ -508,6 +591,9 @@
       <ParameterReference ParameterDescriptorId="360062" DTID="360000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="360063" DTID="360000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="360064" DTID="360000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_NULL">
       <TabName>Heizung</TabName>
@@ -746,6 +832,9 @@
       <ParameterReference ParameterDescriptorId="360135" DTID="360000" ChooseConditionId="C_1658" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="360135" DTID="360000" ChooseConditionId="C_1660" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="360135" DTID="360000" ChooseConditionId="C_1662" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Gemeinsame_Einstellungen">
       <TabName>Warmwasser</TabName>
@@ -781,6 +870,8 @@
       <ParameterReference ParameterDescriptorId="370045" DTID="370000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="370046" DTID="370000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="370047" DTID="370000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_NULL">
       <TabName>Warmwasser</TabName>
@@ -912,6 +1003,8 @@
       <ParameterReference ParameterDescriptorId="370051" DTID="370000" ChooseConditionId="C_1674" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="370051" DTID="370000" ChooseConditionId="C_1676" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="370051" DTID="370000" ChooseConditionId="C_1678" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Systemeinstellungen">
       <TabName>Heizung</TabName>
@@ -924,6 +1017,9 @@
       <ParameterReference ParameterDescriptorId="30018" DTID="30000" ChooseConditionId="C_657" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="30019" DTID="30000" ChooseConditionId="C_657" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="30001" DTID="30000" ChooseConditionId="C_657" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Systemeinstellungen">
       <TabName>Warmwasser</TabName>
@@ -957,6 +1053,8 @@
       <ParameterReference ParameterDescriptorId="30063" DTID="30000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="30064" DTID="30000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="30065" DTID="30000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Party___Absenkbetrieb">
       <TabName>Heizung</TabName>
@@ -970,6 +1068,9 @@
       <ParameterReference ParameterDescriptorId="220035" DTID="220000" ChooseConditionId="C_778" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400002" DTID="400000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400003" DTID="400000" ChooseConditionId="C_2866" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Direkter_Heizkreis">
       <TabName>Heizung</TabName>
@@ -1035,6 +1136,9 @@
       <ParameterReference ParameterDescriptorId="50098" DTID="50000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40031" DTID="40000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_1">
       <TabName>Heizung</TabName>
@@ -1108,6 +1212,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_698" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2129" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_2">
       <TabName>Heizung</TabName>
@@ -1176,6 +1283,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_699" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2130" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_3">
       <TabName>Heizung</TabName>
@@ -1244,6 +1354,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_700" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2131" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_4">
       <TabName>Heizung</TabName>
@@ -1312,6 +1425,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_701" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2132" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_5">
       <TabName>Heizung</TabName>
@@ -1380,6 +1496,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_702" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2133" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_6">
       <TabName>Heizung</TabName>
@@ -1448,6 +1567,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_703" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2134" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischerkreis_7">
       <TabName>Heizung</TabName>
@@ -1516,6 +1638,9 @@
       <ParameterReference ParameterDescriptorId="40070" DTID="40000" ChooseConditionId="C_704" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40028" DTID="40000" ChooseConditionId="C_2135" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>HeatCircle</GroupNameEditableType>
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Wärmeerzeuger_1">
       <TabName>Heizung</TabName>
@@ -1525,12 +1650,6 @@
       <ViewType>GridView</ViewType>
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
-      <ParameterReference ParameterDescriptorId="220019" DTID="220000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="220019" DTID="220000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="220047" DTID="220000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="220047" DTID="220000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="220048" DTID="220000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="220048" DTID="220000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="250063" DTID="250000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="250064" DTID="250000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="250065" DTID="250000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
@@ -2273,6 +2392,8 @@
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
@@ -2389,6 +2510,9 @@
       <ParameterReference ParameterDescriptorId="460038" DTID="460000" ChooseConditionId="C_729" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460160" DTID="460000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460161" DTID="460000" ChooseConditionId="C_140" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Wärmeerzeuger_2">
       <TabName>Heizung</TabName>
@@ -2742,6 +2866,7 @@
       <ParameterReference ParameterDescriptorId="270147" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270005" DTID="270000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
@@ -2796,6 +2921,9 @@
       <ParameterReference ParameterDescriptorId="460061" DTID="460000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460027" DTID="460000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460038" DTID="460000" ChooseConditionId="C_730" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Wärmeerzeuger_3">
       <TabName>Heizung</TabName>
@@ -3149,6 +3277,7 @@
       <ParameterReference ParameterDescriptorId="270147" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270005" DTID="270000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
@@ -3203,6 +3332,9 @@
       <ParameterReference ParameterDescriptorId="460061" DTID="460000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460027" DTID="460000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460038" DTID="460000" ChooseConditionId="C_731" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Wärmeerzeuger_4">
       <TabName>Heizung</TabName>
@@ -3556,6 +3688,7 @@
       <ParameterReference ParameterDescriptorId="270147" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270005" DTID="270000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
@@ -3610,6 +3743,9 @@
       <ParameterReference ParameterDescriptorId="460061" DTID="460000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460027" DTID="460000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460038" DTID="460000" ChooseConditionId="C_732" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Wärmeerzeuger_5">
       <TabName>Heizung</TabName>
@@ -3963,6 +4099,7 @@
       <ParameterReference ParameterDescriptorId="270147" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270005" DTID="270000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
@@ -4017,6 +4154,9 @@
       <ParameterReference ParameterDescriptorId="460061" DTID="460000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460027" DTID="460000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460038" DTID="460000" ChooseConditionId="C_733" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Wartung">
       <TabName>Heizung</TabName>
@@ -4028,6 +4168,9 @@
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="220105" DTID="220000" ChooseConditionId="C_705" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="220106" DTID="220000" ChooseConditionId="C_705" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_RM_2">
       <TabName>Heizung</TabName>
@@ -4042,6 +4185,9 @@
       <ParameterReference ParameterDescriptorId="400039" DTID="400000" ChooseConditionId="C_2866" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400040" DTID="400000" ChooseConditionId="C_2866" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400041" DTID="400000" ChooseConditionId="C_2866" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Bedienmodul_BM_2">
       <TabName>Heizung</TabName>
@@ -4058,6 +4204,9 @@
       <ParameterReference ParameterDescriptorId="220129" DTID="220000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="220107" DTID="220000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="220130" DTID="220000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_1">
       <TabName>Heizung</TabName>
@@ -4070,6 +4219,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_698" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_698" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_698" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_2">
       <TabName>Heizung</TabName>
@@ -4082,6 +4234,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_699" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_699" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_699" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_3">
       <TabName>Heizung</TabName>
@@ -4094,6 +4249,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_700" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_700" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_700" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_4">
       <TabName>Heizung</TabName>
@@ -4106,6 +4264,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_701" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_701" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_701" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_5">
       <TabName>Heizung</TabName>
@@ -4118,6 +4279,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_702" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_702" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_702" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_6">
       <TabName>Heizung</TabName>
@@ -4130,6 +4294,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_703" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_703" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_703" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Mischermodul_7">
       <TabName>Heizung</TabName>
@@ -4142,6 +4309,9 @@
       <ParameterReference ParameterDescriptorId="40073" DTID="40000" ChooseConditionId="C_704" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40075" DTID="40000" ChooseConditionId="C_704" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40080" DTID="40000" ChooseConditionId="C_704" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Heizung_Kaskadenmodul">
       <TabName>Heizung</TabName>
@@ -4152,6 +4322,9 @@
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="50090" DTID="50000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>HeatingWithMainAndSecondaryParameter</TileVisualizationType>
+      <TileMainParameterTagType>HeatingModulation</TileMainParameterTagType>
+      <TileSecondaryParameterTagType>HeatingOperationMode</TileSecondaryParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser">
       <TabName>Warmwasser</TabName>
@@ -4165,8 +4338,14 @@
       <ParameterReference ParameterDescriptorId="30081" DTID="30000" ChooseConditionId="C_2852" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="30067" DTID="30000" ChooseConditionId="C_2852" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="30050" DTID="30000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220019" DTID="220000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220047" DTID="220000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220048" DTID="220000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="220042" DTID="220000" ChooseConditionId="C_1638" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400001" DTID="400000" ChooseConditionId="C_17" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260001" DTID="260000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260002" DTID="260000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260003" DTID="260000" ChooseConditionId="C_822" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="350010" DTID="350000" ChooseConditionId="C_1663" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="350011" DTID="350000" ChooseConditionId="C_1663" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="350013" DTID="350000" ChooseConditionId="C_1663" ReadOnlyConditionId="C_0" />
@@ -4246,6 +4425,8 @@
       <ParameterReference ParameterDescriptorId="460007" DTID="460000" ChooseConditionId="C_17" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460008" DTID="460000" ChooseConditionId="C_17" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_1">
       <TabName>Warmwasser</TabName>
@@ -4282,6 +4463,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_698" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_698" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_2">
       <TabName>Warmwasser</TabName>
@@ -4316,6 +4499,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_699" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_699" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_3">
       <TabName>Warmwasser</TabName>
@@ -4350,6 +4535,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_700" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_700" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_4">
       <TabName>Warmwasser</TabName>
@@ -4384,6 +4571,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_701" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_701" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_5">
       <TabName>Warmwasser</TabName>
@@ -4418,6 +4607,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_702" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_702" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_6">
       <TabName>Warmwasser</TabName>
@@ -4452,6 +4643,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_703" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_703" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Warmwasser_7">
       <TabName>Warmwasser</TabName>
@@ -4486,6 +4679,8 @@
       <ParameterReference ParameterDescriptorId="40033" DTID="40000" ChooseConditionId="C_704" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="40032" DTID="40000" ChooseConditionId="C_704" ReadOnlyConditionId="C_0" />
       <GroupNameEditableType>WarmwaterCircle</GroupNameEditableType>
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Warmwasser_Zeitprogramm_Zirkulation">
       <TabName>Warmwasser</TabName>
@@ -4496,6 +4691,14 @@
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="30050" DTID="30000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220019" DTID="220000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220047" DTID="220000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220048" DTID="220000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260001" DTID="260000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260002" DTID="260000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260003" DTID="260000" ChooseConditionId="C_824" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>DhwTemperature</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Solar_Solar">
       <TabName>Solar</TabName>
@@ -4506,9 +4709,12 @@
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="30050" DTID="30000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="260001" DTID="260000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="260002" DTID="260000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
-      <ParameterReference ParameterDescriptorId="260003" DTID="260000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220019" DTID="220000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220047" DTID="220000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="220048" DTID="220000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260001" DTID="260000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260002" DTID="260000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="260003" DTID="260000" ChooseConditionId="C_823" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="60072" DTID="60000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="60000" DTID="60000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="60025" DTID="60000" ChooseConditionId="C_1262" ReadOnlyConditionId="C_0" />
@@ -4544,6 +4750,8 @@
       <ParameterReference ParameterDescriptorId="70001" DTID="70000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="70003" DTID="70000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="70094" DTID="70000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>Yield</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Solar_NULL">
       <TabName>Solar</TabName>
@@ -4557,6 +4765,8 @@
       <ParameterReference ParameterDescriptorId="60026" DTID="60000" ChooseConditionId="C_1263" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="60038" DTID="60000" ChooseConditionId="C_1263" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="60069" DTID="60000" ChooseConditionId="C_1263" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>Yield</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Lüftung_Lüftung">
       <TabName>Lüftung</TabName>
@@ -4616,6 +4826,8 @@
       <ParameterReference ParameterDescriptorId="390017" DTID="390000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="390018" DTID="390000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="390019" DTID="390000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>Ventilationlevel</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Lüftung_NULL">
       <TabName>Lüftung</TabName>
@@ -4633,6 +4845,8 @@
       <ParameterReference ParameterDescriptorId="400042" DTID="400000" ChooseConditionId="C_1263" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="230049" DTID="230000" ChooseConditionId="C_1263" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="390001" DTID="390000" ChooseConditionId="C_1263" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>Ventilationlevel</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_Lüftung_RM_2">
       <TabName>Lüftung</TabName>
@@ -4646,6 +4860,8 @@
       <ParameterReference ParameterDescriptorId="400039" DTID="400000" ChooseConditionId="C_2867" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400040" DTID="400000" ChooseConditionId="C_2867" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="400041" DTID="400000" ChooseConditionId="C_2867" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>DefaultSingleParameter</TileVisualizationType>
+      <TileMainParameterTagType>Ventilationlevel</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Fachmann_Bedienmodul_BM0_Einstellungen_und_Anzeigen_Einstellungen_und_Anzeigen">
       <TabName>Einstellungen und Anzeigen</TabName>
@@ -6024,6 +6240,7 @@
       <ParameterReference ParameterDescriptorId="270147" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270052" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
@@ -6088,6 +6305,9 @@
       <ParameterReference ParameterDescriptorId="270056" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270057" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270154" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270178" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270179" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270180" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270145" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270146" DTID="270000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460127" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
@@ -6160,6 +6380,9 @@
       <ParameterReference ParameterDescriptorId="460056" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460057" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460156" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="460180" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="460181" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="460182" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460145" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460146" DTID="460000" ChooseConditionId="C_6" ReadOnlyConditionId="C_0" />
     </ViewTemplate>
@@ -6837,6 +7060,7 @@
       <ParameterReference ParameterDescriptorId="270147" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270148" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270153" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270181" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270050" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270051" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270052" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
@@ -6901,6 +7125,9 @@
       <ParameterReference ParameterDescriptorId="270056" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270057" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270154" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270178" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270179" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="270180" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270145" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="270146" DTID="270000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460127" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
@@ -6973,6 +7200,9 @@
       <ParameterReference ParameterDescriptorId="460056" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460057" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460156" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="460180" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="460181" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="460182" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460145" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="460146" DTID="460000" ChooseConditionId="C_7" ReadOnlyConditionId="C_0" />
     </ViewTemplate>
@@ -11077,6 +11307,7 @@
       <ParameterReference ParameterDescriptorId="660479" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660480" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660481" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661323" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660482" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660483" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660484" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
@@ -11181,6 +11412,7 @@
       <ParameterReference ParameterDescriptorId="660521" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660522" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660523" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661324" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661025" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661026" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661027" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
@@ -11206,6 +11438,7 @@
       <ParameterReference ParameterDescriptorId="660528" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660529" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="661089" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661216" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660530" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660531" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660742" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
@@ -11480,6 +11713,7 @@
       <ParameterReference ParameterDescriptorId="660658" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660659" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="660660" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
+      <ParameterReference ParameterDescriptorId="661325" DTID="660000" ChooseConditionId="C_8" ReadOnlyConditionId="C_0" />
     </ViewTemplate>
     <ViewTemplate Id="Fachmann_WRS_K_&lt;#X#&gt;_Fachmann_Feuchteregelung">
       <TabName>Fachmann</TabName>
@@ -11756,6 +11990,8 @@
       <ParameterReference ParameterDescriptorId="670007" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670008" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670368" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Sonderbetriebsarten">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11768,6 +12004,8 @@
       <ParameterReference ParameterDescriptorId="670009" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670010" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670011" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Komponenten">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11801,6 +12039,8 @@
       <ParameterReference ParameterDescriptorId="670366" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670367" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670381" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Temperatur">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11819,6 +12059,8 @@
       <ParameterReference ParameterDescriptorId="670026" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670027" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670028" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Feuchte">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11829,6 +12071,8 @@
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="670029" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Druck">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11839,6 +12083,8 @@
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="670030" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Volumenstrom">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11852,6 +12098,8 @@
       <ParameterReference ParameterDescriptorId="670032" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670384" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670385" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Durchfluss">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11863,6 +12111,8 @@
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="670033" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670034" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Betriebsstunden">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11872,6 +12122,8 @@
       <ViewType>GridView</ViewType>
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Leistung">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11884,6 +12136,8 @@
       <ParameterReference ParameterDescriptorId="670038" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670039" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670040" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Energiemenge">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11899,6 +12153,8 @@
       <ParameterReference ParameterDescriptorId="670044" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670045" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670046" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Waermeenergie">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11914,6 +12170,8 @@
       <ParameterReference ParameterDescriptorId="670050" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670051" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670052" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Kaelteenergie">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11929,6 +12187,8 @@
       <ParameterReference ParameterDescriptorId="670056" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670057" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670058" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Simulation">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -11938,6 +12198,8 @@
       <ViewType>GridView</ViewType>
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_HKVS_&lt;#X#&gt;_Balkendiagramme">
       <TabName>WRS-HKVS &lt;#X#&gt;</TabName>
@@ -12092,6 +12354,8 @@
       <ParameterReference ParameterDescriptorId="670206" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670207" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="670208" DTID="670000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Fachmann_WRS_HKVS_&lt;#X#&gt;_Fachmann_Systemparameter">
       <TabName>Fachmann</TabName>
@@ -12233,6 +12497,8 @@
       <ParameterReference ParameterDescriptorId="680006" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680007" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680223" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_IK_&lt;#X#&gt;_Grundeinstellungen">
       <TabName>WRS-IK &lt;#X#&gt;</TabName>
@@ -12243,6 +12509,8 @@
       <IsExpertView>false</IsExpertView>
       <MenuIconName>MenuIcon_Home.png</MenuIconName>
       <ParameterReference ParameterDescriptorId="680039" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_IK_&lt;#X#&gt;_Sonderbetriebsarten">
       <TabName>WRS-IK &lt;#X#&gt;</TabName>
@@ -12255,6 +12523,8 @@
       <ParameterReference ParameterDescriptorId="680008" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680009" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680010" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_IK_&lt;#X#&gt;_Kaeltekreis1">
       <TabName>WRS-IK &lt;#X#&gt;</TabName>
@@ -12300,6 +12570,8 @@
       <ParameterReference ParameterDescriptorId="680219" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680220" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680221" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_IK_&lt;#X#&gt;_Kaeltekreis2">
       <TabName>WRS-IK &lt;#X#&gt;</TabName>
@@ -12336,6 +12608,8 @@
       <ParameterReference ParameterDescriptorId="680219" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680220" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680221" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_IK_&lt;#X#&gt;_Simulation">
       <TabName>WRS-IK &lt;#X#&gt;</TabName>
@@ -12349,6 +12623,8 @@
       <ParameterReference ParameterDescriptorId="680040" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680041" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="680042" DTID="680000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Fachmann_WRS_IK_&lt;#X#&gt;_Fachmann_Druckregelung">
       <TabName>Fachmann</TabName>
@@ -12484,6 +12760,8 @@
       <ParameterReference ParameterDescriptorId="690003" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690004" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690330" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Sonderbetriebsarten">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12501,6 +12779,8 @@
       <ParameterReference ParameterDescriptorId="690010" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690011" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690012" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Temperatur">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12527,6 +12807,8 @@
       <ParameterReference ParameterDescriptorId="690311" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690312" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690313" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Luftfeuchte">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12552,6 +12834,8 @@
       <ParameterReference ParameterDescriptorId="690315" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690316" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690317" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Luftdruck">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12577,6 +12861,8 @@
       <ParameterReference ParameterDescriptorId="690318" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690319" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690327" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Volumenstrom">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12601,6 +12887,8 @@
       <ParameterReference ParameterDescriptorId="690318" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690319" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690327" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Komponenten">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12650,6 +12938,8 @@
       <ParameterReference ParameterDescriptorId="690324" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690327" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690328" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Benutzer_WRS_K_Pool_&lt;#X#&gt;_Grundeinstellungen">
       <TabName>WRS-K Pool &lt;#X#&gt;</TabName>
@@ -12664,6 +12954,8 @@
       <ParameterReference ParameterDescriptorId="690071" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690311" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
       <ParameterReference ParameterDescriptorId="690316" DTID="690000" ChooseConditionId="True" ReadOnlyConditionId="C_0" />
+      <TileVisualizationType>SingleTextWithoutName</TileVisualizationType>
+      <TileMainParameterTagType>AhuState</TileMainParameterTagType>
     </ViewTemplate>
     <ViewTemplate Id="Fachmann_WRS_K_Pool_&lt;#X#&gt;_Fachmann_Betriebsstunden">
       <TabName>Fachmann</TabName>

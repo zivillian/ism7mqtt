@@ -1,11 +1,10 @@
-﻿using CommonServiceLocator;
-using LuCon.Common.PortalModel;
+﻿using LuCon.Common.PortalModel;
 using LuCon.SocketServer.SocketServerBase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ism7config;
 
-public class ServiceProvider : IServiceLocator
+public class ServiceProvider : IServiceProvider
 {
     private readonly BundleQueueWorker _bundleQueueWorker;
     private readonly ParameterStore _parameterStore;
