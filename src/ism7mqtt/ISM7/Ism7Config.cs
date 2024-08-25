@@ -93,7 +93,7 @@ namespace ism7mqtt
         public IEnumerable<InfoRead> GetInfoReadForDevice(string ba)
         {
             var devices = _devices[Converter.FromHex(ba)];
-            return devices.SelectMany(x => x.InfoReads);
+            return devices.SelectMany(x => x.InfoReads).DistinctBy(x => new { x.InfoNumber, x.ServiceNumber });
         }
 
         public bool ProcessData(IEnumerable<InfonumberReadResp> data)
