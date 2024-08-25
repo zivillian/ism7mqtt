@@ -32,7 +32,7 @@ There is a HomeAssistant integration available at [b3nn0/hassio-addon-ism7mqtt](
 
 ## Firmware < 200
 
-The old firmware (Software < 200) uses a different port and SSL3 with cipher TLS_RSA_WITH_RC4_128_MD5 which is unsupported on all modern OS. You can use `oldism7proxy` as a proxy between ism7mqtt and your ism.
+The old firmware (Software < 200) uses a different port (9091). ism7config tries to automatically detect and save the port in the parameter.json.
 
 ## Cons
 
