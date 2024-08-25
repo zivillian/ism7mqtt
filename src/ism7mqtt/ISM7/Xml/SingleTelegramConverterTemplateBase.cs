@@ -7,16 +7,20 @@ namespace ism7mqtt.ISM7.Xml
     public abstract class SingleTelegramConverterTemplateBase : ConverterTemplateBase
     {
         [XmlElement("TelegramNr")]
-        public ushort TelegramNr { get; set; }
+        public ushort? TelegramNr { get; set; }
 
-        public override IEnumerable<InfoRead> InfoReads => new[]
+        public override IEnumerable<InfoRead> InfoReads
         {
-            new InfoRead
+            get
             {
-                InfoNumber = TelegramNr,
-                ServiceNumber = ServiceReadNumber ?? -1
+                if (!TelegramNr.HasValue) yield break;
+                yield return new InfoRead
+                {
+                    InfoNumber = TelegramNr.Value,
+                    ServiceNumber = ServiceReadNumber ?? -1
+                };
             }
-        };
+        }
 
         public override void AddTelegram(ushort telegram, byte low, byte high)
         {
