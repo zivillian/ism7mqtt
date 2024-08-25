@@ -15,6 +15,11 @@ namespace ism7mqtt.ISM7.Xml
             var day = value & 0b1_1111;
             var month = (value >> 5) & 0xf;
             var year = value >> 9;
+            if (month > 11)
+            {
+                Console.Error.WriteLine($"received invalid date for {nameof(BM2DateConverterTemplate)}({TelegramNr}). Make sure you have a correct time set on your BM2");
+                return;
+            }
             _value = new DateTime(2000 + year, month + 1, day + 1);
         }
 
