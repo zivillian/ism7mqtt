@@ -4,6 +4,8 @@ namespace ism7config;
 
 class Config
 {
+    public ushort TcpPort { get; set; }
+
     public List<Device> Devices { get; set; }
 }
 

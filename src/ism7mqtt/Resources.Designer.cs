@@ -19,7 +19,7 @@ namespace ism7mqtt {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,28 +61,18 @@ namespace ism7mqtt {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] client {
-            get {
-                object obj = ResourceManager.GetObject("client", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;ConverterTemplateConfig xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; Version=&quot;1&quot;&gt;
+        ///&lt;ConverterTemplateConfig xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;1&quot;&gt;
         ///  &lt;ConverterTemplates&gt;
-        ///    &lt;NumericConverter16Template CTID=&quot;1000&quot;&gt;
+        ///    &lt;NumericConverter16Template CTID=&quot;10000&quot;&gt;
         ///      &lt;TelegramNr&gt;5&lt;/TelegramNr&gt;
         ///      &lt;Type&gt;SS10&lt;/Type&gt;
         ///    &lt;/NumericConverter16Template&gt;
-        ///    &lt;NumericConverter16Template CTID=&quot;1001&quot;&gt;
+        ///    &lt;NumericConverter16Template CTID=&quot;10001&quot;&gt;
         ///      &lt;TelegramNr&gt;8&lt;/TelegramNr&gt;
         ///      &lt;Type&gt;SS10&lt;/Type&gt;
         ///    &lt;/NumericConverter16Template&gt;
-        ///    &lt;NumericConverter16Templat [rest of string was truncated]&quot;;.
+        ///    &lt;NumericConverter16Templ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ConverterTemplates {
             get {
@@ -92,15 +82,15 @@ namespace ism7mqtt {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;DeviceTemplateConfig xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; Version=&quot;1&quot;&gt;
+        ///&lt;DeviceTemplateConfig xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;1&quot;&gt;
         ///  &lt;DeviceTemplates&gt;
-        ///    &lt;DeviceTemplate DTID=&quot;1000&quot; Name=&quot;DHK_BM&quot;&gt;
+        ///    &lt;DeviceTemplate DTID=&quot;10000&quot; Name=&quot;DHK_BM&quot;&gt;
         ///      &lt;CustomerId&gt;WOLF&lt;/CustomerId&gt;
         ///      &lt;SoftwareNumber&gt;0x0&lt;/SoftwareNumber&gt;
         ///      &lt;WRSDeviceIds&gt;0x0&lt;/WRSDeviceIds&gt;
         ///      &lt;EnableEBus5InfoNumberTelegram&gt;false&lt;/EnableEBus5InfoNumberTelegram&gt;
         ///      &lt;HasOwnFaultMessageHistory&gt;false&lt;/HasOwnFaultMessageHistory&gt;
-        ///    [rest of string was truncated]&quot;;.
+        ///   [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DeviceTemplates {
             get {
@@ -110,16 +100,16 @@ namespace ism7mqtt {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;ParameterTemplateConfig xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; Version=&quot;1&quot;&gt;
+        ///&lt;ParameterTemplateConfig xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;1&quot;&gt;
         ///  &lt;ParameterList&gt;
-        ///    &lt;NumericParameterDescriptor PTID=&quot;1000&quot;&gt;
+        ///    &lt;NumericParameterDescriptor PTID=&quot;10000&quot;&gt;
         ///      &lt;Name&gt;Tagtemperatur&lt;/Name&gt;
         ///      &lt;UnitName&gt;°C&lt;/UnitName&gt;
         ///      &lt;App&gt;true&lt;/App&gt;
         ///      &lt;RemoveConditionId&gt;False&lt;/RemoveConditionId&gt;
         ///      &lt;ReadOnlyConditionId&gt;False&lt;/ReadOnlyConditionId&gt;
         ///      &lt;InactiveConditionId&gt;False&lt;/InactiveConditionId&gt;
-        ///      &lt;IsSnapshot [rest of string was truncated]&quot;;.
+        ///      &lt;IsSnapsho [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ParameterTemplates {
             get {

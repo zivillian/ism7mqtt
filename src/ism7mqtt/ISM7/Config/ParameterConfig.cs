@@ -5,6 +5,8 @@ namespace ism7mqtt.ISM7.Config
 {
     public class ConfigRoot
     {
+        public ushort TcpPort { get; set; } = 9092;
+
         public List<ConfigDevice> Devices { get; set; }
     }
 

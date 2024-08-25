@@ -3,6 +3,7 @@ using System.Text.Json;
 using CommonServiceLocator;
 using LuCon.Common.ConditionService;
 using LuCon.Common.ConfigService;
+using LuCon.Common.Declarations;
 using LuCon.Common.PortalModel;
 using LuCon.LocalConnection;
 using LuCon.Mobile.Data;
@@ -117,8 +118,17 @@ internal class Program
             new GuiTemplateServiceImpl(fileSystemSettings, _ => new MemoryStream(Resources.gui)));
         var responseHandler = new ResponseHandler(busconfigWriter, faultMessageHandler);
 
-        var gc = await nc.DoConnect(ip, IPAddress.Any, 9092, password, streamHandler);
-            
+        GatewayContext gc = null;
+        try
+        {
+            gc = await nc.DoConnect(ip, IPAddress.Any, 9092, password, streamHandler);
+        }
+        catch (BusinessServiceException)
+        {
+            Console.Error.WriteLine("failed to connect on port 9092 - trying older firmware port 9091");
+            gc = await nc.DoConnect(ip, IPAddress.Any, 9091, password, streamHandler);
+        }
+
         gc.SetupBundleQueueWorker(gw);
         var read = gc.BeginRead(x=>responseHandler.ReadFromGatewayCallback(x));
         var systemconfigRequest = new SystemconfigRequest
@@ -133,6 +143,7 @@ internal class Program
             {
                 var config = new Config
                 {
+                    TcpPort = streamHandler.TcpPort,
                     Devices = new List<Device>()
                 };
                 foreach (var device in gc.Devices.OrderBy(x => x.ReadBusAddress))
