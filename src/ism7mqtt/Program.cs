@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -10,7 +9,6 @@ using ism7mqtt.HomeAssistant;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Options;
 using MQTTnet.Protocol;
 
 namespace ism7mqtt
@@ -106,7 +104,7 @@ namespace ism7mqtt
                             mqttOptionBuilder = mqttOptionBuilder.WithCredentials(mqttUsername, mqttPassword);
                         }
                         var mqttOptions = mqttOptionBuilder.Build();
-                        mqttClient.UseDisconnectedHandler(async e =>
+                        mqttClient.DisconnectedAsync += async e =>
                         {
                             Console.Error.WriteLine("mqtt disconnected - reconnecting in 5 seconds");
                             await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
@@ -118,7 +116,7 @@ namespace ism7mqtt
                             {
                                 Console.Error.WriteLine("reconnect failed");
                             }
-                        });
+                        };
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
@@ -127,7 +125,7 @@ namespace ism7mqtt
                             Interval = interval,
                             EnableDebug = enableDebug
                         };
-                        mqttClient.UseApplicationMessageReceivedHandler(x => OnMessage(client, x, enableDebug, cts.Token));
+                        mqttClient.ApplicationMessageReceivedAsync += x => OnMessage(client, x, enableDebug, cts.Token);
 
                         if (!String.IsNullOrEmpty(discoveryId))
                         {
