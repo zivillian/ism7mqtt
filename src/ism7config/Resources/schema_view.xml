@@ -11264,7 +11264,7 @@
       </Configurations>
     </SchemaViewTemplate>
     <SchemaViewTemplate DTID="70000" DeviceName="SM2">
-      <ConfigPTID>7042</ConfigPTID>
+      <ConfigPTID>70042</ConfigPTID>
       <ViewType>SchemaView</ViewType>
       <Configurations>
         <Configuration>

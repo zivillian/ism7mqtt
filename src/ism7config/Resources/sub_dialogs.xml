@@ -2472,9 +2472,7 @@
   </BM2PartyProgramTemplates>
   <MessageBoxTemplates>
     <MessageBoxTemplate Id="#MessageBox.BM2TimeProgVersionMessage">
-      <Text>Bitte beachten Sie: Das Zeitprogramm ist erst ab BM-2 Software Version 1.30 verfügbar.&lt;br/&gt;
-Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
-&lt;a target="_blank" href="http://www.wolf-heiztechnik.de/downloads/download-center/softwares/"&gt;http://www.wolf-heiztechnik.de/downloads/download-center/softwares/&lt;/a&gt;</Text>
+      <Text>Bitte beachten Sie: Das Zeitprogramm ist erst ab BM-2 Software Version 1.30 verfügbar. Sie können ein Update auf der Wolf Homepage herunterladen.</Text>
     </MessageBoxTemplate>
   </MessageBoxTemplates>
   <CircularSliderTemplates>
@@ -2487,7 +2485,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>340001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2501,7 +2499,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>340001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2515,7 +2513,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2529,7 +2527,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2543,7 +2541,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2557,7 +2555,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2571,7 +2569,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2585,7 +2583,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2599,7 +2597,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -2613,7 +2611,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
@@ -3539,7 +3537,7 @@ Sie können ein Update auf der Wolf Homepage herunterladen.&lt;br/&gt;
         </PTIDHierarchy>
         <PTIDHierarchy>
           <PTID>360001</PTID>
-          <Name>Außentemperatur</Name>
+          <Name>Ø Außentemperatur</Name>
           <ChooseCondition>True</ChooseCondition>
         </PTIDHierarchy>
       </Childs>
