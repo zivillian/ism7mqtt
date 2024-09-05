@@ -269,6 +269,7 @@ namespace ism7mqtt.HomeAssistant
                             options.Add((JsonNode)value.Value);
                         }
                         yield return ("options", options);
+                        yield return ("device_class", "enum");
 
                     }
                     break;
