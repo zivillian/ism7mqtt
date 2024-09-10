@@ -25,6 +25,11 @@ class Ism7TlsClient : DefaultTlsClient
     {
     }
 
+    public override void Init(TlsClientContext context)
+    {
+        base.Init(new TlsContextWrapperForPerformance(context));
+    }
+
     public override TlsAuthentication GetAuthentication()
     {
         var store = new Pkcs12StoreBuilder().Build();
