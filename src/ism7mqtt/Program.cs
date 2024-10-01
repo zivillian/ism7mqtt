@@ -38,6 +38,7 @@ namespace ism7mqtt
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
+            bool emptyDiscoveryId = GetEnvBool("ISM7_EMPTY_HOMEASSISTANT_ID");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -52,6 +53,7 @@ namespace ism7mqtt
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
+                {"empty-hass-id", "Use HomeAssistant without an additional device id/entity prefix", x => emptyDiscoveryId = x!= null},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -80,7 +82,7 @@ namespace ism7mqtt
                 return;
             }
 
-            if (!String.IsNullOrEmpty(discoveryId))
+            if (!String.IsNullOrEmpty(discoveryId) || emptyDiscoveryId)
             {
                 _retain = true;
                 _useSeparateTopics = true;
@@ -128,7 +130,7 @@ namespace ism7mqtt
                         };
                         mqttClient.ApplicationMessageReceivedAsync += x => OnMessage(client, x, enableDebug, cts.Token);
 
-                        if (!String.IsNullOrEmpty(discoveryId))
+                        if (!String.IsNullOrEmpty(discoveryId) || emptyDeicoveryId)
                         {
                             await mqttClient.SubscribeAsync("homeassistant/status");
                             client.OnInitializationFinishedAsync = (config, c) =>
