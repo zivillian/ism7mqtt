@@ -37,11 +37,11 @@ namespace ism7mqtt
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
-        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host)
+        public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host, Ism7Localizer localizer)
         {
             _messageHandler = messageHandler;
             _host = host;
-            _config = new Ism7Config(parameterPath);
+            _config = new Ism7Config(parameterPath, localizer);
             _pipe = new Pipe();
         }
 

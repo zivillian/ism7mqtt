@@ -38,6 +38,7 @@ namespace ism7mqtt
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
+            string language = GetEnvString("ISM7_LANGUAGE", "DEU");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -52,6 +53,7 @@ namespace ism7mqtt
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
+                {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -85,6 +87,8 @@ namespace ism7mqtt
                 _retain = true;
                 _useSeparateTopics = true;
             }
+
+            var localizer = new Ism7Localizer(language);
 
             using (var cts = new CancellationTokenSource())
             {
@@ -121,7 +125,7 @@ namespace ism7mqtt
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
-                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip)
+                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip, localizer)
                         {
                             Interval = interval,
                             EnableDebug = enableDebug
@@ -133,7 +137,7 @@ namespace ism7mqtt
                             await mqttClient.SubscribeAsync("homeassistant/status");
                             client.OnInitializationFinishedAsync = (config, c) =>
                             {
-                                _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId)
+                                _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId, localizer)
                                 {
                                     EnableDebug = enableDebug, 
                                     QosLevel = _qos
