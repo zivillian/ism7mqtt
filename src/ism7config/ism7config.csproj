@@ -10,6 +10,7 @@
   <ItemGroup>
     <Content Include="..\ism7mqtt\Resources\ConverterTemplates.xml" Link="Resources\convertertemplates.xml" />
     <Content Include="..\ism7mqtt\Resources\DeviceTemplates.xml" Link="Resources\devicetemplates.xml" />
+    <Content Include="..\ism7mqtt\Resources\Dictionary.xml" Link="Resources\dictionary.xml" />
     <Content Include="..\ism7mqtt\Resources\ParameterTemplates.xml" Link="Resources\parametertemplates.xml" />
   </ItemGroup>
 

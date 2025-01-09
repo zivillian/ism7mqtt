@@ -124,6 +124,9 @@
   <data name="DeviceTemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DeviceTemplates.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
+  <data name="Dictionary" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Dictionary.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="ParameterTemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ParameterTemplates.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

@@ -20,16 +20,18 @@ namespace ism7mqtt.HomeAssistant
         private readonly Ism7Config _config;
         private readonly IMqttClient _mqttClient;
         private readonly string _discoveryId;
+        private readonly Ism7Localizer _localizer;
 
         public bool EnableDebug { get; set; }
 
         public MqttQualityOfServiceLevel QosLevel { get; set; }
 
-        public HaDiscovery(Ism7Config config, IMqttClient mqttClient, string discoveryId)
+        public HaDiscovery(Ism7Config config, IMqttClient mqttClient, string discoveryId, Ism7Localizer localizer)
         {
             _config = config;
             _mqttClient = mqttClient;
             _discoveryId = discoveryId;
+            _localizer = localizer;
         }
 
         public async Task PublishDiscoveryInfo(CancellationToken cancellationToken)
@@ -53,7 +55,7 @@ namespace ism7mqtt.HomeAssistant
 
         public IEnumerable<JsonMessage> GetDiscoveryInfo()
         {
-            return _config.Devices.SelectMany(x => GetDiscoveryInfo(x));
+            return _config.Devices.SelectMany(GetDiscoveryInfo);
         }
 
         private string LaunderHomeassistantId(string id) {
@@ -108,7 +110,7 @@ namespace ism7mqtt.HomeAssistant
                     message.Add("command_topic", commandTopic);
                 }
 
-                message.Add("name", descriptor.Name);
+                message.Add("name", _localizer[descriptor.Name]);
                 message.Add("object_id", uniqueId);
 
                 foreach (var (key, value) in GetDiscoveryProperties(descriptor))
@@ -229,7 +231,7 @@ namespace ism7mqtt.HomeAssistant
                     }
                     if (numeric.UnitName != null)
                     {
-                        yield return ("unit_of_measurement", numeric.UnitName);
+                        yield return ("unit_of_measurement", _localizer[numeric.UnitName]);
                         if (numeric.UnitName == "°C")
                         {
                             yield return ("icon", "mdi:thermometer");
@@ -266,7 +268,7 @@ namespace ism7mqtt.HomeAssistant
                         var options = new JsonArray();
                         foreach (var value in list.Options)
                         {
-                            options.Add((JsonNode)value.Value);
+                            options.Add((JsonNode)_localizer[value.Value]);
                         }
                         yield return ("options", options);
                         yield return ("device_class", "enum");

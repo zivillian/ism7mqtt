@@ -100,6 +100,34 @@ namespace ism7mqtt {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;TextTable xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;0&quot;&gt;
+        ///  &lt;TableEntries&gt;
+        ///    &lt;TextTableEntry&gt;
+        ///      &lt;DEU&gt;%&lt;/DEU&gt;
+        ///      &lt;CHN&gt;%&lt;/CHN&gt;
+        ///      &lt;GRC&gt;%&lt;/GRC&gt;
+        ///      &lt;EST&gt;%&lt;/EST&gt;
+        ///      &lt;HRV&gt;%&lt;/HRV&gt;
+        ///      &lt;LVA&gt;%&lt;/LVA&gt;
+        ///      &lt;LTU&gt;%&lt;/LTU&gt;
+        ///      &lt;ROU&gt;%&lt;/ROU&gt;
+        ///      &lt;ITA&gt;%&lt;/ITA&gt;
+        ///      &lt;ESP&gt;%&lt;/ESP&gt;
+        ///      &lt;FRA&gt;%&lt;/FRA&gt;
+        ///      &lt;POL&gt;%&lt;/POL&gt;
+        ///      &lt;CZE&gt;%&lt;/CZE&gt;
+        ///      &lt;SVK&gt;%&lt;/SVK&gt;
+        ///      &lt;RUS&gt;%&lt;/RUS&gt;
+        ///      &lt;D [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Dictionary {
+            get {
+                return ResourceManager.GetString("Dictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ParameterTemplateConfig xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;1&quot;&gt;
         ///  &lt;ParameterList&gt;
         ///    &lt;NumericParameterDescriptor PTID=&quot;10000&quot;&gt;
