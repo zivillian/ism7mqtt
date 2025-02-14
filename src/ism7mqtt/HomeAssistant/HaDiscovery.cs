@@ -34,6 +34,38 @@ namespace ism7mqtt.HomeAssistant
             _localizer = localizer;
         }
 
+        private static readonly Dictionary<string, string> ExactStateMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                // ON States
+                { "Ein", "on" }, { "开启", "on" }, { "ON", "on" }, { "SEES", "on" }, { "UKLJ.", "on" },
+                { "IESLĒGT", "on" }, { "ĮJ.", "on" }, { "PORNIT", "on" }, { "On", "on" }, { "Zał.", "on" },
+                { "Zap", "on" }, { "ZAP", "on" }, { "Вкл.", "on" }, { "Til", "on" }, { "Be", "on" }, 
+                { "Açık", "on" }, { "Aan", "on" }, { "ligada", "on" },
+
+                // OFF States
+                { "Aus", "off" }, { "关闭", "off" }, { "OFF", "off" }, { "Välja", "off" }, { "Isklj.", "off" },
+                { "Izslēgts", "off" }, { "Išj.", "off" }, { "Oprit", "off" }, { "Off", "off" }, { "Wył", "off" },
+                { "Vyp", "off" }, { "VYP", "off" }, { "Выкл.", "off" }, { "Fra", "off" }, { "Ki", "off" }, 
+                { "Kapalı", "off" }, { "Uit", "off" }, { "Desl.", "off" },
+
+                // ACTIVATED States (mapped to "on")
+                { "Aktiviert", "on" }, { "已激活", "on" }, { "Ενεργοποιημένο", "on" }, { "Aktiveeritud", "on" },
+                { "Uključeno", "on" }, { "Aktivizēts", "on" }, { "Suaktyvinta", "on" }, { "Activat", "on" },
+                { "Attivato", "on" }, { "Activado", "on" }, { "Activé", "on" }, { "Włączone", "on" },
+                { "Aktivováno", "on" }, { "Aktivovaný", "on" }, { "Активировано", "on" }, { "Aktiveret", "on" },
+                { "Aktiválva", "on" }, { "Activated", "on" }, { "Etkinleştirildi", "on" }, { "Geactiveerd", "on" },
+                { "Ativado", "on" },
+
+                // DEACTIVATED States (mapped to "off")
+                { "Deaktiviert", "off" }, { "停用", "off" }, { "Απενεργοποιημένο", "off" }, { "Deaktiveeritud", "off" },
+                { "Isključeno", "off" }, { "Deaktivizēts", "off" }, { "Išjungta", "off" }, { "Dezactivat", "off" },
+                { "Disattivato", "off" }, { "Desactivado", "off" }, { "Désactivé", "off" }, { "Nieaktywne", "off" },
+                { "Deaktivován", "off" }, { "Deaktivovaný", "off" }, { "Выключено", "off" }, { "Deaktiveret", "off" },
+                { "Deaktiválva", "off" }, { "Deactivated", "off" }, { "Devre dışı", "off" }, { "Gedeactiveerd", "off" },
+                { "Desativado", "off" }
+            };
+
+
         public async Task PublishDiscoveryInfo(CancellationToken cancellationToken)
         {
             if (EnableDebug)
@@ -244,13 +276,19 @@ namespace ism7mqtt.HomeAssistant
                     }
                     break;
                 case ListParameterDescriptor list:
-                    if (list.IsBoolean && list.Options.Count >= 2) // Ensure at least 2 states exist
+                // Define an exact mapping of localized state strings to HA states
+                    if (list.IsBoolean)
                     {
-                        string offState = list.Options[0].Value; // First option = Off
-                        string onState = list.Options[1].Value;  // Second option = On
-
-                        yield return ("payload_off", _localizer[offState]); // Send localized Off state
-                        yield return ("payload_on", _localizer[onState]);   // Send localized On state
+                        foreach (var option in list.Options)
+                        {
+                            if (ExactStateMapping.TryGetValue(option.Value, out var haState))
+                            {
+                                if (haState == "on")
+                                    yield return ("payload_on", option.Value); // Send exact localized value
+                                else if (haState == "off")
+                                    yield return ("payload_off", option.Value); // Send exact localized value
+                            }
+                        }
                     }
                     else
                     {
