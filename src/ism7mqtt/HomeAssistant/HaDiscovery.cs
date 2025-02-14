@@ -244,24 +244,13 @@ namespace ism7mqtt.HomeAssistant
                     }
                     break;
                 case ListParameterDescriptor list:
-                    if (list.IsBoolean)
+                    if (list.IsBoolean && list.Options.Count >= 2) // Ensure at least 2 states exist
                     {
-                        if (list.Options.Any(x => x.Value == "Ein"))
-                        {
-                            yield return ("payload_on", "Ein");
-                        }
-                        if (list.Options.Any(x => x.Value == "Aktiviert"))
-                        {
-                            yield return ("payload_on", "Aktiviert");
-                        }
-                        if (list.Options.Any(x => x.Value == "Aus"))
-                        {
-                            yield return ("payload_off", "Aus");
-                        }
-                        if (list.Options.Any(x => x.Value == "Deaktiviert"))
-                        {
-                            yield return ("payload_off", "Deaktiviert");
-                        }
+                        string offState = list.Options[0].Value; // First option = Off
+                        string onState = list.Options[1].Value;  // Second option = On
+
+                        yield return ("payload_off", _localizer[offState]); // Send localized Off state
+                        yield return ("payload_on", _localizer[onState]);   // Send localized On state
                     }
                     else
                     {
