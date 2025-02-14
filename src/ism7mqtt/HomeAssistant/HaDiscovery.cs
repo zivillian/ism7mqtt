@@ -299,19 +299,12 @@ namespace ism7mqtt.HomeAssistant
                     {
                         foreach (var option in list.Options)
                         {
-                            // 🚀 Always get the localized state first!
                             string localizedState = _localizer[option.Value] ?? option.Value;
-                            if (enableDebug)
-                            {
-                                Console.WriteLine($"🔎 Checking: Raw='{option.Value}', Localized='{localizedState}'");
-                            }
-                            // 🔹 Now lookup in dictionary using the correct localized value
+                            if (EnableDebug) Console.WriteLine($"🔎 Checking: Raw='{option.Value}', Localized='{localizedState}'");
+                            
                             if (ExactStateMapping.TryGetValue(localizedState, out var haState))
                             {
-                                if (enableDebug)
-                                {
-                                    Console.WriteLine($"✅ Mapping found: '{localizedState}' -> HA '{haState}'");
-                                }
+                                if (EnableDebug) Console.WriteLine($"✅ Mapping found: '{localizedState}' -> HA '{haState}'");
                                 if (haState == "on")
                                     yield return ("payload_on", localizedState); // Ensure HA gets Hungarian value
                                 else if (haState == "off")
@@ -319,10 +312,7 @@ namespace ism7mqtt.HomeAssistant
                             }
                             else
                             {
-                                if (enableDebug)
-                                {
-                                    Console.WriteLine($"⚠️ Warning: No mapping found for '{localizedState}'");
-                                }
+                                if (EnableDebug) Console.WriteLine($"⚠️ Warning: No mapping found for '{localizedState}'");
                             }
                         }
                     }
