@@ -34,36 +34,54 @@ namespace ism7mqtt.HomeAssistant
             _localizer = localizer;
         }
 
-        private static readonly Dictionary<string, string> ExactStateMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, string> ExactStateMapping = CreateStateMapping();
+
+        private static Dictionary<string, string> CreateStateMapping()
+        {
+            var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            void AddMapping(string localized, string haState)
             {
-                // ON States
-                { "Ein", "on" }, { "开启", "on" }, { "ON", "on" }, { "SEES", "on" }, { "UKLJ.", "on" },
-                { "IESLĒGT", "on" }, { "ĮJ.", "on" }, { "PORNIT", "on" }, { "On", "on" }, { "Zał.", "on" },
-                { "Zap", "on" }, { "ZAP", "on" }, { "Вкл.", "on" }, { "Til", "on" }, { "Be", "on" }, 
-                { "Açık", "on" }, { "Aan", "on" }, { "ligada", "on" },
+                if (!mapping.ContainsKey(localized))
+                {
+                    mapping[localized] = haState;
+                }
+            }
 
-                // OFF States
-                { "Aus", "off" }, { "关闭", "off" }, { "OFF", "off" }, { "Välja", "off" }, { "Isklj.", "off" },
-                { "Izslēgts", "off" }, { "Išj.", "off" }, { "Oprit", "off" }, { "Off", "off" }, { "Wył", "off" },
-                { "Vyp", "off" }, { "VYP", "off" }, { "Выкл.", "off" }, { "Fra", "off" }, { "Ki", "off" }, 
-                { "Kapalı", "off" }, { "Uit", "off" }, { "Desl.", "off" },
+            // ON States
+            AddMapping("Ein", "on"); AddMapping("开启", "on"); AddMapping("ON", "on"); AddMapping("SEES", "on");
+            AddMapping("UKLJ.", "on"); AddMapping("IESLĒGT", "on"); AddMapping("ĮJ.", "on"); AddMapping("PORNIT", "on");
+            AddMapping("On", "on"); AddMapping("Zał.", "on"); AddMapping("Zap", "on"); AddMapping("ZAP", "on");
+            AddMapping("Вкл.", "on"); AddMapping("Til", "on"); AddMapping("Be", "on"); AddMapping("Açık", "on");
+            AddMapping("Aan", "on"); AddMapping("ligada", "on");
 
-                // ACTIVATED States (mapped to "on")
-                { "Aktiviert", "on" }, { "已激活", "on" }, { "Ενεργοποιημένο", "on" }, { "Aktiveeritud", "on" },
-                { "Uključeno", "on" }, { "Aktivizēts", "on" }, { "Suaktyvinta", "on" }, { "Activat", "on" },
-                { "Attivato", "on" }, { "Activado", "on" }, { "Activé", "on" }, { "Włączone", "on" },
-                { "Aktivováno", "on" }, { "Aktivovaný", "on" }, { "Активировано", "on" }, { "Aktiveret", "on" },
-                { "Aktiválva", "on" }, { "Activated", "on" }, { "Etkinleştirildi", "on" }, { "Geactiveerd", "on" },
-                { "Ativado", "on" },
+            // OFF States
+            AddMapping("Aus", "off"); AddMapping("关闭", "off"); AddMapping("OFF", "off"); AddMapping("Välja", "off");
+            AddMapping("Isklj.", "off"); AddMapping("Izslēgts", "off"); AddMapping("Išj.", "off"); AddMapping("Oprit", "off");
+            AddMapping("Off", "off"); AddMapping("Wył", "off"); AddMapping("Vyp", "off"); AddMapping("VYP", "off");
+            AddMapping("Выкл.", "off"); AddMapping("Fra", "off"); AddMapping("Ki", "off"); AddMapping("Kapalı", "off");
+            AddMapping("Uit", "off"); AddMapping("Desl.", "off");
 
-                // DEACTIVATED States (mapped to "off")
-                { "Deaktiviert", "off" }, { "停用", "off" }, { "Απενεργοποιημένο", "off" }, { "Deaktiveeritud", "off" },
-                { "Isključeno", "off" }, { "Deaktivizēts", "off" }, { "Išjungta", "off" }, { "Dezactivat", "off" },
-                { "Disattivato", "off" }, { "Desactivado", "off" }, { "Désactivé", "off" }, { "Nieaktywne", "off" },
-                { "Deaktivován", "off" }, { "Deaktivovaný", "off" }, { "Выключено", "off" }, { "Deaktiveret", "off" },
-                { "Deaktiválva", "off" }, { "Deactivated", "off" }, { "Devre dışı", "off" }, { "Gedeactiveerd", "off" },
-                { "Desativado", "off" }
-            };
+            // ACTIVATED States
+            AddMapping("Aktiviert", "on"); AddMapping("已激活", "on"); AddMapping("Ενεργοποιημένο", "on");
+            AddMapping("Aktiveeritud", "on"); AddMapping("Uključeno", "on"); AddMapping("Aktivizēts", "on");
+            AddMapping("Suaktyvinta", "on"); AddMapping("Activat", "on"); AddMapping("Attivato", "on");
+            AddMapping("Activado", "on"); AddMapping("Activé", "on"); AddMapping("Włączone", "on");
+            AddMapping("Aktivováno", "on"); AddMapping("Aktivovaný", "on"); AddMapping("Активировано", "on");
+            AddMapping("Aktiveret", "on"); AddMapping("Aktiválva", "on"); AddMapping("Activated", "on");
+            AddMapping("Etkinleştirildi", "on"); AddMapping("Geactiveerd", "on"); AddMapping("Ativado", "on");
+
+            // DEACTIVATED States
+            AddMapping("Deaktiviert", "off"); AddMapping("停用", "off"); AddMapping("Απενεργοποιημένο", "off");
+            AddMapping("Deaktiveeritud", "off"); AddMapping("Isključeno", "off"); AddMapping("Deaktivizēts", "off");
+            AddMapping("Išjungta", "off"); AddMapping("Dezactivat", "off"); AddMapping("Disattivato", "off");
+            AddMapping("Desactivado", "off"); AddMapping("Désactivé", "off"); AddMapping("Nieaktywne", "off");
+            AddMapping("Deaktivován", "off"); AddMapping("Deaktivovaný", "off"); AddMapping("Выключено", "off");
+            AddMapping("Deaktiveret", "off"); AddMapping("Deaktiválva", "off"); AddMapping("Deactivated", "off");
+            AddMapping("Devre dışı", "off"); AddMapping("Gedeactiveerd", "off"); AddMapping("Desativado", "off");
+
+            return mapping;
+        }
 
 
         public async Task PublishDiscoveryInfo(CancellationToken cancellationToken)
