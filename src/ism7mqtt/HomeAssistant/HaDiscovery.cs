@@ -241,6 +241,38 @@ namespace ism7mqtt.HomeAssistant
                         {
                             yield return ("state_class", "measurement");
                         }
+                        else if (numeric.UnitName == "kWh")
+                        {
+                            yield return ("state_class", "total_increasing");
+                            yield return ("device_class", "energy");
+                        }
+                        else if (numeric.UnitName == "W")
+                        {
+                            yield return ("state_class", "measurement");
+                            yield return ("device_class", "power");
+                        }
+                        else if (numeric.UnitName == "kW")
+                        {
+                            yield return ("state_class", "measurement");
+                            yield return ("device_class", "power");
+                        }
+                        else if (numeric.UnitName == "Hz")
+                        {
+                            yield return ("state_class", "measurement");
+                            yield return ("device_class", "frequency");
+                        }
+                        else if (numeric.UnitName == "l/min")
+                        {
+                            yield return ("state_class", "measurement");
+                        }
+                        else if (numeric.UnitName == "L/min")
+                        {
+                            yield return ("state_class", "measurement");
+                        }
+                        else if (numeric.UnitName == "U/min")
+                        {
+                            yield return ("state_class", "measurement");
+                        }
                     }
                     break;
                 case ListParameterDescriptor list:
