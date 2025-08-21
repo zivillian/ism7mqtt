@@ -101,9 +101,10 @@ namespace ism7mqtt
                     };
                     using (var mqttClient = new MqttFactory().CreateMqttClient())
                     {
+                        var clientId = ip.Replace(".", String.Empty);			
                         var mqttOptionBuilder = new MqttClientOptionsBuilder()
                             .WithTcpServer(mqttHost, mqttPort)
-                            .WithClientId($"Wolf_{ip.Replace(".", String.Empty)}");
+                            .WithClientId($"Wolf_{clientId}");
                         if (!String.IsNullOrEmpty(mqttUsername) || !String.IsNullOrEmpty(mqttPassword))
                         {
                             mqttOptionBuilder = mqttOptionBuilder.WithCredentials(mqttUsername, mqttPassword);
@@ -123,8 +124,8 @@ namespace ism7mqtt
                             }
                         };
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
-                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
+                        await mqttClient.SubscribeAsync($"Wolf/{clientId}/+/set");
+                        await mqttClient.SubscribeAsync($"Wolf/{clientId}/+/set/#");
                         var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip, localizer)
                         {
                             Interval = interval,

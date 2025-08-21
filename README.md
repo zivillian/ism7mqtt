@@ -51,7 +51,7 @@ You can also enable separate topics (`--separate`), which will report each value
 Each device on the bus (and present in the parameter.json) is reported via its own topic. The format is
 
 ```txt
-Wolf/<ism7 ip address>/<device type>_<device bus address>
+Wolf/<ism7 IP address without dots>/<device type>_<device bus address>
 ```
 
 For each property of type ListParameter (basically all comboboxes) nested values are reported - the original numerical value (`value`) and the german text representation (`text`).
@@ -66,7 +66,7 @@ Sending MQTT messages in order to set values involves using a general structure 
 
 Use this topic to send **JSON data**:
 ```txt
-Wolf/<ism7 ip address>/<device type>_<device bus address>/set
+Wolf/<ism7 IP address without dots>/<device type>_<device bus address>/set
 ```
 
 Use this topic to send **single values**:
@@ -78,7 +78,7 @@ Wolf/<ism7 ip address>/<device type>_<device bus address>/set/<property name>/..
 Goal: Switching heating mode on or off.
 
 
-Observing the MQTT output published via topic `Wolf/192.168.1.27/MK_BM-2_0x85` reveals the following structure:
+Observing the MQTT output published via topic `Wolf/192168127/MK_BM-2_0x85` reveals the following structure:
 
 ```json
 {
@@ -91,7 +91,7 @@ Observing the MQTT output published via topic `Wolf/192.168.1.27/MK_BM-2_0x85` r
     }
 }
 ```
-You can now pick either property **value** or **text** to set a new heating mode. To do so you publish the following JSON payload to topic ```Wolf/192.168.1.27/MK_BM-2_0x85/set```
+You can now pick either property **value** or **text** to set a new heating mode. To do so you publish the following JSON payload to topic ```Wolf/192168127/MK_BM-2_0x85/set```
 
 ```json
 {
@@ -118,10 +118,10 @@ or
 
 If done correctly ism7mqtt should greet you with the following messages (```-d``` debug enables additional xml output):
 ```txt
-received mqtt with topic 'Wolf/192.168.1.27/MK_BM-2_0x85/set' '{"Programmwahl":{"360051":{"text":"Auto"}}}'
+received mqtt with topic 'Wolf/192168127/MK_BM-2_0x85/set' '{"Programmwahl":{"360051":{"text":"Auto"}}}'
 > <?xml version="1.0" encoding="utf-16"?><tbreq xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" bn="11" gw="1" ae="true" ty="write"><iwr se="" ba="0x85" in="10100" dl="0x01" dh="0x00" /></tbreq>
 < ?<?xml version="1.0" encoding="utf-8"?><tbres bn="11" gw="" st="OK" ts="2024-04-19T22:09:22" emsg=""><iac se="0" ba="0x85" in="10100" dl="0x1" dh="0x0" st="OK"/></tbres>
-publishing mqtt with topic 'Wolf/192.168.1.27/MK_BM-2_0x85' '{"Programmwahl":{"360051":{"value":1,"text":"Auto"},"360058":1}}'
+publishing mqtt with topic 'Wolf/192168127/MK_BM-2_0x85' '{"Programmwahl":{"360051":{"value":1,"text":"Auto"},"360058":1}}'
 ```
 
 ### Publishing Single Values
@@ -129,12 +129,12 @@ For single value updates instead of JSON, publish directly to the corresponding 
 
 Append each part of a nested JSON property to the topic path:
 ```txt
-Wolf/<ism7 ip address>/<device type>_<device bus address>/set/<property name>/...
+Wolf/<ism7 IP address without dots>/<device type>_<device bus address>/set/<property name>/...
 ```
 Example topics to update single properties:
 ```txt
-Wolf/<ism7 ip address>/WWSystem_BM-2_0x35/set/Programmwahl/35012/value
-Wolf/<ism7 ip address>/WWSystem_BM-2_0x35/set/Programmwahl/35012/text
+Wolf/<ism7 IP address without dots>/WWSystem_BM-2_0x35/set/Programmwahl/35012/value
+Wolf/<ism7 IP address without dots>/WWSystem_BM-2_0x35/set/Programmwahl/35012/text
 ```
 
 ## Bugs / Missing Features
