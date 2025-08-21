@@ -168,8 +168,10 @@ namespace ism7mqtt
                 Name = name;
                 IP = ip;
 
+		var clientId = ip.Replace(".", String.Empty);
+
                 WriteAddress = writeBusAddress ?? $"0x{(Converter.FromHex(readBusAddress) - 5):X2}";
-                MqttTopic = $"Wolf/{ip}/{name}_{readBusAddress}";
+                MqttTopic = $"Wolf/{clientId}/{name}_{readBusAddress}";
 
                 _parameter = new List<RunningParameter>();
                 foreach (var descriptor in parameter)
