@@ -101,7 +101,7 @@ namespace ism7mqtt
                     };
                     using (var mqttClient = new MqttFactory().CreateMqttClient())
                     {
-			var clientId = ip.Replace(".", String.Empty);			
+                        var clientId = ip.Replace(".", String.Empty);			
                         var mqttOptionBuilder = new MqttClientOptionsBuilder()
                             .WithTcpServer(mqttHost, mqttPort)
                             .WithClientId($"Wolf_{clientId}");

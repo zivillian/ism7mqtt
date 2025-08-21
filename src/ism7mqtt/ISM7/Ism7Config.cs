@@ -168,7 +168,7 @@ namespace ism7mqtt
                 Name = name;
                 IP = ip;
 
-		var clientId = ip.Replace(".", String.Empty);
+                var clientId = ip.Replace(".", String.Empty);
 
                 WriteAddress = writeBusAddress ?? $"0x{(Converter.FromHex(readBusAddress) - 5):X2}";
                 MqttTopic = $"Wolf/{clientId}/{name}_{readBusAddress}";
