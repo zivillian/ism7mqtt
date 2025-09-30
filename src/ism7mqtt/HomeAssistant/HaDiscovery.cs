@@ -34,6 +34,56 @@ namespace ism7mqtt.HomeAssistant
             _localizer = localizer;
         }
 
+        private static readonly Dictionary<string, string> ExactStateMapping = CreateStateMapping();
+
+        private static Dictionary<string, string> CreateStateMapping()
+        {
+            var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            void AddMapping(string localized, string haState)
+            {
+                if (!mapping.ContainsKey(localized))
+                {
+                    mapping[localized] = haState;
+                }
+            }
+
+            // ON States
+            AddMapping("Ein", "on"); AddMapping("开启", "on"); AddMapping("ON", "on"); AddMapping("SEES", "on");
+            AddMapping("UKLJ.", "on"); AddMapping("IESLĒGT", "on"); AddMapping("ĮJ.", "on"); AddMapping("PORNIT", "on");
+            AddMapping("On", "on"); AddMapping("Zał.", "on"); AddMapping("Zap", "on"); AddMapping("ZAP", "on");
+            AddMapping("Вкл.", "on"); AddMapping("Til", "on"); AddMapping("Be", "on"); AddMapping("Açık", "on");
+            AddMapping("Aan", "on"); AddMapping("ligada", "on");
+
+            // OFF States
+            AddMapping("Aus", "off"); AddMapping("关闭", "off"); AddMapping("OFF", "off"); AddMapping("Välja", "off");
+            AddMapping("Isklj.", "off"); AddMapping("Izslēgts", "off"); AddMapping("Išj.", "off"); AddMapping("Oprit", "off");
+            AddMapping("Off", "off"); AddMapping("Wył", "off"); AddMapping("Vyp", "off"); AddMapping("VYP", "off");
+            AddMapping("Выкл.", "off"); AddMapping("Fra", "off"); AddMapping("Ki", "off"); AddMapping("Kapalı", "off");
+            AddMapping("Uit", "off"); AddMapping("Desl.", "off");
+
+            // ACTIVATED States
+            AddMapping("Aktiviert", "on"); AddMapping("已激活", "on"); AddMapping("Ενεργοποιημένο", "on");
+            AddMapping("Aktiveeritud", "on"); AddMapping("Uključeno", "on"); AddMapping("Aktivizēts", "on");
+            AddMapping("Suaktyvinta", "on"); AddMapping("Activat", "on"); AddMapping("Attivato", "on");
+            AddMapping("Activado", "on"); AddMapping("Activé", "on"); AddMapping("Włączone", "on");
+            AddMapping("Aktivováno", "on"); AddMapping("Aktivovaný", "on"); AddMapping("Активировано", "on");
+            AddMapping("Aktiveret", "on"); AddMapping("Aktiválva", "on"); AddMapping("Activated", "on");
+            AddMapping("Etkinleştirildi", "on"); AddMapping("Geactiveerd", "on"); AddMapping("Ativado", "on");
+
+            // DEACTIVATED States
+            AddMapping("Deaktiviert", "off"); AddMapping("停用", "off"); AddMapping("Απενεργοποιημένο", "off");
+            AddMapping("Deaktiveeritud", "off"); AddMapping("Isključeno", "off"); AddMapping("Deaktivizēts", "off");
+            AddMapping("Išjungta", "off"); AddMapping("Dezactivat", "off"); AddMapping("Disattivato", "off");
+            AddMapping("Desactivado", "off"); AddMapping("Désactivé", "off"); AddMapping("Nieaktywne", "off");
+            AddMapping("Deaktivován", "off"); AddMapping("Deaktivovaný", "off"); AddMapping("Выключено", "off");
+            AddMapping("Deaktiveret", "off"); AddMapping("Deaktiválva", "off"); AddMapping("Deactivated", "off");
+            AddMapping("Devre dışı", "off"); AddMapping("Gedeactiveerd", "off"); AddMapping("Desativado", "off");
+
+            return mapping;
+        }
+
+
         public async Task PublishDiscoveryInfo(CancellationToken cancellationToken)
         {
             if (EnableDebug)
@@ -276,23 +326,26 @@ namespace ism7mqtt.HomeAssistant
                     }
                     break;
                 case ListParameterDescriptor list:
+                // Define an exact mapping of localized state strings to HA states
                     if (list.IsBoolean)
                     {
-                        if (list.Options.Any(x => x.Value == "Ein"))
+                        foreach (var option in list.Options)
                         {
-                            yield return ("payload_on", "Ein");
-                        }
-                        if (list.Options.Any(x => x.Value == "Aktiviert"))
-                        {
-                            yield return ("payload_on", "Aktiviert");
-                        }
-                        if (list.Options.Any(x => x.Value == "Aus"))
-                        {
-                            yield return ("payload_off", "Aus");
-                        }
-                        if (list.Options.Any(x => x.Value == "Deaktiviert"))
-                        {
-                            yield return ("payload_off", "Deaktiviert");
+                            string localizedState = _localizer[option.Value] ?? option.Value;
+                            if (EnableDebug) Console.WriteLine($"🔎 Checking: Raw='{option.Value}', Localized='{localizedState}'");
+                            
+                            if (ExactStateMapping.TryGetValue(localizedState, out var haState))
+                            {
+                                if (EnableDebug) Console.WriteLine($"✅ Mapping found: '{localizedState}' -> HA '{haState}'");
+                                if (haState == "on")
+                                    yield return ("payload_on", localizedState); // Ensure HA gets Hungarian value
+                                else if (haState == "off")
+                                    yield return ("payload_off", localizedState);
+                            }
+                            else
+                            {
+                                if (EnableDebug) Console.WriteLine($"⚠️ Warning: No mapping found for '{localizedState}'");
+                            }
                         }
                     }
                     else
