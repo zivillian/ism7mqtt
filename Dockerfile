@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build-env
 WORKDIR /app
 
 COPY src/ism7ssl/ ./ism7ssl/
@@ -12,10 +12,10 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
     elif [ "$TARGETARCH" = "arm" ]; then \
     RID=linux-musl-arm ; \
     fi \
-    && dotnet publish -c Release -o out -r $RID --sc -nowarn:IL2026,IL2104 ism7mqtt/ism7mqtt.csproj \
-    && dotnet publish -c Release -o out -r $RID --sc -nowarn:IL2026,IL2104 ism7config/ism7config.csproj
+    && dotnet publish -c Release -o out -r $RID --sc ism7mqtt/ism7mqtt.csproj \
+    && dotnet publish -c Release -o out -r $RID --sc ism7config/ism7config.csproj
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENV \
