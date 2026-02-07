@@ -1,6 +1,6 @@
 ﻿using LuCon.Common.PortalModel;
-using LuCon.SocketServer.SocketServerBase;
 using Microsoft.Extensions.DependencyInjection;
+using Wolf.SocketServer.SocketServerBase;
 
 namespace ism7config;
 
