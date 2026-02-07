@@ -21,7 +21,7 @@ public class Ism7SslStream : Stream
         _protocol = new TlsClientProtocol();
     }
 
-    public static X509Certificate2 Certificate => new(Resources.client);
+    public static X509Certificate2 Certificate => X509CertificateLoader.LoadPkcs12(Resources.client, null);
 
     public async Task AuthenticateAsClientAsync(CancellationToken cancellationToken)
     {
