@@ -18,6 +18,8 @@ namespace ism7mqtt.ISM7.Xml
 
         private ushort? _close;
 
+        public override int InfoReadCount => 2;
+
         public override IEnumerable<InfoRead> InfoReads => new[]
         {
             new InfoRead { InfoNumber = TelegramNrOpen, ServiceNumber = ServiceReadNumber ?? -1 },

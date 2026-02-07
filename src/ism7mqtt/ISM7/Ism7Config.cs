@@ -18,6 +18,7 @@ namespace ism7mqtt
         private readonly IReadOnlyList<ConverterTemplateBase> _converterTemplates;
         private readonly IReadOnlyList<ParameterDescriptor> _parameterTemplates;
         private readonly IDictionary<byte, List<RunningDevice>> _devices;
+        private readonly Dictionary<string, List<InfoRead>> _bundles = new();
         private readonly ConfigRoot _config;
 
         public Ism7Config(string filename, Ism7Localizer localizer)
@@ -89,10 +90,39 @@ namespace ism7mqtt
             }
         }
 
-        public IEnumerable<InfoRead> GetInfoReadForDevice(string ba)
+        public IEnumerable<(string, List<InfoRead>)> GetBundlesForDevice(string ba)
         {
             var devices = _devices[Converter.FromHex(ba)];
-            return devices.SelectMany(x => x.InfoReads).DistinctBy(x => new { x.InfoNumber, x.ServiceNumber });
+            var bundles = new List<List<InfoRead>>();
+            //https://github.com/zivillian/ism7mqtt/issues/177#issuecomment-3852657064
+            //split into bundles of 20 info reads, but keep all info reads of a parameter in one bundle
+            var parameters = devices.SelectMany(x => x.Parameters)
+                .Where(x => x.InfoReadCount > 0)
+                .OrderByDescending(x => x.InfoReadCount);
+            foreach (var parameter in parameters)
+            {
+                var bundle = bundles.FirstOrDefault(x => x.Count <= 20 - parameter.InfoReadCount);
+                if (bundle is null)
+                {
+                    bundles.Add(parameter.InfoReads.ToList());
+                }
+                else
+                {
+                    bundle.AddRange(parameter.InfoReads);
+                }
+            }
+
+            foreach (var bundle in bundles)
+            {
+                var bundleId = (_bundles.Count + 1).ToString();
+                _bundles.Add(bundleId, bundle);
+                yield return (bundleId, bundle);
+            }
+        }
+
+        public List<InfoRead> GetBundle(string bundleId)
+        {
+            return _bundles[bundleId];
         }
 
         public bool ProcessData(IEnumerable<InfonumberReadResp> data)
@@ -331,6 +361,8 @@ namespace ism7mqtt
             public bool IsWritable => _descriptor.IsWritable;
 
             public bool HasValue => _converter.HasValue;
+
+            public int InfoReadCount => _converter.InfoReadCount;
 
             public IEnumerable<InfoRead> InfoReads => _converter.InfoReads;
 

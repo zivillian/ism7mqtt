@@ -14,6 +14,8 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("IntervalSec")]
         public int IntervalSec { get; set; }
 
+        public override int InfoReadCount => 0;
+
         public override IEnumerable<InfoRead> InfoReads => Array.Empty<InfoRead>();
 
         public override bool CanProcess(ushort telegram)

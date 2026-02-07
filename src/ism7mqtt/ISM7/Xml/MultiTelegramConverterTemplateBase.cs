@@ -11,6 +11,8 @@ namespace ism7mqtt.ISM7.Xml
         [XmlArrayItem("unsignedShort")]
         public List<ushort> TelegramNumbers { get; set; }
 
+        public override int InfoReadCount => TelegramNumbers.Count;
+
         public override IEnumerable<InfoRead> InfoReads => TelegramNumbers.Select(x =>
             new InfoRead
             {

@@ -216,10 +216,10 @@ namespace ism7mqtt
             return s.ToString();
         }
 
-        private async Task SubscribeAsync(string busAddress, CancellationToken cancellationToken)
+        private async Task SubscribeAsync(string busAddress, string bundleId, CancellationToken cancellationToken)
         {
-            var infoReads = _config.GetInfoReadForDevice(busAddress).ToList();
-            var bundleId = NextBundleId();
+            var infoReads = _config.GetBundle(bundleId);
+            bundleId = NextBundleId();
             _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, OnPushResponseAsync);
             foreach (var infoRead in infoReads)
             {
@@ -260,29 +260,27 @@ namespace ism7mqtt
         {
             foreach (var busAddress in _config.AddAllDevices(_host))
             {
-                var infoReads = _config.GetInfoReadForDevice(busAddress).ToList();
-                var bundleId = NextBundleId();
-                _dispatcher.SubscribeOnce(
-                    x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId,
-                    OnInitialValuesAsync);
-                if (infoReads.Count == 0)
+                var bundles = _config.GetBundlesForDevice(busAddress);
+                foreach (var (bundleId, infoReads) in bundles)
                 {
-                    //device without any valid parameter
-                    continue;
+                    NextBundleId();
+                    _dispatcher.SubscribeOnce(
+                        x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == bundleId,
+                        OnInitialValuesAsync);
+                    foreach (var infoRead in infoReads)
+                    {
+                        infoRead.BusAddress = busAddress;
+                        infoRead.Seq = NextSequenceId();
+                    }
+                    await SendAsync(new TelegramBundleReq
+                    {
+                        AbortOnError = false,
+                        BundleId = bundleId,
+                        GatewayId = "1",
+                        TelegramBundleType = TelegramBundleType.pull,
+                        InfoReadTelegrams = infoReads
+                    }, cancellationToken);
                 }
-                foreach (var infoRead in infoReads)
-                {
-                    infoRead.BusAddress = busAddress;
-                    infoRead.Seq = NextSequenceId();
-                }
-                await SendAsync(new TelegramBundleReq
-                {
-                    AbortOnError = false,
-                    BundleId = bundleId,
-                    GatewayId = "1",
-                    TelegramBundleType = TelegramBundleType.pull,
-                    InfoReadTelegrams = infoReads
-                }, cancellationToken);
             }
             if (OnInitializationFinishedAsync is not null)
             {
@@ -304,7 +302,7 @@ namespace ism7mqtt
                 {
                     await _messageHandler(_config, cancellationToken);
                     var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
-                    await SubscribeAsync(busAddress, cancellationToken);
+                    await SubscribeAsync(busAddress, resp.BundleId, cancellationToken);
                 }
             }
         }

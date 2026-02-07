@@ -19,6 +19,8 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("ServiceWriteNumber")]
         public int ServiceWriteNumber { get; set; }
 
+        public abstract int InfoReadCount { get; }
+
         public abstract IEnumerable<InfoRead> InfoReads { get; }
 
         public abstract void AddTelegram(ushort telegram, byte low, byte high);
