@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using LuCon.Common.ConfigService;
-using LuCon.SocketServer.SocketServerBase;
 using Microsoft.Extensions.Logging;
 using Wolf.DRIVR.Model;
 using Wolf.SocketServer.ISMInterface;
+using Wolf.SocketServer.SocketServerBase;
 
 namespace ism7config;
 
@@ -17,5 +17,5 @@ public class BetterParameterStore : ParameterStore
         _parametersByIdInfo = typeof(ParameterStore).GetField("_parametersById", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 
-    public ConcurrentDictionary<long, LuCon.SocketServer.SocketServerBase.Parameter> Parameters => (ConcurrentDictionary<long, LuCon.SocketServer.SocketServerBase.Parameter>)_parametersByIdInfo.GetValue(this);
+    public ConcurrentDictionary<long, Wolf.SocketServer.SocketServerBase.Parameter> Parameters => (ConcurrentDictionary<long, Wolf.SocketServer.SocketServerBase.Parameter>)_parametersByIdInfo.GetValue(this);
 }

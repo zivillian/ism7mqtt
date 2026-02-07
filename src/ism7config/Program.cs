@@ -7,13 +7,13 @@ using LuCon.Common.PortalModel;
 using LuCon.LocalConnection;
 using LuCon.Mobile.Data;
 using LuCon.SocketServer.GatewayInterface;
-using LuCon.SocketServer.SocketServerBase;
 using LuCon.WebPortal.StandaloneService;
 using Microsoft.Extensions.Logging;
 using Mono.Options;
 using NLog.Extensions.Logging;
 using Wolf.Common.Busconfig;
 using Wolf.SocketServer.ISMInterface;
+using Wolf.SocketServer.SocketServerBase;
 using LogLevel = NLog.LogLevel;
 
 namespace ism7config;
