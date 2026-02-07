@@ -19,6 +19,10 @@ class Ism7TlsClient : DefaultTlsClient
         CipherSuite.TLS_RSA_EXPORT_WITH_RC4_40_MD5,
         CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256,
         CipherSuite.TLS_RSA_WITH_NULL_MD5,
+        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
+        CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
     };
 
     public Ism7TlsClient() : base(new Ism7TlsCrypto())
