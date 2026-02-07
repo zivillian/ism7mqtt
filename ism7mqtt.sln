@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7proxy", "src\ism7proxy\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7config", "src\ism7config\ism7config.csproj", "{D5848B3A-B1BB-4A46-BF78-B994343B67C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ism7ssl", "src\ism7ssl\ism7ssl.csproj", "{EF9C061A-CD3E-477A-BC3D-E22BBAD8DA6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7ssl", "src\ism7ssl\ism7ssl.csproj", "{EF9C061A-CD3E-477A-BC3D-E22BBAD8DA6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
