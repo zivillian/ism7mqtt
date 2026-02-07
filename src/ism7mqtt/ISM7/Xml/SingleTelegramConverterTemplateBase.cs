@@ -9,6 +9,8 @@ namespace ism7mqtt.ISM7.Xml
         [XmlElement("TelegramNr")]
         public ushort? TelegramNr { get; set; }
 
+        public override int InfoReadCount => 1;
+
         public override IEnumerable<InfoRead> InfoReads
         {
             get

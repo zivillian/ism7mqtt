@@ -20,6 +20,8 @@ namespace ism7mqtt.ISM7.Xml
 
         private bool _hasValue = false;
 
+        public override int InfoReadCount => 2;
+
         public override IEnumerable<InfoRead> InfoReads => new[]
         {
             new InfoRead { InfoNumber = TelegramNrHigh, ServiceNumber = ServiceReadNumber ?? -1 },
