@@ -164,9 +164,29 @@ namespace ism7mqtt
             try
             {
                 var header = new byte[6];
+                var tasks = new List<Task>();
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    var result = await source.ReadAsync(cancellationToken);
+                    var readValueTask = source.ReadAsync(cancellationToken);
+                    ReadResult result;
+                    if (readValueTask.IsCompleted)
+                    {
+                        result = await readValueTask;
+                    }
+                    else
+                    {
+                        var readTask = readValueTask.AsTask();
+                        tasks.Add(readTask);
+                        while (true)
+                        {
+                            var done = await Task.WhenAny(tasks);
+                            tasks.Remove(done);
+                            if (done == readTask) break;
+                        }
+
+                        result = await readTask;
+                    }
+
                     var buffer = result.Buffer;
                     while (buffer.Length >= 6)
                     {
@@ -188,7 +208,7 @@ namespace ism7mqtt
                         else
                         {
                             var response = Deserialize(type, new ReadOnlySequenceStream(xmlBuffer));
-                            await _dispatcher.DispatchAsync(response, cancellationToken);
+                            tasks.Add(_dispatcher.DispatchAsync(response, cancellationToken));
                         }
                         buffer = buffer.Slice(xmlBuffer.End);
                         
