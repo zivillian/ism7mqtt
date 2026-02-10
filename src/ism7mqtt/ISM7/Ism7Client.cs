@@ -258,6 +258,7 @@ namespace ism7mqtt
 
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
+            var semaphore = new SemaphoreSlim(1, 1);
             foreach (var busAddress in _config.AddAllDevices(_host))
             {
                 var bundles = _config.GetBundlesForDevice(busAddress);
@@ -266,12 +267,18 @@ namespace ism7mqtt
                     NextBundleId();
                     _dispatcher.SubscribeOnce(
                         x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == bundleId,
-                        OnInitialValuesAsync);
+                        (r, c) =>
+                        {
+                            semaphore.Release();
+                            return OnInitialValuesAsync(r, c);
+                        });
                     foreach (var infoRead in infoReads)
                     {
                         infoRead.BusAddress = busAddress;
                         infoRead.Seq = NextSequenceId();
                     }
+
+                    await semaphore.WaitAsync(cancellationToken);
                     await SendAsync(new TelegramBundleReq
                     {
                         AbortOnError = false,
