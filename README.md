@@ -26,6 +26,15 @@ If you want to run this via docker, use:
 docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> zivillian/ism7mqtt:latest
 ```
 
+Possible environmental variables:
+* ISM7_MQTTHOST
+* ISM7_MQTTUSERNAME
+* ISM7_MQTTPASSWORD
+* ISM7_IP
+* ISM7_PASSWORD
+* ISM7_DISABLEJSON
+* ISM7_SEPARATE
+
 ### HomeAssistant
 
 There is a HomeAssistant integration available at [b3nn0/hassio-addon-ism7mqtt](https://github.com/b3nn0/hassio-addon-ism7mqtt).
