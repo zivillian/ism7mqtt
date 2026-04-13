@@ -9,6 +9,7 @@ LaunchSettings.json
 
 .vs/
 .vscode
+.idea/
 Nuget/
 packages/
 
