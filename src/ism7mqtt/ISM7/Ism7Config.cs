@@ -485,10 +485,6 @@ namespace ism7mqtt
 
             public KeyValuePair<string, JsonNode> GetJsonValue()
             {
-                if (!_converter.HasValue)
-                {
-                    return new KeyValuePair<string, JsonNode>(Name, null);
-                }
                 JsonNode value = _converter.GetValue();
                 if (_descriptor is ListParameterDescriptor listDescriptor)
                 {
@@ -518,10 +514,6 @@ namespace ism7mqtt
 
             public IEnumerable<MqttMessage> GetSingleValues()
             {
-                if (!_converter.HasValue)
-                {
-                    return Array.Empty<MqttMessage>();
-                }
                 var json = _converter.GetValue();
                 var text = JsonSerializer.Serialize(json, JsonContext.Default.JsonValue);
                 var result = new MqttMessage(MqttName, text);
