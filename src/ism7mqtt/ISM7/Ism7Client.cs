@@ -24,7 +24,8 @@ namespace ism7mqtt
         private readonly string _host;
         private readonly ConcurrentDictionary<Type, XmlSerializer> _serializers = new ConcurrentDictionary<Type, XmlSerializer>();
         private readonly Ism7Config _config;
-        private ResponseDispatcher _dispatcher = new ResponseDispatcher();
+        private readonly Pipe _pipe;
+        private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
         private int _nextBundleId = 0;
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
@@ -41,67 +42,18 @@ namespace ism7mqtt
             _messageHandler = messageHandler;
             _host = host;
             _config = new Ism7Config(parameterPath, localizer);
+            _pipe = new Pipe();
         }
 
         public async Task RunAsync(string password, CancellationToken cancellationToken)
         {
-            var retryDelay = TimeSpan.FromSeconds(1);
-            var maxRetryDelay = TimeSpan.FromSeconds(10);
-            while (!cancellationToken.IsCancellationRequested)
+            using (_sslStream = await ConnectAsync(cancellationToken))
             {
-                Task fillPipeTask = Task.CompletedTask;
-                Task readPipeTask = Task.CompletedTask;
-                Task keepAliveTask = Task.CompletedTask;
-                using var attemptCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                try
-                {
-                    _dispatcher = new ResponseDispatcher();
-                    _lastKeepAlive = 0;
-                    _nextBundleId = 0;
-                    _nextSequenceId = 1;
-                    using (_sslStream = await ConnectAsync(attemptCts.Token))
-                    {
-                        var pipe = new Pipe();
-                        fillPipeTask = FillPipeAsync(pipe.Writer, attemptCts.Token);
-                        readPipeTask = ReadPipeAsync(pipe.Reader, attemptCts.Token);
-                        _ = Task.WhenAny(fillPipeTask, readPipeTask)
-                            .ContinueWith(_ => attemptCts.Cancel(), TaskScheduler.Default);
-                        await AuthenticateAsync(password, attemptCts.Token);
-                        keepAliveTask = KeepAliveAsync(attemptCts.Token);
-                        await Task.WhenAny(fillPipeTask, readPipeTask, keepAliveTask);
-                    }
-                }
-                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                {
-                    throw;
-                }
-                catch (Exception ex) when (ex is SocketException || ex is IOException)
-                {
-                    Console.WriteLine($"connection lost ({ex.GetType().Name}): {ex.Message}");
-                }
-                finally
-                {
-                    attemptCts.Cancel();
-                    try
-                    {
-                        await Task.WhenAll(fillPipeTask, readPipeTask, keepAliveTask);
-                    }
-                    catch
-                    {
-                        // Swallow errors from background tasks during shutdown.
-                    }
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                Console.WriteLine($"reconnecting in {retryDelay.TotalSeconds:0}s...");
-                await Task.Delay(retryDelay, cancellationToken);
-                retryDelay = retryDelay < maxRetryDelay
-                    ? TimeSpan.FromSeconds(Math.Min(maxRetryDelay.TotalSeconds, retryDelay.TotalSeconds * 2))
-                    : maxRetryDelay;
+                var fillPipeTask = FillPipeAsync(_pipe.Writer, cancellationToken);
+                var readPipeTask = ReadPipeAsync(_pipe.Reader, cancellationToken);
+                await AuthenticateAsync(password, cancellationToken);
+                var keepAlive = KeepAliveAsync(cancellationToken);
+                await Task.WhenAny(fillPipeTask, readPipeTask, keepAlive);
             }
         }
 
@@ -202,11 +154,6 @@ namespace ism7mqtt
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested && ex is OperationCanceledException)
-                {
-                    await target.CompleteAsync();
-                    return;
-                }
                 Console.WriteLine(ex);
                 await target.CompleteAsync(ex);
             }
@@ -276,11 +223,6 @@ namespace ism7mqtt
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested && ex is OperationCanceledException)
-                {
-                    await source.CompleteAsync();
-                    return;
-                }
                 Console.WriteLine(ex);
                 await source.CompleteAsync(ex);
             }
@@ -343,9 +285,13 @@ namespace ism7mqtt
                 foreach (var (bundleId, infoReads) in bundles)
                 {
                     NextBundleId();
-                    var responseTask = WaitForResponseAsync(
+                    _dispatcher.SubscribeOnce(
                         x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == bundleId,
-                        cancellationToken);
+                        (r, c) =>
+                        {
+                            semaphore.Release();
+                            return OnInitialValuesAsync(r, c);
+                        });
                     foreach (var infoRead in infoReads)
                     {
                         infoRead.BusAddress = busAddress;
@@ -361,8 +307,6 @@ namespace ism7mqtt
                         TelegramBundleType = TelegramBundleType.pull,
                         InfoReadTelegrams = infoReads
                     }, cancellationToken);
-                    var response = (TelegramBundleResp) await responseTask;
-                    await OnInitialValuesAsync(response, cancellationToken);
                 }
             }
             if (OnInitializationFinishedAsync is not null)
@@ -390,26 +334,19 @@ namespace ism7mqtt
             }
         }
 
-        private async Task AuthenticateAsync(string password, CancellationToken cancellationToken)
+        private ValueTask AuthenticateAsync(string password, CancellationToken cancellationToken)
         {
-            var responseTask = WaitForResponseAsync(x => x.MessageType == PayloadType.DirectLogonResp, cancellationToken);
-            await SendAsync(new LoginReq {Password = password}, cancellationToken);
-            var resp = (LoginResp) await responseTask;
-            if (resp.State != LoginState.ok)
-                throw new InvalidDataException("invalid login state");
-            await LoadInitialValuesAsync(cancellationToken);
+            _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.DirectLogonResp,
+                OnAuthenticateAsync);
+            return SendAsync(new LoginReq {Password = password}, cancellationToken);
         }
 
-        private async Task<IResponse> WaitForResponseAsync(Predicate<IResponse> predicate, CancellationToken cancellationToken)
+        private Task OnAuthenticateAsync(IResponse response, CancellationToken cancellationToken)
         {
-            var tcs = new TaskCompletionSource<IResponse>(TaskCreationOptions.RunContinuationsAsynchronously);
-            using var registration = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
-            _dispatcher.SubscribeOnce(predicate, (response, ct) =>
-            {
-                tcs.TrySetResult(response);
-                return Task.CompletedTask;
-            });
-            return await tcs.Task;
+            var resp = (LoginResp)response;
+            if (resp.State != LoginState.ok)
+                throw new InvalidDataException("invalid login state");
+            return LoadInitialValuesAsync(cancellationToken);
         }
 
         private async Task KeepAliveAsync(CancellationToken cancellationToken)
