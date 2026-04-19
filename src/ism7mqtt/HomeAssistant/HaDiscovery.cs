@@ -111,7 +111,7 @@ namespace ism7mqtt.HomeAssistant
                 }
 
                 message.Add("name", _localizer[descriptor.Name]);
-                message.Add("default_entity_id", uniqueId);
+                message.Add("default_entity_id", $"{(type ?? "unknown")}.{uniqueId}");
 
                 foreach (var (key, value) in GetDiscoveryProperties(descriptor))
                 {
