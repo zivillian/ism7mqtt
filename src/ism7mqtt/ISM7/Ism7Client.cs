@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -61,8 +62,29 @@ namespace ism7mqtt
         {
             var tcp = new TcpClient();
             await tcp.ConnectAsync(_host, _config.TcpPort, cancellationToken);
-            var ssl = new Ism7SslStream(tcp.Client);
-            await ssl.AuthenticateAsClientAsync(cancellationToken);
+            var certificate = Ism7SslStream.Certificate;
+            var ssl = new SslStream(tcp.GetStream(), false, (a, b, c, d) => true);
+
+            var sslOptions = new SslClientAuthenticationOptions
+            {
+                TargetHost = "ism7.server",
+                ClientCertificates = new X509Certificate2Collection(certificate),
+            };
+            if (!OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(new[]
+                    {
+                        TlsCipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256
+                    });
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    //older linux or mac https://github.com/dotnet/runtime/issues/33649
+                }
+            }
+            await ssl.AuthenticateAsClientAsync(sslOptions, cancellationToken);
             return ssl;
         }
 
