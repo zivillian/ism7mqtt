@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using ism7mqtt.ISM7.Config;
 using ism7mqtt.ISM7.Protocol;
 using ism7mqtt.ISM7.Xml;
+using ism7mqtt.ISM7;
 
 namespace ism7mqtt
 {
@@ -114,7 +115,7 @@ namespace ism7mqtt
 
             foreach (var bundle in bundles)
             {
-                var bundleId = (_bundles.Count + 1).ToString();
+                var bundleId = IdGenerator.GetNextBundleIdString();
                 _bundles.Add(bundleId, bundle);
                 yield return (bundleId, bundle);
             }

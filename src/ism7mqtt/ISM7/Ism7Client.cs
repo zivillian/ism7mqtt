@@ -7,12 +7,12 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ism7mqtt.ISM7;
 using ism7mqtt.ISM7.Protocol;
 using ism7ssl;
 
@@ -26,10 +26,8 @@ namespace ism7mqtt
         private readonly Ism7Config _config;
         private readonly Pipe _pipe;
         private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
-        private int _nextBundleId = 0;
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
-        private int _nextSequenceId = 1;
 
         public int Interval { get; set; }
 
@@ -180,7 +178,11 @@ namespace ism7mqtt
                         while (true)
                         {
                             var done = await Task.WhenAny(tasks);
-                            tasks.Remove(done);
+                            tasks.Remove(done);                          
+                            if (done.IsFaulted)
+                            {
+                                Console.WriteLine(done.Exception?.InnerException ?? done.Exception);
+                            }
                             if (done == readTask) break;
                         }
 
@@ -284,14 +286,21 @@ namespace ism7mqtt
                 var bundles = _config.GetBundlesForDevice(busAddress);
                 foreach (var (bundleId, infoReads) in bundles)
                 {
-                    NextBundleId();
                     _dispatcher.SubscribeOnce(
                         x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == bundleId,
-                        (r, c) =>
+                        async (r, c) =>
                         {
-                            semaphore.Release();
-                            return OnInitialValuesAsync(r, c);
-                        });
+                            try
+                            {
+                                await OnInitialValuesAsync(r, c);
+                            }
+                            finally
+                            {
+                                semaphore.Release();
+                            }
+                        }
+                    );
+                    
                     foreach (var infoRead in infoReads)
                     {
                         infoRead.BusAddress = busAddress;
@@ -382,15 +391,14 @@ namespace ism7mqtt
             return _sslStream.WriteAsync(buffer, cancellationToken);
         }
 
-        private string NextBundleId()
+        private static string NextBundleId()
         {
-            var id = Interlocked.Increment(ref _nextBundleId);
-            return id.ToString();
+            return IdGenerator.GetNextBundleIdString();
         }
 
-        private string NextSequenceId()
+        private static string NextSequenceId()
         {
-            var id = Interlocked.Increment(ref _nextSequenceId);
+            var id = IdGenerator.GetNextSequenceId();
             return $"A;{id}";
         }
 
