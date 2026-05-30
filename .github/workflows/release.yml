@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish ism7mqtt win-x64
+      run: dotnet publish -c release -r win-x64 --sc src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7mqtt linux-x64
+      run: dotnet publish -c release -r linux-x64 --sc src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7mqtt linux-arm
+      run: dotnet publish -c release -r linux-arm --sc src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7mqtt linux-arm64
+      run: dotnet publish -c release -r linux-arm64 --sc src/ism7mqtt/ism7mqtt.csproj
+    - name: Publish ism7config win-x64
+      run: dotnet publish -c release -r win-x64 --sc src/ism7config/ism7config.csproj
+    - name: Publish ism7config linux-x64
+      run: dotnet publish -c release -r linux-x64 --sc src/ism7config/ism7config.csproj
+    - name: Publish ism7config linux-arm
+      run: dotnet publish -c release -r linux-arm --sc src/ism7config/ism7config.csproj
+    - name: Publish ism7config linux-arm64
+      run: dotnet publish -c release -r linux-arm64 --sc src/ism7config/ism7config.csproj
+    - name: Publish ism7proxy win-x64
+      run: dotnet publish -c release -r win-x64 --sc src/ism7proxy/ism7proxy.csproj
+    - name: Publish ism7proxy linux-x64
+      run: dotnet publish -c release -r linux-x64 --sc src/ism7proxy/ism7proxy.csproj
+    - name: Publish ism7proxy linux-arm
+      run: dotnet publish -c release -r linux-arm --sc src/ism7proxy/ism7proxy.csproj
+    - name: Publish ism7proxy linux-arm64
+      run: dotnet publish -c release -r linux-arm64 --sc src/ism7proxy/ism7proxy.csproj
+    - name: Create zip archives
+      run: |
+        (cd src/ism7mqtt/bin/release/net10.0/win-x64/publish    && zip -r $GITHUB_WORKSPACE/ism7mqtt-win-x64.zip .)
+        (cd src/ism7mqtt/bin/release/net10.0/linux-x64/publish   && zip -r $GITHUB_WORKSPACE/ism7mqtt-linux-x64.zip .)
+        (cd src/ism7mqtt/bin/release/net10.0/linux-arm/publish   && zip -r $GITHUB_WORKSPACE/ism7mqtt-linux-arm.zip .)
+        (cd src/ism7mqtt/bin/release/net10.0/linux-arm64/publish && zip -r $GITHUB_WORKSPACE/ism7mqtt-linux-arm64.zip .)
+        (cd src/ism7config/bin/release/net10.0/win-x64/publish    && zip -r $GITHUB_WORKSPACE/ism7config-win-x64.zip .)
+        (cd src/ism7config/bin/release/net10.0/linux-x64/publish   && zip -r $GITHUB_WORKSPACE/ism7config-linux-x64.zip .)
+        (cd src/ism7config/bin/release/net10.0/linux-arm/publish   && zip -r $GITHUB_WORKSPACE/ism7config-linux-arm.zip .)
+        (cd src/ism7config/bin/release/net10.0/linux-arm64/publish && zip -r $GITHUB_WORKSPACE/ism7config-linux-arm64.zip .)
+        (cd src/ism7proxy/bin/release/net10.0/win-x64/publish    && zip -r $GITHUB_WORKSPACE/ism7proxy-win-x64.zip .)
+        (cd src/ism7proxy/bin/release/net10.0/linux-x64/publish   && zip -r $GITHUB_WORKSPACE/ism7proxy-linux-x64.zip .)
+        (cd src/ism7proxy/bin/release/net10.0/linux-arm/publish   && zip -r $GITHUB_WORKSPACE/ism7proxy-linux-arm.zip .)
+        (cd src/ism7proxy/bin/release/net10.0/linux-arm64/publish && zip -r $GITHUB_WORKSPACE/ism7proxy-linux-arm64.zip .)
+    - name: Create GitHub Release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release create ${{ github.ref_name }} \
+          ism7mqtt-win-x64.zip ism7mqtt-linux-x64.zip ism7mqtt-linux-arm.zip ism7mqtt-linux-arm64.zip \
+          ism7config-win-x64.zip ism7config-linux-x64.zip ism7config-linux-arm.zip ism7config-linux-arm64.zip \
+          ism7proxy-win-x64.zip ism7proxy-linux-x64.zip ism7proxy-linux-arm.zip ism7proxy-linux-arm64.zip \
+          --generate-notes
