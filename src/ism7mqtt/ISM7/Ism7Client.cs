@@ -281,6 +281,9 @@ namespace ism7mqtt
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
             var semaphore = new SemaphoreSlim(1, 1);
+            var pendingSubscriptions = new List<(string busAddress, string bundleId)>();
+
+            // Phase 1: pull all bundles, one at a time as FW5.1+ has problems with too many pull requests in parallel
             foreach (var busAddress in _config.AddAllDevices(_host))
             {
                 var bundles = _config.GetBundlesForDevice(busAddress);
@@ -292,7 +295,7 @@ namespace ism7mqtt
                         {
                             try
                             {
-                                await OnInitialValuesAsync(r, c);
+                                await OnInitialValuesAsync(r, pendingSubscriptions, c);
                             }
                             finally
                             {
@@ -300,7 +303,7 @@ namespace ism7mqtt
                             }
                         }
                     );
-                    
+
                     foreach (var infoRead in infoReads)
                     {
                         infoRead.BusAddress = busAddress;
@@ -318,19 +321,31 @@ namespace ism7mqtt
                     }, cancellationToken);
                 }
             }
+
+            // Wait for the last pull response to be fully processed before subscribing.
+            // Older ISM7 hardware (HW 1.0) corrupts responses when pull and push subscribe requests overlap. So we are deferring all push subscribes until here.
+            // This restores the startup order that was present until incl. v0.0.19
+            await semaphore.WaitAsync(cancellationToken);
+
+            // Phase 2: send push subscribes after all pulls are complete
+            foreach (var (busAddress, bundleId) in pendingSubscriptions)
+            {
+                await SubscribeAsync(busAddress, bundleId, cancellationToken);
+            }
+
             if (OnInitializationFinishedAsync is not null)
             {
                 await OnInitializationFinishedAsync(_config, cancellationToken);
             }
         }
 
-        private async Task OnInitialValuesAsync(IResponse response, CancellationToken cancellationToken)
+        private async Task OnInitialValuesAsync(IResponse response, List<(string busAddress, string bundleId)> pendingSubscriptions, CancellationToken cancellationToken)
         {
             var resp = (TelegramBundleResp) response;
             if (!String.IsNullOrEmpty(resp.Errormsg))
                 throw new InvalidDataException(resp.Errormsg);
             if (resp.State != TelegrResponseState.OK)
-                throw new InvalidDataException($"unexpected state '{resp.State}");
+                throw new InvalidDataException($"unexpected state '{resp.State}'");
             if (resp.Telegrams.Any())
             {
                 var hasDatapoints = _config.ProcessData(resp.Telegrams.Where(x => x.State == TelegrResponseState.OK));
@@ -338,7 +353,7 @@ namespace ism7mqtt
                 {
                     await _messageHandler(_config, cancellationToken);
                     var busAddress = resp.Telegrams.Select(x => x.BusAddress).First();
-                    await SubscribeAsync(busAddress, resp.BundleId, cancellationToken);
+                    pendingSubscriptions.Add((busAddress, resp.BundleId));
                 }
             }
         }
