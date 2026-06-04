@@ -180,9 +180,7 @@ namespace ism7mqtt
                             var done = await Task.WhenAny(tasks);
                             tasks.Remove(done);                          
                             if (done.IsFaulted)
-                            {
-                                Console.WriteLine(done.Exception?.InnerException ?? done.Exception);
-                            }
+                                await done;
                             if (done == readTask) break;
                         }
 
