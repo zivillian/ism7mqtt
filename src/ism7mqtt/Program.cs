@@ -28,7 +28,7 @@ namespace ism7mqtt
             var version = typeof(Program).Assembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 ?.InformationalVersion ?? "unknown";
-            Console.WriteLine($"ism7mqtt {version}");
+            Console.WriteLine($"Starting ism7mqtt version {version}");
 
             bool showHelp = false;
             bool enableDebug = GetEnvBool("ISM7_DEBUG");
