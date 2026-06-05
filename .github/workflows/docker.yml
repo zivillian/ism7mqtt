@@ -18,7 +18,7 @@ jobs:
       id: version
       run: |
         dotnet tool install --global minver-cli --version 6.0.0
-        echo "version=$(minver)" >> $GITHUB_OUTPUT
+        echo "version=$(minver --tag-prefix v --tag-type lightweight)" >> $GITHUB_OUTPUT
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
