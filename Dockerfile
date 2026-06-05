@@ -6,6 +6,7 @@ COPY src/ism7mqtt/ ./ism7mqtt/
 COPY src/ism7config/ ./ism7config/
 ARG TARGETARCH
 ARG VERSION=0.0.0-unknown
+ENV MINVERVERSIONOVERRIDE=${VERSION}
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
     RID=linux-musl-x64 ; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
@@ -13,7 +14,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
     elif [ "$TARGETARCH" = "arm" ]; then \
     RID=linux-musl-arm ; \
     fi \
-    && dotnet publish -c Release -o out -r $RID --sc -p:MinVerVersionOverride=$VERSION ism7mqtt/ism7mqtt.csproj \
+    && dotnet publish -c Release -o out -r $RID --sc ism7mqtt/ism7mqtt.csproj \
     && dotnet publish -c Release -o out -r $RID --sc ism7config/ism7config.csproj
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
