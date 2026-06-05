@@ -17,7 +17,7 @@ jobs:
       id: version
       run: |
         dotnet tool install --global minver-cli --version 6.0.0
-        VERSION=$(minver --tag-prefix v --tag-type lightweight)
+        VERSION=$(minver --tag-prefix v)
         echo "Computed version: $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 

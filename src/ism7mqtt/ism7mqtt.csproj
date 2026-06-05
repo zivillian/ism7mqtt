@@ -5,7 +5,6 @@
     <TargetFramework>net10.0</TargetFramework>
     <TrimMode>partial</TrimMode>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <MinVerTagType>lightweight</MinVerTagType>
   </PropertyGroup>
 
   <ItemGroup>
