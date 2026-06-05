@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -24,6 +25,11 @@ namespace ism7mqtt
 
         static async Task Main(string[] args)
         {
+            var version = typeof(Program).Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion ?? "unknown";
+            Console.WriteLine($"ism7mqtt {version}");
+
             bool showHelp = false;
             bool enableDebug = GetEnvBool("ISM7_DEBUG");
             string mqttHost = GetEnvString("ISM7_MQTTHOST");
