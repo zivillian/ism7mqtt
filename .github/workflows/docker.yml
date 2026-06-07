@@ -34,5 +34,6 @@ jobs:
       with:
         platforms: linux/amd64
         push: true
-        tags: krusta/ism7mqtt_fork:add_logging_of_used_version
+        tags: krusta/ism7mqtt_fork:fix_languages
+        labels: krusta/ism7mqtt_fork:fix_languages
         build-args: VERSION=${{ steps.version.outputs.version }}
