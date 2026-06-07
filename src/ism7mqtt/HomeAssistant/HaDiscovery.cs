@@ -278,21 +278,13 @@ namespace ism7mqtt.HomeAssistant
                 case ListParameterDescriptor list:
                     if (list.IsBoolean)
                     {
-                        if (list.Options.Any(x => x.Value == "Ein"))
+                        foreach (var option in list.Options)
                         {
-                            yield return ("payload_on", "Ein");
-                        }
-                        if (list.Options.Any(x => x.Value == "Aktiviert"))
-                        {
-                            yield return ("payload_on", "Aktiviert");
-                        }
-                        if (list.Options.Any(x => x.Value == "Aus"))
-                        {
-                            yield return ("payload_off", "Aus");
-                        }
-                        if (list.Options.Any(x => x.Value == "Deaktiviert"))
-                        {
-                            yield return ("payload_off", "Deaktiviert");
+                            var localizedValue = _localizer[option.Value];
+                            if (option.Value is "Ein" or "Aktiviert")
+                                yield return ("payload_on", localizedValue);
+                            else if (option.Value is "Aus" or "Deaktiviert")
+                                yield return ("payload_off", localizedValue);
                         }
                     }
                     else
