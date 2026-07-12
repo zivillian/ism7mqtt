@@ -276,6 +276,10 @@ namespace ism7mqtt
             }
         }
 
+        // We observed pull bundel request were not answered by the ISM7 which caused the startup to hang.
+        // With a timeout for each pull request we make sure the startup is interrupted and the user can see the problem in the logs.
+        private static readonly TimeSpan InitialValueTimeout = TimeSpan.FromSeconds(90);
+
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
             var semaphore = new SemaphoreSlim(1, 1);
@@ -308,7 +312,7 @@ namespace ism7mqtt
                         infoRead.Seq = NextSequenceId();
                     }
 
-                    await semaphore.WaitAsync(cancellationToken);
+                    await WaitForBundleResponseAsync(semaphore, cancellationToken);
                     await SendAsync(new TelegramBundleReq
                     {
                         AbortOnError = false,
@@ -321,9 +325,7 @@ namespace ism7mqtt
             }
 
             // Wait for the last pull response to be fully processed before subscribing.
-            // Older ISM7 hardware (HW 1.0) corrupts responses when pull and push subscribe requests overlap. So we are deferring all push subscribes until here.
-            // This restores the startup order that was present until incl. v0.0.19
-            await semaphore.WaitAsync(cancellationToken);
+            await WaitForBundleResponseAsync(semaphore, cancellationToken);
 
             // Phase 2: send push subscribes after all pulls are complete
             foreach (var (busAddress, bundleId) in pendingSubscriptions)
@@ -334,6 +336,20 @@ namespace ism7mqtt
             if (OnInitializationFinishedAsync is not null)
             {
                 await OnInitializationFinishedAsync(_config, cancellationToken);
+            }
+        }
+
+        private static async Task WaitForBundleResponseAsync(SemaphoreSlim semaphore, CancellationToken cancellationToken)
+        {
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(InitialValueTimeout);
+            try
+            {
+                await semaphore.WaitAsync(timeoutCts.Token);
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                throw new TimeoutException("Shutdown ism7mqtt due to timeout during startup.");
             }
         }
 
