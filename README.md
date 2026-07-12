@@ -34,6 +34,16 @@ Possible environmental variables:
 * ISM7_PASSWORD
 * ISM7_DISABLEJSON
 * ISM7_SEPARATE
+* ISM7_STARTUP_TIMEOUT
+
+`ISM7_STARTUP_TIMEOUT` (in seconds, defaults to `90`, also available as `--startup-timeout`)
+only applies to the initial startup phase, where ism7mqtt requests all configured values from
+the ism7 one pull request at a time. It is **not** a timeout for the whole startup phase - it
+resets for every single pull request. If the ism7 does not answer one particular request within
+this time, ism7mqtt assumes the connection is stuck, logs the problem and exits so it can be
+restarted (e.g. by Docker's restart policy). Increase this value if your setup regularly needs
+more time to answer a single request; decrease it if you want ism7mqtt to fail faster on a
+stuck connection.
 
 ### HomeAssistant
 
