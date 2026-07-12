@@ -31,6 +31,10 @@ namespace ism7mqtt
 
         public int Interval { get; set; }
 
+        public int StartupTimeout { get; set; } = 90;
+
+        private TimeSpan StartupTimeoutSpan => TimeSpan.FromSeconds(StartupTimeout);
+
         public bool EnableDebug { get; set; }
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
@@ -276,10 +280,6 @@ namespace ism7mqtt
             }
         }
 
-        // We observed pull bundel request were not answered by the ISM7 which caused the startup to hang.
-        // With a timeout for each pull request we make sure the startup is interrupted and the user can see the problem in the logs.
-        private static readonly TimeSpan InitialValueTimeout = TimeSpan.FromSeconds(90);
-
         private async Task LoadInitialValuesAsync(CancellationToken cancellationToken)
         {
             var semaphore = new SemaphoreSlim(1, 1);
@@ -312,7 +312,7 @@ namespace ism7mqtt
                         infoRead.Seq = NextSequenceId();
                     }
 
-                    await WaitForBundleResponseAsync(semaphore, cancellationToken);
+                    await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
                     await SendAsync(new TelegramBundleReq
                     {
                         AbortOnError = false,
@@ -325,7 +325,7 @@ namespace ism7mqtt
             }
 
             // Wait for the last pull response to be fully processed before subscribing.
-            await WaitForBundleResponseAsync(semaphore, cancellationToken);
+            await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
 
             // Phase 2: send push subscribes after all pulls are complete
             foreach (var (busAddress, bundleId) in pendingSubscriptions)
@@ -339,10 +339,12 @@ namespace ism7mqtt
             }
         }
 
-        private static async Task WaitForBundleResponseAsync(SemaphoreSlim semaphore, CancellationToken cancellationToken)
+        // We observed pull bundel request were not answered by the ISM7 which caused the startup to hang.
+        // With a timeout for each pull request we make sure the startup is interrupted and the user can see the problem in the logs.
+        private static async Task WaitForBundleResponseAsync(SemaphoreSlim semaphore, TimeSpan timeout, CancellationToken cancellationToken)
         {
             using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            timeoutCts.CancelAfter(InitialValueTimeout);
+            timeoutCts.CancelAfter(timeout);
             try
             {
                 await semaphore.WaitAsync(timeoutCts.Token);
