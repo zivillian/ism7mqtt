@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7config", "src\ism7confi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7ssl", "src\ism7ssl\ism7ssl.csproj", "{EF9C061A-CD3E-477A-BC3D-E22BBAD8DA6A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ism7mqtt.Tests", "src\ism7mqtt.Tests\ism7mqtt.Tests.csproj", "{4BA055A7-B3E0-49A7-9FF1-2BD46869AD5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EF9C061A-CD3E-477A-BC3D-E22BBAD8DA6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF9C061A-CD3E-477A-BC3D-E22BBAD8DA6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF9C061A-CD3E-477A-BC3D-E22BBAD8DA6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BA055A7-B3E0-49A7-9FF1-2BD46869AD5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BA055A7-B3E0-49A7-9FF1-2BD46869AD5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BA055A7-B3E0-49A7-9FF1-2BD46869AD5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BA055A7-B3E0-49A7-9FF1-2BD46869AD5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
