@@ -1,0 +1,11 @@
+{
+  "TcpPort": {{TCP_PORT}},
+  "Devices": [
+    { "ReadBusAddress": "0x21", "WriteBusAddress": null, "DeviceTemplateId": 360000, "Parameter": [360000] },
+    { "ReadBusAddress": "0x22", "WriteBusAddress": null, "DeviceTemplateId": 360000, "Parameter": [360000] },
+    { "ReadBusAddress": "0x23", "WriteBusAddress": null, "DeviceTemplateId": 360000, "Parameter": [360000] },
+    { "ReadBusAddress": "0x24", "WriteBusAddress": null, "DeviceTemplateId": 360000, "Parameter": [360000] },
+    { "ReadBusAddress": "0x25", "WriteBusAddress": null, "DeviceTemplateId": 360000, "Parameter": [360000] },
+    { "ReadBusAddress": "0x26", "WriteBusAddress": null, "DeviceTemplateId": 360000, "Parameter": [360000] }
+  ]
+}
