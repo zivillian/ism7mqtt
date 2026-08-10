@@ -26,16 +26,45 @@ If you want to run this via docker, use:
 docker run -d --restart=unless-stopped -v ./parameter.json:/app/parameter.json -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> zivillian/ism7mqtt:latest
 ```
 
-Possible environmental variables:
-* ISM7_MQTTHOST
-* ISM7_MQTTUSERNAME
-* ISM7_MQTTPASSWORD
-* ISM7_IP
-* ISM7_PASSWORD
-* ISM7_DISABLEJSON
-* ISM7_SEPARATE
-* ISM7_STARTUP_TIMEOUT
-* ISM7_PARAMETER_XML_OVERRIDE
+### Configuration options
+
+Every option can be set as a CLI flag (when running the binary/`dotnet run` directly) or as an environment variable (typically used with Docker). If both are set, the CLI flag wins.
+
+**Connection (required)**
+
+| Flag | Env var | Description |
+|---|---|---|
+| `-m, --mqttServer=<host>` | `ISM7_MQTTHOST` | MQTT broker host |
+| `-i, --ipAddress=<host>` | `ISM7_IP` | ISM7 hostname or IP |
+| `-p, --password=<pwd>` | `ISM7_PASSWORD` | ISM7 password |
+
+**MQTT**
+
+| Flag | Env var | Default | Description |
+|---|---|---|---|
+| `--mqttuser=<user>` | `ISM7_MQTTUSERNAME` | – | MQTT username |
+| `--mqttpass=<pwd>` | `ISM7_MQTTPASSWORD` | – | MQTT password |
+| `--mqttport=<port>` | `ISM7_MQTTPORT` | `1883` | MQTT broker port |
+| `--mqttqos=<0-2>` | `ISM7_MQTTQOS` | `0` | MQTT QoS level |
+| `-s, --separate` | `ISM7_SEPARATE` | `false` | One topic per value instead of one JSON payload per device (also disables the JSON payload) |
+| `--retain` | `ISM7_RETAIN` | `false` | Set the MQTT retain flag |
+
+**Behavior**
+
+| Flag | Env var | Default | Description |
+|---|---|---|---|
+| `--interval=<seconds>` | `ISM7_INTERVAL` | `60` | Push interval for polled values |
+| `-l, --lang=<code>` | `ISM7_LANGUAGE` | `DEU` | Language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR) |
+| `-d, --debug` | `ISM7_DEBUG` | `false` | Dump raw protocol XML (includes your password) |
+| `--hass-id=<prefix>` | `ISM7_HOMEASSISTANT_ID` | – | Enable Home Assistant discovery; implies `--separate` and `--retain` |
+
+**Files & templates**
+
+| Flag | Env var | Default | Description |
+|---|---|---|---|
+| `-t, --parameter=<path>` | *(none — Docker: mount to `/app/parameter.json`)* | `parameter.json` | Path to the generated parameter.json |
+| `--startup-timeout=<seconds>` | `ISM7_STARTUP_TIMEOUT` | `90` | Per-request startup timeout — see below |
+| `--parameter-xml-override=<path>` | `ISM7_PARAMETER_XML_OVERRIDE` | – | Replace the built-in parameter template — see [Advanced](#advanced-overriding-the-built-in-parameterxml) below |
 
 `ISM7_STARTUP_TIMEOUT` (in seconds, defaults to `90`, also available as `--startup-timeout`)
 only applies to the initial startup phase, where ism7mqtt requests all configured values from
@@ -84,7 +113,7 @@ The parameter.json contains all devices and the corresponding properties for the
 
 ism7mqtt initially fetches all properties declared in parameter.json and afterwards subscribes to changes with an intervall of 60 seconds. Whenever new values are received from ism7 a json update with all those properties is published to mqtt. Please be aware that an update contains only the changed properties - so only the initial message may contain all properties.
 
-You can also enable separate topics (`--separate`), which will report each value in its own nested topic, and disable the json output (`--disable.json`) if you don't need it.
+You can also enable separate topics (`--separate`), which will report each value in its own nested topic and disable the JSON payload.
 
 Each device on the bus (and present in the parameter.json) is reported via its own topic. The format is
 
