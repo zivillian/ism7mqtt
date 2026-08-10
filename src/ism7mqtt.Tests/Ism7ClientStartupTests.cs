@@ -92,6 +92,128 @@ public class Ism7ClientStartupTests
     }
 
     [Fact]
+    public async Task ParameterXmlOverride_UsesLocalTemplateInsteadOfEmbedded()
+    {
+        // PTID 360065 ships with KeyValueList "0;Standby;1;Auto;2;Permanent;3;Sparen" (MaxValueCondition 3).
+        // The override below adds the verified cooling-mode values 6/7/8, mirroring the shape of the
+        // built-in Resources/parameter.xml entry, to prove --parameter-xml-override/ISM7_PARAMETER_XML_OVERRIDE
+        // actually replaces the embedded parameter template instead of merging with or ignoring it.
+        const string overrideXml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <ParameterTemplateConfig>
+              <ParameterList>
+                <ListParameterDescriptor PTID="360065">
+                  <Name>Programmwahl</Name>
+                  <App>true</App>
+                  <ReadOnlyConditionId>False</ReadOnlyConditionId>
+                  <InactiveConditionId>False</InactiveConditionId>
+                  <IsSnapshotTransmitEnabled>true</IsSnapshotTransmitEnabled>
+                  <MinValueCondition>0</MinValueCondition>
+                  <MaxValueCondition>8</MaxValueCondition>
+                  <ControlType>ProgramSelectionListView</ControlType>
+                  <KeyValueList>0;Standby;1;Auto;2;Permanent;3;Sparen;6;Permanent cooling;7;Automatic heating;8;Automatic cooling</KeyValueList>
+                </ListParameterDescriptor>
+              </ParameterList>
+            </ParameterTemplateConfig>
+            """;
+        var overridePath = Path.GetTempFileName();
+        File.WriteAllText(overridePath, overrideXml);
+
+        await using var server = new FakeIsm7Server(request => RespondFromTable(request,
+            new Dictionary<ushort, (string Low, string High)> { [10100] = ("0x06", "0x00") })); // 360065 Programmwahl: 6 -> "Permanent cooling"
+        var parameterPath = TestFixtures.WriteParameterFile("parameter-xml-override.json", server.Port);
+        try
+        {
+            var captured = new List<JsonMessage>();
+            var initFinished = new TaskCompletionSource<bool>();
+            var client = new Ism7Client((config, _) =>
+            {
+                foreach (var message in config.JsonMessages)
+                {
+                    captured.Add(message);
+                }
+                return Task.CompletedTask;
+            }, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"), overridePath)
+            {
+                StartupTimeout = 5,
+                OnInitializationFinishedAsync = (_, _) =>
+                {
+                    initFinished.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            };
+
+            using var cts = new CancellationTokenSource();
+            var runTask = client.RunAsync("test-password", cts.Token);
+
+            var completed = await Task.WhenAny(initFinished.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+            Assert.Same(initFinished.Task, completed);
+
+            cts.Cancel();
+            await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+            var mkBm2 = Assert.Single(captured, m => m.Path == "Wolf/127.0.0.1/MK_BM-2_0x85");
+            Assert.Equal("Permanent cooling", mkBm2.Content["Programmwahl"]!["text"]!.GetValue<string>());
+            Assert.Equal("6", mkBm2.Content["Programmwahl"]!["value"]!.ToJsonString());
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+            File.Delete(overridePath);
+        }
+    }
+
+    [Fact]
+    public async Task NoParameterXmlOverride_UsesEmbeddedTemplate()
+    {
+        // Regression guard for the new optional parameterXmlOverridePath parameter added to Ism7Client/Ism7Config
+        // for --parameter-xml-override/ISM7_PARAMETER_XML_OVERRIDE. Passes an explicit null (instead of omitting
+        // the argument, as every other test in this file does) to pin that "unset" still falls back to
+        // Resources.ParameterTemplates - LoadParameterTemplates() must never reach its File.ReadAllText branch.
+        // Deliberately asserts on PTID 360066 (Reglertyp), not 360065 (the parameter missing_cooling_360065.md
+        // is about), so this test can't start failing once that bug is eventually fixed in the embedded template.
+        await using var server = new FakeIsm7Server(request => RespondFromTable(request, HappyPathTelegrams));
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var captured = new List<JsonMessage>();
+            var initFinished = new TaskCompletionSource<bool>();
+            var client = new Ism7Client((config, _) =>
+            {
+                foreach (var message in config.JsonMessages)
+                {
+                    captured.Add(message);
+                }
+                return Task.CompletedTask;
+            }, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"), parameterXmlOverridePath: null)
+            {
+                StartupTimeout = 5,
+                OnInitializationFinishedAsync = (_, _) =>
+                {
+                    initFinished.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            };
+
+            using var cts = new CancellationTokenSource();
+            var runTask = client.RunAsync("test-password", cts.Token);
+
+            var completed = await Task.WhenAny(initFinished.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+            Assert.Same(initFinished.Task, completed);
+
+            cts.Cancel();
+            await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+            var mkBm2 = Assert.Single(captured, m => m.Path == "Wolf/127.0.0.1/MK_BM-2_0x85");
+            Assert.Equal("2", mkBm2.Content["Reglertyp"]!.ToJsonString());
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
     public async Task HappyPath_ChunksLargeDeviceIntoThreePullBundles()
     {
         // Fixtures/chunked-pull.json has one device with 42 single-telegram parameters. They should be

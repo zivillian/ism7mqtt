@@ -21,10 +21,12 @@ namespace ism7mqtt
         private readonly IDictionary<byte, List<RunningDevice>> _devices;
         private readonly Dictionary<string, List<InfoRead>> _bundles = new();
         private readonly ConfigRoot _config;
+        private readonly string _parameterXmlOverridePath;
 
-        public Ism7Config(string filename, Ism7Localizer localizer)
+        public Ism7Config(string filename, Ism7Localizer localizer, string parameterXmlOverridePath = null)
         {
             _localizer = localizer;
+            _parameterXmlOverridePath = parameterXmlOverridePath;
             _deviceTemplates = LoadDeviceTemplates();
             _converterTemplates = LoadConverterTemplates();
             _parameterTemplates = LoadParameterTemplates();
@@ -60,7 +62,10 @@ namespace ism7mqtt
         private List<ParameterDescriptor> LoadParameterTemplates()
         {
             var serializer = new XmlSerializer(typeof(ParameterTemplateConfig));
-            using (var reader = new StringReader(Resources.ParameterTemplates))
+            var xml = String.IsNullOrEmpty(_parameterXmlOverridePath)
+                ? Resources.ParameterTemplates
+                : File.ReadAllText(_parameterXmlOverridePath);
+            using (var reader = new StringReader(xml))
             {
                 var converter = (ParameterTemplateConfig)serializer.Deserialize(reader);
                 return converter.ParameterList;

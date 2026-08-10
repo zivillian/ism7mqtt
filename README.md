@@ -35,6 +35,7 @@ Possible environmental variables:
 * ISM7_DISABLEJSON
 * ISM7_SEPARATE
 * ISM7_STARTUP_TIMEOUT
+* ISM7_PARAMETER_XML_OVERRIDE
 
 `ISM7_STARTUP_TIMEOUT` (in seconds, defaults to `90`, also available as `--startup-timeout`)
 only applies to the initial startup phase, where ism7mqtt requests all configured values from
@@ -44,6 +45,24 @@ this time, ism7mqtt assumes the connection is stuck, logs the problem and exits 
 restarted (e.g. by Docker's restart policy). Increase this value if your setup regularly needs
 more time to answer a single request; decrease it if you want ism7mqtt to fail faster on a
 stuck connection.
+
+### Advanced: overriding the built-in parameter.xml
+
+ism7mqtt ships with a built-in `parameter.xml` describing every known Wolf parameter (name, min/max, selectable values, ...). If your installation exposes values that are missing from it (e.g. an incomplete `KeyValueList` for a select parameter), you can point ism7mqtt at your own local copy instead, via `--parameter-xml-override <path>` or `ISM7_PARAMETER_XML_OVERRIDE`. This is opt-in only - if unset, behaviour is unchanged and the built-in file is used as before.
+
+> [!WARNING]
+> This **replaces** the entire built-in template, it does not merge with it. Start from a copy of the current [`parameter.xml`](src/ism7mqtt/Resources/parameter.xml) in this repo, edit only what you need, and keep it in sync when this file changes in later releases - there is no drift detection.
+
+For Docker, mount your edited file additionally to the existing `parameter.json` mount and point the new environment variable at it:
+
+```sh
+docker run -d --restart=unless-stopped \
+  -v ./parameter.json:/app/parameter.json \
+  -v ./parameter.xml:/app/parameter.xml \
+  -e ISM7_MQTTHOST=<mqttserver> -e ISM7_IP=<ism7 ip/host> -e ISM7_PASSWORD=<ism7 password> \
+  -e ISM7_PARAMETER_XML_OVERRIDE=/app/parameter.xml \
+  zivillian/ism7mqtt:latest
+```
 
 ### HomeAssistant
 
