@@ -37,6 +37,7 @@ namespace ism7mqtt
             string ip = GetEnvString("ISM7_IP");
             string password = GetEnvString("ISM7_PASSWORD");
             string parameter = "parameter.json";
+            string parameterXmlOverride = GetEnvString("ISM7_PARAMETER_XML_OVERRIDE");
             string mqttUsername = GetEnvString("ISM7_MQTTUSERNAME");
             string mqttPassword = GetEnvString("ISM7_MQTTPASSWORD");
             _qos = (MqttQualityOfServiceLevel)GetEnvInt32("ISM7_MQTTQOS", 0);
@@ -52,6 +53,7 @@ namespace ism7mqtt
                 {"i|ipAddress=", "Wolf Hostname or IP address", x => ip = x},
                 {"p|password=", "Wolf password", x => password = x},
                 {"t|parameter=", $"path to parameter.json - defaults to {parameter}", x => parameter = x},
+                {"parameter-xml-override=", "ADVANCED: path to a local parameter.xml that replaces the built-in parameter template (use with care)", x => parameterXmlOverride = x},
                 {"mqttuser=", "MQTT username", x => mqttUsername = x},
                 {"mqttpass=", "MQTT password", x => mqttPassword = x},
                 {"mqttqos=", "MQTT QoS", (int x) => _qos = (MqttQualityOfServiceLevel)x},
@@ -87,6 +89,11 @@ namespace ism7mqtt
             if (!File.Exists(parameter))
             {
                 Console.Error.WriteLine($"'{parameter}' does not exist");
+                return;
+            }
+            if (!String.IsNullOrEmpty(parameterXmlOverride) && !File.Exists(parameterXmlOverride))
+            {
+                Console.Error.WriteLine($"'{parameterXmlOverride}' does not exist");
                 return;
             }
 
@@ -133,7 +140,7 @@ namespace ism7mqtt
                         await mqttClient.ConnectAsync(mqttOptions, cts.Token);
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
                         await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
-                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip, localizer)
+                        var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip, localizer, parameterXmlOverride)
                         {
                             Interval = interval,
                             StartupTimeout = startupTimeout,
