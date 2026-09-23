@@ -84,10 +84,15 @@ public sealed class FakeIsm7Server : IAsyncDisposable
                         pullOrdinal++;
                         if (pullOrdinal != _dropPullBundleOrdinal)
                         {
-                            await SendAsync(stream, PayloadType.TgrBundleResp, BuildBundleResp(request));
+                            await SendAsync(stream, PayloadType.TgrBundleResp, BuildBundleResp(request, _pullResponder(request)));
                         }
                     }
-                    // push/write bundles and keep-alives are not needed by the current test cases.
+                    else if (request.TelegramBundleType == TelegramBundleType.push)
+                    {
+                        // the startup waits for an answer to every push subscribe
+                        await SendAsync(stream, PayloadType.TgrBundleResp, BuildBundleResp(request, new List<InfonumberReadResp>()));
+                    }
+                    // write bundles and keep-alives are not needed by the current test cases.
                     break;
             }
         }
@@ -106,13 +111,13 @@ public sealed class FakeIsm7Server : IAsyncDisposable
         Type = "ISM7i",
     };
 
-    private TelegramBundleResp BuildBundleResp(TelegramBundleReq request) => new TelegramBundleResp
+    private static TelegramBundleResp BuildBundleResp(TelegramBundleReq request, List<InfonumberReadResp> telegrams) => new TelegramBundleResp
     {
         Timestamp = DateTime.UtcNow.ToString("O"),
         GatewayId = request.GatewayId,
         BundleId = request.BundleId,
         State = TelegrResponseState.OK,
-        Telegrams = _pullResponder(request),
+        Telegrams = telegrams,
     };
 
     private static async Task<bool> ReadExactAsync(Stream stream, byte[] buffer, int count)

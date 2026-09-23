@@ -263,7 +263,8 @@ public class Ism7ClientStartupTests
             await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
 
             Assert.Equal(3, pullBundleCount);
-            Assert.Equal(3, handlerInvocationCount);
+            // once per pull response and once per push subscribe response
+            Assert.Equal(6, handlerInvocationCount);
         }
         finally
         {
