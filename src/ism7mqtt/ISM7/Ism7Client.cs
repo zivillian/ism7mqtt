@@ -240,11 +240,16 @@ namespace ism7mqtt
             return s.ToString();
         }
 
-        private async Task SubscribeAsync(string busAddress, string bundleId, CancellationToken cancellationToken)
+        private async Task SubscribeAsync(string busAddress, string bundleId, SemaphoreSlim semaphore, CancellationToken cancellationToken)
         {
             var infoReads = _config.GetBundle(bundleId);
             bundleId = NextBundleId();
             _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, OnPushResponseAsync);
+            _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, (_, _) =>
+            {
+                semaphore.Release();
+                return Task.CompletedTask;
+            });
             foreach (var infoRead in infoReads)
             {
                 infoRead.BusAddress = busAddress;
@@ -327,10 +332,11 @@ namespace ism7mqtt
             // Wait for the last pull response to be fully processed before subscribing.
             await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
 
-            // Phase 2: send push subscribes after all pulls are complete
+            // Phase 2: send push subscribes after all pulls are complete, one at a time as FW5.20 stops responding when they arrive in parallel
             foreach (var (busAddress, bundleId) in pendingSubscriptions)
             {
-                await SubscribeAsync(busAddress, bundleId, cancellationToken);
+                await SubscribeAsync(busAddress, bundleId, semaphore, cancellationToken);
+                await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
             }
 
             if (OnInitializationFinishedAsync is not null)
