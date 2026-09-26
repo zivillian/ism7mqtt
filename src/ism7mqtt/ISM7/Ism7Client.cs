@@ -37,6 +37,8 @@ namespace ism7mqtt
 
         public bool EnableDebug { get; set; }
 
+        public bool SerializePushSubscribes { get; set; } = false;
+
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
         public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host, Ism7Localizer localizer, string parameterXmlOverridePath = null)
@@ -240,6 +242,27 @@ namespace ism7mqtt
             return s.ToString();
         }
 
+        private async Task SubscribeAsync(string busAddress, string bundleId, CancellationToken cancellationToken)
+        {
+            var infoReads = _config.GetBundle(bundleId);
+            bundleId = NextBundleId();
+            _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp) x).BundleId == bundleId, OnPushResponseAsync);
+            foreach (var infoRead in infoReads)
+            {
+                infoRead.BusAddress = busAddress;
+                infoRead.Intervall = Interval;
+                infoRead.Seq = NextSequenceId();
+            }
+            await SendAsync(new TelegramBundleReq
+            {
+                AbortOnError = false,
+                BundleId = bundleId,
+                GatewayId = "1",
+                TelegramBundleType = TelegramBundleType.push,
+                InfoReadTelegrams = infoReads
+            }, cancellationToken);
+        }
+
         private async Task SubscribeAsync(string busAddress, string bundleId, SemaphoreSlim semaphore, CancellationToken cancellationToken)
         {
             var infoReads = _config.GetBundle(bundleId);
@@ -332,11 +355,21 @@ namespace ism7mqtt
             // Wait for the last pull response to be fully processed before subscribing.
             await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
 
-            // Phase 2: send push subscribes after all pulls are complete, one at a time as FW5.20 stops responding when they arrive in parallel
+            // Phase 2: send push subscribes after all pulls are complete. Some FW5.20 devices stop
+            // responding if these arrive in parallel; SerializePushSubscribes opts into sending them
+            // one at a time, waiting for each response, like the pull phase above. Defaults to false
+            // (burst, the long-standing behavior) since most devices don't need this.
             foreach (var (busAddress, bundleId) in pendingSubscriptions)
             {
-                await SubscribeAsync(busAddress, bundleId, semaphore, cancellationToken);
-                await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
+                if (SerializePushSubscribes)
+                {
+                    await SubscribeAsync(busAddress, bundleId, semaphore, cancellationToken);
+                    await WaitForBundleResponseAsync(semaphore, StartupTimeoutSpan, cancellationToken);
+                }
+                else
+                {
+                    await SubscribeAsync(busAddress, bundleId, cancellationToken);
+                }
             }
 
             if (OnInitializationFinishedAsync is not null)

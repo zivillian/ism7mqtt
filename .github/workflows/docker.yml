@@ -2,9 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [ master ]
-    tags:
-      - '*'
+    branches: [ "krusta4711/request_push_messages_one_by_one", "krusta4711_request_push_messages_one_by_one" ]
 
 jobs:
   docker:
@@ -38,6 +36,6 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: krusta/ism7mqtt_fork:test_wait_for_push
+        labels: krusta/ism7mqtt_fork:test_wait_for_push
         build-args: VERSION=${{ steps.version.outputs.version }}

@@ -45,6 +45,7 @@ namespace ism7mqtt
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             int startupTimeout = GetEnvInt32("ISM7_STARTUP_TIMEOUT", 90);
+            bool serializePushSubscribes = GetEnvBool("ISM7_SERIALIZE_PUSH_SUBSCRIBES");
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
             var options = new OptionSet
@@ -62,6 +63,7 @@ namespace ism7mqtt
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"startup-timeout=", "timeout in seconds to wait for each pull request response during startup (defaults to 90)", (int x) => startupTimeout = x},
+                {"serialize-push-subscribes", "send push subscribes one at a time during startup, waiting for each response, instead of all at once (needed for some FW5.20 devices that otherwise stop responding; defaults to false)", x => serializePushSubscribes = x != null},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
                 {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
@@ -144,6 +146,7 @@ namespace ism7mqtt
                         {
                             Interval = interval,
                             StartupTimeout = startupTimeout,
+                            SerializePushSubscribes = serializePushSubscribes,
                             EnableDebug = enableDebug
                         };
                         mqttClient.ApplicationMessageReceivedAsync += x => OnMessage(client, x, enableDebug, cts.Token);

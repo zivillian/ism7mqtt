@@ -246,6 +246,9 @@ public class Ism7ClientStartupTests
             }, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"))
             {
                 StartupTimeout = 5,
+                // deterministic: without this, OnInitializationFinishedAsync fires right after sending all
+                // push subscribes in a burst, racing against the last response actually being dispatched.
+                SerializePushSubscribes = true,
                 OnInitializationFinishedAsync = (_, _) =>
                 {
                     initFinished.TrySetResult(true);
@@ -265,6 +268,64 @@ public class Ism7ClientStartupTests
             Assert.Equal(3, pullBundleCount);
             // once per pull response and once per push subscribe response
             Assert.Equal(6, handlerInvocationCount);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task PushSubscribes_AreSerialized_NotBurstFired()
+    {
+        // Regression test for FW5.20 hanging when push-subscribe bundles arrive back-to-back, guarded by the
+        // opt-in SerializePushSubscribes flag. The fake server here delays every push-subscribe response by
+        // 200ms, with the send decoupled from its read loop (see FakeIsm7Server's pushResponseDelay). Per
+        // Ism7Client.LoadInitialValuesAsync, a correctly-serialized client can only send push-subscribe bundle
+        // N+1 after it has fully received and dispatched bundle N's response, so it can never have N+1 arrive
+        // here while N's (deliberately delayed) response is still outstanding. A client that instead fires all
+        // push-subscribes in a burst would already have N+1's bytes sitting in the OS receive buffer, so it
+        // would violate that window almost instantly - this is a deterministic causal check, not a timing
+        // race, so it isn't flaky.
+        var telegramValues = new Dictionary<ushort, (string Low, string High)>
+        {
+            [5266] = ("0x00", "0x00"),
+            [10165] = ("0x00", "0x00"),
+            [10179] = ("0x00", "0x00"),
+            [10109] = ("0x00", "0x00"),
+            [10164] = ("0x00", "0x00"),
+        };
+
+        await using var server = new FakeIsm7Server(
+            request => RespondFromTable(request, telegramValues),
+            pushResponseDelay: TimeSpan.FromMilliseconds(200));
+        var parameterPath = TestFixtures.WriteParameterFile("chunked-pull.json", server.Port);
+        try
+        {
+            var initFinished = new TaskCompletionSource<bool>();
+            var client = new Ism7Client((_, _) => Task.CompletedTask, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"))
+            {
+                StartupTimeout = 5,
+                SerializePushSubscribes = true,
+                OnInitializationFinishedAsync = (_, _) =>
+                {
+                    initFinished.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            };
+
+            using var cts = new CancellationTokenSource();
+            var runTask = client.RunAsync("test-password", cts.Token);
+
+            var completed = await Task.WhenAny(initFinished.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+
+            cts.Cancel();
+            await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+            // check this first: a real regression could stall a response and leave initFinished incomplete,
+            // so asserting here first gives a fast, precise failure instead of a 10s timeout + confusing mismatch.
+            Assert.Empty(server.PrematurePushSubscribeOrdinals);
+            Assert.Same(initFinished.Task, completed);
         }
         finally
         {

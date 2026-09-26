@@ -24,15 +24,20 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     private readonly LoginState _loginState;
     private readonly PullBundleResponder _pullResponder;
     private readonly int? _dropPullBundleOrdinal;
+    private readonly TimeSpan? _pushResponseDelay;
+    private readonly object _pushGate = new object();
+    private bool _previousPushResponseSent = true;
+    private readonly List<int> _prematurePushSubscribeOrdinals = new List<int>();
     private readonly Task _acceptTask;
     private TcpClient? _client;
     private SslStream? _sslStream;
 
-    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null)
+    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null)
     {
         _pullResponder = pullResponder;
         _loginState = loginState;
         _dropPullBundleOrdinal = dropPullBundleOrdinal;
+        _pushResponseDelay = pushResponseDelay;
         _listener = new TcpListener(IPAddress.Loopback, 0);
         _listener.Start();
         Port = ((IPEndPoint)_listener.LocalEndpoint).Port;
@@ -40,6 +45,14 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     }
 
     public int Port { get; }
+
+    /// <summary>
+    /// Ordinals (1-based, among push-subscribe requests on this connection) of push-subscribe bundles that
+    /// arrived while the previous push-subscribe's (delayed) response was still outstanding. Only populated
+    /// when constructed with a non-null pushResponseDelay; a correctly-serialized client should never trigger
+    /// this since it can't send bundle N+1 until it has fully received and dispatched bundle N's response.
+    /// </summary>
+    public IReadOnlyList<int> PrematurePushSubscribeOrdinals => _prematurePushSubscribeOrdinals;
 
     private async Task AcceptLoopAsync()
     {
@@ -63,6 +76,7 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     private async Task HandleConnectionAsync(Stream stream)
     {
         var pullOrdinal = 0;
+        var pushOrdinal = 0;
         var header = new byte[6];
         while (true)
         {
@@ -89,11 +103,57 @@ public sealed class FakeIsm7Server : IAsyncDisposable
                     }
                     else if (request.TelegramBundleType == TelegramBundleType.push)
                     {
+                        pushOrdinal++;
                         // the startup waits for an answer to every push subscribe
-                        await SendAsync(stream, PayloadType.TgrBundleResp, BuildBundleResp(request, new List<InfonumberReadResp>()));
+                        if (_pushResponseDelay is { } delay)
+                        {
+                            // decouple sending the response from this read loop so that, if the client fires
+                            // push-subscribes in a burst instead of waiting for each response, request N+1's
+                            // bytes are already readable here well before N's (deliberately delayed) response
+                            // has been sent - see RegisterPushSubscribeArrival.
+                            RegisterPushSubscribeArrival(pushOrdinal);
+                            _ = RespondToPushSubscribeAfterDelayAsync(stream, request, delay);
+                        }
+                        else
+                        {
+                            await SendAsync(stream, PayloadType.TgrBundleResp, BuildBundleResp(request, new List<InfonumberReadResp>()));
+                        }
                     }
                     // write bundles and keep-alives are not needed by the current test cases.
                     break;
+            }
+        }
+    }
+
+    private void RegisterPushSubscribeArrival(int ordinal)
+    {
+        lock (_pushGate)
+        {
+            if (!_previousPushResponseSent)
+            {
+                _prematurePushSubscribeOrdinals.Add(ordinal);
+            }
+            _previousPushResponseSent = false;
+        }
+    }
+
+    private async Task RespondToPushSubscribeAfterDelayAsync(Stream stream, TelegramBundleReq request, TimeSpan delay)
+    {
+        try
+        {
+            await Task.Delay(delay);
+            await SendAsync(stream, PayloadType.TgrBundleResp, BuildBundleResp(request, new List<InfonumberReadResp>()));
+        }
+        catch
+        {
+            // the connection was torn down (test disposal/cancellation) while this response was in flight -
+            // the client has already stopped listening, so there is nothing meaningful to do with the failure.
+        }
+        finally
+        {
+            lock (_pushGate)
+            {
+                _previousPushResponseSent = true;
             }
         }
     }
