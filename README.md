@@ -64,6 +64,7 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 |---|---|---|---|
 | `-t, --parameter=<path>` | *(none — Docker: mount to `/app/parameter.json`)* | `parameter.json` | Path to the generated parameter.json |
 | `--startup-timeout=<seconds>` | `ISM7_STARTUP_TIMEOUT` | `90` | Per-request startup timeout — see below |
+| `--serialize-push-subscribes` | `ISM7_SERIALIZE_PUSH_SUBSCRIBES` | `false` | Send push subscribes one at a time during startup — see below |
 | `--parameter-xml-override=<path>` | `ISM7_PARAMETER_XML_OVERRIDE` | – | Replace the built-in parameter template — see [Advanced](#advanced-overriding-the-built-in-parameterxml) below |
 
 `ISM7_STARTUP_TIMEOUT` (in seconds, defaults to `90`, also available as `--startup-timeout`)
@@ -74,6 +75,14 @@ this time, ism7mqtt assumes the connection is stuck, logs the problem and exits 
 restarted (e.g. by Docker's restart policy). Increase this value if your setup regularly needs
 more time to answer a single request; decrease it if you want ism7mqtt to fail faster on a
 stuck connection.
+
+`ISM7_SERIALIZE_PUSH_SUBSCRIBES` (defaults to `false`, also available as
+`--serialize-push-subscribes`) changes how ism7mqtt subscribes to push updates at the end of
+startup. By default all push subscribes are sent right after each other. Some devices on
+firmware 5.20 stop responding to anything (including keep-alives) shortly after startup when
+this happens, eventually resetting the connection. If you see this symptom, enable this option
+to make ism7mqtt send push subscribes one at a time, waiting for each response before sending
+the next, the same way pull requests are already handled.
 
 ### Advanced: overriding the built-in parameter.xml
 
