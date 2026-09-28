@@ -37,6 +37,12 @@ ENV \
     ISM7_DISABLEJSON=false \
     ISM7_RETAIN=false \
     ISM7_INTERVAL=60 \
-    ISM7_HOMEASSISTANT_ID=
+    ISM7_HOMEASSISTANT_ID= \
+    ISM7_HEALTH_FILE=/tmp/ism7mqtt.alive
+
+# ism7mqtt updates $ISM7_HEALTH_FILE every 30 seconds while the MQTT broker is reachable.
+# Note that plain Docker only marks the container as unhealthy, it does not restart it.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD [ -n "$ISM7_HEALTH_FILE" ] && [ -n "$(find "$ISM7_HEALTH_FILE" -mmin -2 2>/dev/null)" ]
 
 ENTRYPOINT ["/app/ism7mqtt"]

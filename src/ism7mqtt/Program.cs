@@ -11,6 +11,7 @@ using ism7mqtt.ISM7.Config;
 using Mono.Options;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Exceptions;
 using MQTTnet.Protocol;
 
 namespace ism7mqtt
@@ -48,6 +49,7 @@ namespace ism7mqtt
             bool serializePushSubscribes = GetEnvBool("ISM7_SERIALIZE_PUSH_SUBSCRIBES");
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
+            string healthFile = GetEnvString("ISM7_HEALTH_FILE");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -65,6 +67,7 @@ namespace ism7mqtt
                 {"startup-timeout=", "timeout in seconds to wait for each pull request response during startup (defaults to 90)", (int x) => startupTimeout = x},
                 {"serialize-push-subscribes", "send push subscribes one at a time during startup, waiting for each response, instead of all at once (needed for some FW5.20 devices that otherwise stop responding; defaults to false)", x => serializePushSubscribes = x != null},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
+                {"health-file=", "file that is updated while the MQTT broker is reachable, e.g. for a docker HEALTHCHECK (defaults to none)", x => healthFile = x},
                 {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
@@ -126,22 +129,6 @@ namespace ism7mqtt
                             mqttOptionBuilder = mqttOptionBuilder.WithCredentials(mqttUsername, mqttPassword);
                         }
                         var mqttOptions = mqttOptionBuilder.Build();
-                        mqttClient.DisconnectedAsync += async e =>
-                        {
-                            Console.Error.WriteLine("mqtt disconnected - reconnecting in 5 seconds");
-                            await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
-                            try
-                            {
-                                await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                            }
-                            catch
-                            {
-                                Console.Error.WriteLine("reconnect failed");
-                            }
-                        };
-                        await mqttClient.ConnectAsync(mqttOptions, cts.Token);
-                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set");
-                        await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#");
                         var client = new Ism7Client((config, token) => OnMessage(mqttClient, config, enableDebug, token), parameter, ip, localizer, parameterXmlOverride)
                         {
                             Interval = interval,
@@ -153,7 +140,6 @@ namespace ism7mqtt
 
                         if (!String.IsNullOrEmpty(discoveryId))
                         {
-                            await mqttClient.SubscribeAsync("homeassistant/status");
                             client.OnInitializationFinishedAsync = (config, c) =>
                             {
                                 _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId, localizer)
@@ -164,7 +150,46 @@ namespace ism7mqtt
                                 return _haDiscovery.PublishDiscoveryInfo(c);
                             };
                         }
-                        await client.RunAsync(password, cts.Token);
+
+                        var mqttConnection = new MqttConnection(mqttClient, mqttOptions)
+                        {
+                            HealthFile = healthFile,
+                            EnableDebug = enableDebug,
+                            // clean session: the broker forgets all subscriptions on every
+                            // disconnect, so they are renewed after every (re)connect
+                            OnConnectedAsync = async token =>
+                            {
+                                await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set", cancellationToken: token);
+                                await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#", cancellationToken: token);
+                                if (!String.IsNullOrEmpty(discoveryId))
+                                {
+                                    await mqttClient.SubscribeAsync("homeassistant/status", cancellationToken: token);
+                                    // discovery info is not retained - if Home Assistant restarted
+                                    // while we were disconnected, it would never see the devices
+                                    if (_haDiscovery is not null)
+                                        await _haDiscovery.PublishDiscoveryInfo(token);
+                                }
+                            }
+                        };
+                        await mqttConnection.ConnectAsync(cts.Token);
+                        Console.WriteLine("mqtt connected");
+                        var keepConnected = mqttConnection.KeepConnectedAsync(cts.Token);
+                        try
+                        {
+                            await client.RunAsync(password, cts.Token);
+                        }
+                        finally
+                        {
+                            cts.Cancel();
+                            try
+                            {
+                                await keepConnected;
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                // expected: the reconnect loop ends with the cancellation
+                            }
+                        }
                     }
                 }
                 catch (OperationCanceledException)
@@ -240,6 +265,21 @@ namespace ism7mqtt
         }
 
         private static async Task OnMessage(IMqttClient client, Ism7Config config, bool debug, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await PublishAsync(client, config, debug, cancellationToken);
+            }
+            catch (MqttCommunicationException ex)
+            {
+                // The broker went away in the middle of a publish. That must not tear down the ism7
+                // connection: the exception would end the receive loop and with it the process.
+                // The reconnect is handled by MqttConnection.
+                Console.Error.WriteLine($"mqtt publish failed - skipping until reconnected: {ex.Message}");
+            }
+        }
+
+        private static async Task PublishAsync(IMqttClient client, Ism7Config config, bool debug, CancellationToken cancellationToken)
         {
             if (!client.IsConnected)
             {
