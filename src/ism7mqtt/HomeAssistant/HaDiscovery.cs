@@ -197,6 +197,21 @@ namespace ism7mqtt.HomeAssistant
             }
         }
 
+        // HA validates units per device_class, so these must not be localized
+        private string GetHomeAssistantUnit(string unitName)
+        {
+            return unitName switch
+            {
+                "Std" => "h",
+                "min" => "min",
+                "sec" => "s",
+                "l/min" or "L/min" => "L/min",
+                "bar" => "bar",
+                "°C" => "°C",
+                _ => _localizer[unitName]
+            };
+        }
+
         private IEnumerable<(string, JsonNode)> GetDiscoveryProperties(ParameterDescriptor descriptor)
         {
             switch (descriptor)
@@ -231,11 +246,21 @@ namespace ism7mqtt.HomeAssistant
                     }
                     if (numeric.UnitName != null)
                     {
-                        yield return ("unit_of_measurement", _localizer[numeric.UnitName]);
+                        yield return ("unit_of_measurement", GetHomeAssistantUnit(numeric.UnitName));
                         if (numeric.UnitName == "°C")
                         {
                             yield return ("icon", "mdi:thermometer");
                             yield return ("state_class", "measurement");
+                            yield return ("device_class", "temperature");
+                        }
+                        else if (numeric.UnitName == "bar")
+                        {
+                            yield return ("state_class", "measurement");
+                            yield return ("device_class", "pressure");
+                        }
+                        else if (numeric.UnitName is "Std" or "min" or "sec")
+                        {
+                            yield return ("device_class", "duration");
                         }
                         else if (numeric.UnitName == "%")
                         {
@@ -261,13 +286,10 @@ namespace ism7mqtt.HomeAssistant
                             yield return ("state_class", "measurement");
                             yield return ("device_class", "frequency");
                         }
-                        else if (numeric.UnitName == "l/min")
+                        else if (numeric.UnitName is "l/min" or "L/min")
                         {
                             yield return ("state_class", "measurement");
-                        }
-                        else if (numeric.UnitName == "L/min")
-                        {
-                            yield return ("state_class", "measurement");
+                            yield return ("device_class", "volume_flow_rate");
                         }
                         else if (numeric.UnitName == "U/min")
                         {
