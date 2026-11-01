@@ -339,7 +339,7 @@ public class FaultTests
         await using var server = new FakeIsm7Server(RespondZero, answerSystemconfig: false);
         await using var run = new FaultsRun(server, startupTimeout: 1);
         await WaitUntilAsync(() => console.Log.Contains("fault list: no answer to the read-systemconfig-request within 1s, the fault lists are not requested"));
-        Assert.True(run.InitFinished.Task.IsCompleted);
+        await WaitUntilAsync(() => run.InitFinished.Task.IsCompleted);
         Assert.False(run.RunTask.IsCompleted);
         Assert.DoesNotContain(server.ReceivedRequests, x => x.Xml.Contains("<erd"));
         Assert.DoesNotContain(run.Topics, x => x.Contains("Stoermeldung"));

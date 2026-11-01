@@ -337,9 +337,19 @@ namespace ism7mqtt
         {
             var semaphore = new SemaphoreSlim(1, 1);
             var pendingSubscriptions = new List<(string busAddress, string bundleId)>();
+            // the devices must exist before the first fault list answer arrives
+            var busAddresses = _config.AddAllDevices(_host).ToList();
+
+            // Like Wolf: systemconfig and the fault list request come first, before any value is read or
+            // subscribed. On ISM7 FW 3.00 a fault list request sent after the push subscriptions is never
+            // answered (live test 01.11.2026), sent right after the login it is.
+            if (EnableFaults)
+            {
+                await SubscribeFaultListAsync(cancellationToken);
+            }
 
             // Phase 1: pull all bundles, one at a time as FW5.1+ has problems with too many pull requests in parallel
-            foreach (var busAddress in _config.AddAllDevices(_host))
+            foreach (var busAddress in busAddresses)
             {
                 var bundles = _config.GetBundlesForDevice(busAddress);
                 foreach (var (bundleId, infoReads) in bundles)
@@ -400,15 +410,6 @@ namespace ism7mqtt
                 }
             }
 
-            // Wolf requests the fault lists before the value subscriptions, right after the systemconfig. We do it
-            // once all devices are set up and subscribed, so the proven startup sequence stays unchanged and the
-            // startup does not wait for the answers. Without SerializePushSubscribes the push answers may still be
-            // outstanding, so the requests then go out together with the subscriptions.
-            if (EnableFaults)
-            {
-                await SubscribeFaultListAsync(cancellationToken);
-            }
-
             if (OnInitializationFinishedAsync is not null)
             {
                 await OnInitializationFinishedAsync(_config, cancellationToken);
@@ -417,10 +418,12 @@ namespace ism7mqtt
 
         private volatile bool _faultSystemconfigReceived;
         private volatile bool _faultListReceived;
+        private readonly TaskCompletionSource _faultListRequested = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         /// <summary>
         /// Like Wolf, reads the systemconfig first and then requests the fault lists of the configured devices
-        /// that are on the bus. Nothing waits for the answers, a missing answer is only logged.
+        /// that are on the bus. Waits (at most the startup timeout) until the request is out, not for the fault
+        /// lists themselves; a missing answer is only logged.
         /// </summary>
         private async Task SubscribeFaultListAsync(CancellationToken cancellationToken)
         {
@@ -432,20 +435,33 @@ namespace ism7mqtt
             _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.SystemconfigResp, OnFaultSystemconfigAsync);
             _dispatcher.Subscribe(IsFaultListResponse, OnFaultListAsync);
             await SendAsync(new SystemconfigReq { Sid = "1" }, cancellationToken);
-            _ = LogIfNoAnswerAsync(() => _faultSystemconfigReceived,
-                $"fault list: no answer to the read-systemconfig-request within {StartupTimeout}s, the fault lists are not requested", cancellationToken);
+            try
+            {
+                await _faultListRequested.Task.WaitAsync(StartupTimeoutSpan, cancellationToken);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine($"fault list: no answer to the read-systemconfig-request within {StartupTimeout}s, the fault lists are not requested");
+            }
         }
 
         private async Task OnFaultSystemconfigAsync(IResponse response, CancellationToken cancellationToken)
         {
             _faultSystemconfigReceived = true;
-            var busDevices = ((SystemconfigResp)response).BusConfig?.Devices ?? new List<SystemconfigResp.BusDevice>();
-            var addresses = _config.SelectFaultBusAddresses(busDevices.Select(x => x.Ba));
-            Console.WriteLine($"fault list: requesting li=\"{String.Join(",", addresses)}\" (configured {String.Join(",", _config.FaultBusAddresses)}, systemconfig {String.Join(",", busDevices.Select(x => x.Ba))})");
-            if (addresses.Count == 0) return;
-            await SendFaultListRequestAsync(String.Join(",", addresses), cancellationToken);
-            _ = LogIfNoAnswerAsync(() => _faultListReceived,
-                $"fault list: no answer within {StartupTimeout}s", cancellationToken);
+            try
+            {
+                var busDevices = ((SystemconfigResp)response).BusConfig?.Devices ?? new List<SystemconfigResp.BusDevice>();
+                var addresses = _config.SelectFaultBusAddresses(busDevices.Select(x => x.Ba));
+                Console.WriteLine($"fault list: requesting li=\"{String.Join(",", addresses)}\" (configured {String.Join(",", _config.FaultBusAddresses)}, systemconfig {String.Join(",", busDevices.Select(x => x.Ba))})");
+                if (addresses.Count == 0) return;
+                await SendFaultListRequestAsync(String.Join(",", addresses), cancellationToken);
+                _ = LogIfNoAnswerAsync(() => _faultListReceived,
+                    $"fault list: no answer within {StartupTimeout}s", cancellationToken);
+            }
+            finally
+            {
+                _faultListRequested.TrySetResult();
+            }
         }
 
         private async Task LogIfNoAnswerAsync(Func<bool> answered, string message, CancellationToken cancellationToken)
