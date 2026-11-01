@@ -53,6 +53,9 @@ namespace ism7mqtt.ISM7
         /// <summary>"63 Funktionskontrolle Schwerkraftbremse", or only the code when there is no text for it.</summary>
         public string Label => Text is null ? Code.ToString(CultureInfo.InvariantCulture) : $"{Code} {Text}";
 
+        /// <summary>The device template id the text was borrowed from, null when it is the device's own text.</summary>
+        public int? TextSource { get; init; }
+
         /// <summary>The start time, if the module reported it in a known format.</summary>
         public DateTime? StartTime => DateTime.TryParseExact(Start, TimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var time) ? time : null;
     }

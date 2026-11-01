@@ -55,7 +55,7 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 |---|---|---|---|
 | `--interval=<seconds>` | `ISM7_INTERVAL` | `60` | Push interval for polled values |
 | `-l, --lang=<code>` | `ISM7_LANGUAGE` | `DEU` | Language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR) |
-| `-d, --debug` | `ISM7_DEBUG` | `false` | Dump raw protocol XML (includes your password) |
+| `-d, --debug` | `ISM7_DEBUG` | `false` | Dump raw protocol XML (the login request with the password is never logged) |
 | `--hass-id=<prefix>` | `ISM7_HOMEASSISTANT_ID` | – | Enable Home Assistant discovery; implies `--separate` and `--retain` |
 | `--mqtt-health-file=<path>` | `ISM7_MQTT_HEALTH_FILE` | – (Docker image: `/tmp/ism7mqtt-mqtt.alive`) | File that is updated every 30 seconds while the connection to the MQTT broker is up — see below |
 | `--faults` | `ISM7_FAULTS` | `false` | Also publish the fault list of every device — see [Fault messages](#fault-messages) below |
@@ -112,12 +112,21 @@ until the next reconnect). Each device then publishes (as JSON properties, or wi
 as topics below the device topic):
 
 - `Stoermeldung`: the newest active fault, e.g. `63 Funktionskontrolle Schwerkraftbremse`, or `Keine`
-- `Stoermeldungen`: the whole list as JSON (at most 10 entries), including the history
-  (`active: false`), with `code`, `text`, `active`, `start`, `stop` and `index` per entry
+- `Stoermeldungen`: the whole list as JSON (at most 10 entries per device, active ones are never
+  pushed out by the history), including the history (`active: false`), with `code`, `text`,
+  `active`, `start`, `stop` and `index` per entry
 
 With `--hass-id` there is a `Störmeldung` sensor per device that carries the list as attributes.
 The texts come from Wolf's `fault_messages.xml` and follow `--lang`; a code without a text for
-that device is published as just the code.
+that device is published as just the code. A BM also lists faults of the heat generator (e.g.
+4 or 5), which Wolf only has texts for under the heat generator: these take the text of the
+configured heat generator and carry its device template id as `text_source` (e.g. `80000`).
+
+The fault list request has not been tested on a session with many push subscriptions on every
+firmware. When you enable `--faults`, watch the log: if the ism7 connection fails or closes
+within seconds after `fault list: requesting li=...` on every connection, ism7mqtt keeps
+reconnecting with backoff and requests it again each time - disable `--faults` then and use
+`--fault-probe` to check your ism7.
 
 `--fault-probe=<addresses>` (`ISM7_FAULT_PROBE`, e.g. `0x76` or `0x35,0x76`) is a diagnostic mode
 to check whether your ism7 supports this: after the login it only reads the systemconfig, logs
@@ -258,7 +267,7 @@ Wolf/<ism7 ip address>/WWSystem_BM-2_0x35/set/Programmwahl/35012/text
 
 ## Bugs / Missing Features
 
-If something is not working in your setup, you can get more output by using the debug switch `-d`. This will dump the communication with the ism7 (including your password). Please include a redacted version of this dump when opening an issue and also attach your parameter.json.
+If something is not working in your setup, you can get more output by using the debug switch `-d`. This will dump the communication with the ism7 (the login request with your password is not logged). Please include a redacted version of this dump when opening an issue and also attach your parameter.json.
 
 ## Protocol
 

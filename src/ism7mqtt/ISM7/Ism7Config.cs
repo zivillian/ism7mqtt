@@ -174,7 +174,7 @@ namespace ism7mqtt
         /// <summary>
         /// Processes a fault list answer. Like Wolf, every answer is treated as a full snapshot of all requested
         /// devices: an entry missing from it stays in the device's list, but is no longer active. Codes outside
-        /// 1-255 are no faults and at most 10 entries per answer are used. Returns whether any device's list changed.
+        /// 1-255 are no faults; each device keeps at most 10 entries, active ones first. Returns whether any device's list changed.
         /// </summary>
         public bool ProcessFaults(IEnumerable<ErrorStateResp> data)
         {
@@ -192,7 +192,6 @@ namespace ism7mqtt
                         Console.WriteLine($"fault list: ignoring entries for unknown bus address '{entry.BusAddress}'");
                     continue;
                 }
-                if (entries.Count >= 10) continue;
                 entries.Add((ba, entry));
             }
             var changed = false;
@@ -202,17 +201,50 @@ namespace ism7mqtt
                     .Where(x => x.BusAddress == device.FaultBusAddress)
                     .Select(x => x.Entry)
                     .OrderBy(x => x.Index)
-                    .Select(x => new FaultEntry(x.Index, x.Code, GetFaultText(x.Code, device.DeviceTemplateId),
-                        String.IsNullOrEmpty(x.Start) ? null : x.Start, String.IsNullOrEmpty(x.Stop) ? null : x.Stop, x.Active));
+                    .Select(x =>
+                    {
+                        var (text, textSource) = GetFaultText(x.Code, device.DeviceTemplateId);
+                        return new FaultEntry(x.Index, x.Code, text,
+                            String.IsNullOrEmpty(x.Start) ? null : x.Start, String.IsNullOrEmpty(x.Stop) ? null : x.Stop, x.Active)
+                        {
+                            TextSource = textSource,
+                        };
+                    });
                 if (device.SetFaults(faults)) changed = true;
             }
             return changed;
         }
 
-        private string GetFaultText(int code, int deviceTemplateId)
+        private const int BmDeviceTemplateId = 30000;
+
+        /// <summary>
+        /// The text for the code on the device, and the device template id it was borrowed from. The BM also lists
+        /// faults of the heat generator (live: codes 4 and 5 at 0x35), but Wolf has texts for them only under the
+        /// heat generator's DTID. The BM's only own text (code 15, "... Wärmeerzeuger vom Netz getrennt") is the
+        /// one Wolf shares with the heat generators, so a missing BM text is taken from the configured devices with
+        /// that same code 15 text - only if they all agree on it.
+        /// </summary>
+        private (string Text, int? Source) GetFaultText(int code, int deviceTemplateId)
         {
             var text = FaultMessageTexts.Default.Get(code, deviceTemplateId);
-            return text is null ? null : _localizer[text];
+            int? source = null;
+            if (text is null && deviceTemplateId == BmDeviceTemplateId)
+            {
+                var heatGeneratorText = FaultMessageTexts.Default.Get(15, BmDeviceTemplateId);
+                var borrowed = _config.Devices
+                    .Select(x => x.DeviceTemplateId)
+                    .Where(x => x != BmDeviceTemplateId && heatGeneratorText is not null && FaultMessageTexts.Default.Get(15, x) == heatGeneratorText)
+                    .Distinct()
+                    .Select(x => (Text: FaultMessageTexts.Default.Get(code, x), Source: x))
+                    .Where(x => x.Text is not null)
+                    .ToList();
+                if (borrowed.Count > 0 && borrowed.All(x => x.Text == borrowed[0].Text))
+                {
+                    text = borrowed[0].Text;
+                    source = borrowed[0].Source;
+                }
+            }
+            return text is null ? (null, null) : (_localizer[text], source);
         }
 
         private static bool TryParseBusAddress(string value, out byte busAddress)
@@ -399,7 +431,13 @@ namespace ism7mqtt
                         .ToList();
                     list.AddRange(missing);
                 }
-                list = list.Take(MaxFaults).ToList();
+                // at most MaxFaults entries in their order, the history never pushes out an active entry
+                var keep = list.Select((x, i) => (x.Active, Position: i))
+                    .OrderBy(x => x.Active ? 0 : 1)
+                    .Take(MaxFaults)
+                    .Select(x => x.Position)
+                    .ToHashSet();
+                list = list.Where((x, i) => keep.Contains(i)).ToList();
                 if (_faults is not null && _faults.SequenceEqual(list)) return false;
                 _faults = list;
                 return true;
@@ -424,7 +462,7 @@ namespace ism7mqtt
                 var result = new JsonArray();
                 foreach (var fault in _faults ?? new List<FaultEntry>())
                 {
-                    result.Add(new JsonObject
+                    var entry = new JsonObject
                     {
                         ["code"] = fault.Code,
                         ["text"] = fault.Text,
@@ -432,7 +470,10 @@ namespace ism7mqtt
                         ["start"] = fault.Start,
                         ["stop"] = fault.Stop,
                         ["index"] = fault.Index,
-                    });
+                    };
+                    // the text was borrowed from this device template (a BM listing a heat generator fault)
+                    if (fault.TextSource.HasValue) entry["text_source"] = fault.TextSource.Value;
+                    result.Add(entry);
                 }
                 return result;
             }
