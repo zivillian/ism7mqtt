@@ -127,6 +127,9 @@
   <data name="Dictionary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\dictionary.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="FaultMessages" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ism7config\Resources\fault_messages.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="ParameterTemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\parameter.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

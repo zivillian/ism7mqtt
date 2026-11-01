@@ -41,6 +41,20 @@ namespace ism7mqtt
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
+        /// <summary>Request the fault lists of all configured devices and publish them.</summary>
+        public bool EnableFaults { get; set; }
+
+        /// <summary>
+        /// Diagnostic mode: when set (comma separated read bus addresses), only the systemconfig and the fault list
+        /// of these addresses are requested and every answer is logged. No values are read and nothing is written.
+        /// </summary>
+        public string FaultProbeAddresses { get; set; }
+
+        private bool IsFaultProbe => !String.IsNullOrWhiteSpace(FaultProbeAddresses);
+
+        /// <summary>Wolf requests the fault list with this fixed bundle id (and sequence).</summary>
+        public const string FaultBundleId = "3";
+
         public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host, Ism7Localizer localizer, string parameterXmlOverridePath = null)
         {
             _messageHandler = messageHandler;
@@ -110,6 +124,7 @@ namespace ism7mqtt
 
         private async Task OnCommandAsync(List<InfoWrite> writeRequests, CancellationToken cancellationToken)
         {
+            if (IsFaultProbe) return;
             var request = new TelegramBundleReq
             {
                 AbortOnError = true,
@@ -202,7 +217,7 @@ namespace ism7mqtt
                         if (buffer.Length < length + 6) break;
                         var type = (PayloadType)BinaryPrimitives.ReadInt16BigEndian(header.AsSpan(4));
                         var xmlBuffer = buffer.Slice(6, length);
-                        if (EnableDebug)
+                        if (EnableDebug || IsFaultProbe)
                         {
                             var xml = Encoding.UTF8.GetString(xmlBuffer);
                             Console.WriteLine($"< {xml}");
@@ -213,8 +228,18 @@ namespace ism7mqtt
                         }
                         else
                         {
-                            var response = Deserialize(type, new ReadOnlySequenceStream(xmlBuffer));
-                            tasks.Add(_dispatcher.DispatchAsync(response, cancellationToken));
+                            IResponse response = null;
+                            try
+                            {
+                                response = Deserialize(type, new ReadOnlySequenceStream(xmlBuffer));
+                            }
+                            catch (Exception ex) when (IsFaultProbe)
+                            {
+                                // the probe logs whatever arrives and keeps going
+                                Console.WriteLine($"fault probe: cannot parse message of type '{type}': {ex.Message}");
+                            }
+                            if (response is not null)
+                                tasks.Add(_dispatcher.DispatchAsync(response, cancellationToken));
                         }
                         buffer = buffer.Slice(xmlBuffer.End);
                         
@@ -375,10 +400,164 @@ namespace ism7mqtt
                 }
             }
 
+            // Wolf requests the fault lists before the value subscriptions, right after the systemconfig. We do it
+            // once all devices are set up and subscribed, so the proven startup sequence stays unchanged and the
+            // startup does not wait for the answers. Without SerializePushSubscribes the push answers may still be
+            // outstanding, so the requests then go out together with the subscriptions.
+            if (EnableFaults)
+            {
+                await SubscribeFaultListAsync(cancellationToken);
+            }
+
             if (OnInitializationFinishedAsync is not null)
             {
                 await OnInitializationFinishedAsync(_config, cancellationToken);
             }
+        }
+
+        private volatile bool _faultSystemconfigReceived;
+        private volatile bool _faultListReceived;
+
+        /// <summary>
+        /// Like Wolf, reads the systemconfig first and then requests the fault lists of the configured devices
+        /// that are on the bus. Nothing waits for the answers, a missing answer is only logged.
+        /// </summary>
+        private async Task SubscribeFaultListAsync(CancellationToken cancellationToken)
+        {
+            if (!_config.FaultBusAddresses.Any())
+            {
+                Console.WriteLine("fault list: no configured device has a fault list");
+                return;
+            }
+            _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.SystemconfigResp, OnFaultSystemconfigAsync);
+            _dispatcher.Subscribe(IsFaultListResponse, OnFaultListAsync);
+            await SendAsync(new SystemconfigReq { Sid = "1" }, cancellationToken);
+            _ = LogIfNoAnswerAsync(() => _faultSystemconfigReceived,
+                $"fault list: no answer to the read-systemconfig-request within {StartupTimeout}s, the fault lists are not requested", cancellationToken);
+        }
+
+        private async Task OnFaultSystemconfigAsync(IResponse response, CancellationToken cancellationToken)
+        {
+            _faultSystemconfigReceived = true;
+            var busDevices = ((SystemconfigResp)response).BusConfig?.Devices ?? new List<SystemconfigResp.BusDevice>();
+            var addresses = _config.SelectFaultBusAddresses(busDevices.Select(x => x.Ba));
+            Console.WriteLine($"fault list: requesting li=\"{String.Join(",", addresses)}\" (configured {String.Join(",", _config.FaultBusAddresses)}, systemconfig {String.Join(",", busDevices.Select(x => x.Ba))})");
+            if (addresses.Count == 0) return;
+            await SendFaultListRequestAsync(String.Join(",", addresses), cancellationToken);
+            _ = LogIfNoAnswerAsync(() => _faultListReceived,
+                $"fault list: no answer within {StartupTimeout}s", cancellationToken);
+        }
+
+        private async Task LogIfNoAnswerAsync(Func<bool> answered, string message, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay(StartupTimeoutSpan, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            if (!answered())
+                Console.WriteLine(message);
+        }
+
+        private static bool IsFaultListResponse(IResponse response)
+        {
+            return response.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)response).BundleId == FaultBundleId;
+        }
+
+        /// <summary>
+        /// Requests the fault lists like Wolf does: a push bundle with the fixed id 3 and only an error state read.
+        /// The module answers with the lists and again whenever they change.
+        /// </summary>
+        private ValueTask SendFaultListRequestAsync(string busAddresses, CancellationToken cancellationToken)
+        {
+            return SendAsync(new TelegramBundleReq
+            {
+                AbortOnError = false,
+                BundleId = FaultBundleId,
+                GatewayId = "1",
+                TelegramBundleType = TelegramBundleType.push,
+                EStRead = new TelegramBundleReq.ErrorStateRead
+                {
+                    Seq = FaultBundleId,
+                    VisibleDeviceAdresses = busAddresses
+                }
+            }, cancellationToken);
+        }
+
+        private async Task OnFaultListAsync(IResponse response, CancellationToken cancellationToken)
+        {
+            var resp = (TelegramBundleResp)response;
+            _faultListReceived = true;
+            if (!String.IsNullOrEmpty(resp.Errormsg) || resp.State != TelegrResponseState.OK)
+            {
+                Console.WriteLine($"fault list: unexpected answer, state '{resp.State}' {resp.Errormsg}");
+                return;
+            }
+            bool changed;
+            try
+            {
+                changed = _config.ProcessFaults(resp.ErrorStates ?? new List<ErrorStateResp>());
+            }
+            catch (Exception ex)
+            {
+                // a fault list we do not understand must never take down the connection
+                Console.WriteLine($"fault list: cannot process answer: {ex.Message}");
+                return;
+            }
+            if (changed)
+            {
+                foreach (var device in _config.Devices.Where(x => x.ReportsFaults && x.Faults is not null))
+                {
+                    Console.WriteLine($"fault list: {device.MqttTopic}: {device.ActiveFault} ({device.Faults.Count} entries)");
+                }
+                await _messageHandler(_config, cancellationToken);
+            }
+        }
+
+        private async Task RunFaultProbeAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine($"fault probe: read-only, sending only read-systemconfig-request and the fault list request for '{FaultProbeAddresses}'");
+            var systemconfig = new TaskCompletionSource<SystemconfigResp>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _dispatcher.SubscribeOnce(x => x.MessageType == PayloadType.SystemconfigResp, (r, _) =>
+            {
+                systemconfig.TrySetResult((SystemconfigResp)r);
+                return Task.CompletedTask;
+            });
+            _dispatcher.Subscribe(x => x.MessageType == PayloadType.TgrBundleResp, OnFaultProbeResponseAsync);
+
+            // Wolf sends the same gateway id as sid and as gw of its bundles
+            await SendAsync(new SystemconfigReq { Sid = "1" }, cancellationToken);
+            var completed = await Task.WhenAny(systemconfig.Task, Task.Delay(StartupTimeoutSpan, cancellationToken));
+            if (completed == systemconfig.Task)
+            {
+                var devices = systemconfig.Task.Result.BusConfig?.Devices ?? new List<SystemconfigResp.BusDevice>();
+                Console.WriteLine($"fault probe: systemconfig with {devices.Count} bus devices: {String.Join(", ", devices.Select(x => $"ba={x.Ba} did={x.DeviceId} sv={x.SoftwareVersion} sr={x.SoftwareRevision}"))}");
+                Console.WriteLine($"fault probe: --faults would request li=\"{String.Join(",", _config.SelectFaultBusAddresses(devices.Select(x => x.Ba)))}\"");
+            }
+            else
+            {
+                await completed;
+                Console.WriteLine($"fault probe: no systemconfig answer within {StartupTimeout}s, sending the fault list request anyway");
+            }
+            await SendFaultListRequestAsync(FaultProbeAddresses, cancellationToken);
+            Console.WriteLine("fault probe: fault list request sent, logging every answer until stopped");
+        }
+
+        private Task OnFaultProbeResponseAsync(IResponse response, CancellationToken cancellationToken)
+        {
+            var resp = (TelegramBundleResp)response;
+            var entries = resp.ErrorStates ?? new List<ErrorStateResp>();
+            Console.WriteLine($"fault probe: tbres bn={resp.BundleId} st={resp.State} emsg='{resp.Errormsg}' ers={entries.Count}");
+            foreach (var entry in entries)
+            {
+                var dtid = _config.GetFaultDeviceTemplateId(entry.BusAddress);
+                var text = dtid.HasValue ? FaultMessageTexts.Default.Get(entry.Code, dtid.Value) : null;
+                Console.WriteLine($"fault probe: ers se={entry.Seq} ba={entry.BusAddress} index={entry.Index} code={entry.Code} active={entry.Active} start='{entry.Start}' stop='{entry.Stop}' dtid={dtid?.ToString() ?? "-"} text='{text ?? "-"}'");
+            }
+            return Task.CompletedTask;
         }
 
         // We observed pull bundel request were not answered by the ISM7 which caused the startup to hang.
@@ -428,6 +607,8 @@ namespace ism7mqtt
             var resp = (LoginResp)response;
             if (resp.State != LoginState.ok)
                 throw new InvalidDataException("invalid login state");
+            if (IsFaultProbe)
+                return RunFaultProbeAsync(cancellationToken);
             return LoadInitialValuesAsync(cancellationToken);
         }
 
@@ -455,7 +636,8 @@ namespace ism7mqtt
         private ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = payload.Serialize();
-            if (EnableDebug)
+            // the probe logs what it sends, except the login with the password
+            if (EnableDebug || (IsFaultProbe && payload is not LoginReq))
                 Console.WriteLine($"> {Encoding.UTF8.GetString(data)}");
             var buffer = new byte[data.Length + 6];
             BinaryPrimitives.WriteInt32BigEndian(buffer, data.Length);

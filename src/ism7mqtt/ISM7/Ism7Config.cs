@@ -92,7 +92,141 @@ namespace ism7mqtt
             {
                 var device = _deviceTemplates.First(x => x.DTID == configDevice.DeviceTemplateId);
                 var tids = configDevice.Parameter.ToHashSet();
-                devices.Add(new RunningDevice(device.Name, ip, configDevice.ReadBusAddress, configDevice.WriteBusAddress, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID)), _localizer));
+                var faultBusAddress = GetFaultBusAddress(configDevice);
+                devices.Add(new RunningDevice(device.Name, ip, configDevice.ReadBusAddress, configDevice.WriteBusAddress, _parameterTemplates.Where(x => tids.Contains(x.PTID)), _converterTemplates.Where(x => tids.Contains(x.CTID)), _localizer)
+                {
+                    DeviceTemplateId = device.DTID,
+                    FaultBusAddress = faultBusAddress,
+                    // the module keeps one fault list per bus address, the first device with that fault list owns it
+                    ReportsFaults = faultBusAddress.HasValue && !_devices.Values.SelectMany(x => x).Any(x => x.ReportsFaults && x.FaultBusAddress == faultBusAddress),
+                });
+            }
+        }
+
+        // Like Wolf (BusconfigMetaData.GetDeviceInfo), only the physical eBus devices have a fault list: the
+        // boilers and heat pumps, BM, BM-2, RM-2, DFB, KM, MM, SM1, SM2 and CWL. The ISM, the virtual devices
+        // (DHK, MK, ..._BM-2, ..._RM-2) and the Modbus devices (WRS) have none.
+        private static readonly HashSet<int> FaultListDeviceTemplateIds = new()
+        {
+            30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 140000, 150000, 160000,
+            170000, 180000, 200000, 210000, 220000, 230000, 240000, 250000, 270000, 280000, 290000, 380000, 390000,
+            400000, 430000, 440000, 450000, 460000,
+        };
+
+        /// <summary>The bus address of the device's fault list (Wolf's ErrorStateBusAddress), or null if it has none.</summary>
+        private byte? GetFaultBusAddress(ConfigDevice device)
+        {
+            if (!FaultListDeviceTemplateIds.Contains(device.DeviceTemplateId)) return null;
+            // the CWL and CWL-2 report their faults on 0x8B, not on their read address
+            if (device.DeviceTemplateId is 230000 or 390000) return 0x8B;
+            var readBusAddress = Converter.FromHex(device.ReadBusAddress);
+            // Wolf drops the fault list of the first MM when there is a KM (BusconfigWriter.PatchErrorStateBusAddress)
+            if (device.DeviceTemplateId == 40000 && readBusAddress == 0x51 && _config.Devices.Any(x => x.DeviceTemplateId == 50000)) return null;
+            return readBusAddress;
+        }
+
+        private static string FormatBusAddress(byte busAddress) => $"0x{busAddress:X}";
+
+        // the fault list addresses requested on this connection, null until they are selected
+        private HashSet<byte> _requestedFaultBusAddresses;
+
+        private readonly HashSet<string> _unknownFaultBusAddresses = new();
+
+        /// <summary>
+        /// The fault list addresses of all configured devices, written like the ISM reports them ("0x8").
+        /// </summary>
+        public IEnumerable<string> FaultBusAddresses => _config.Devices
+            .Select(GetFaultBusAddress)
+            .Where(x => x.HasValue)
+            .Distinct()
+            .Select(x => FormatBusAddress(x.Value));
+
+        /// <summary>
+        /// Selects the fault lists to request like Wolf does: only those of the configured devices that the ism7
+        /// reports in its systemconfig. Only these devices publish a fault list.
+        /// </summary>
+        public IReadOnlyList<string> SelectFaultBusAddresses(IEnumerable<string> systemconfigBusAddresses)
+        {
+            var onBus = new HashSet<byte>();
+            foreach (var address in systemconfigBusAddresses)
+            {
+                if (TryParseBusAddress(address, out var ba)) onBus.Add(ba);
+            }
+            _requestedFaultBusAddresses = _config.Devices
+                .Where(x => onBus.Contains(Converter.FromHex(x.ReadBusAddress)))
+                .Select(GetFaultBusAddress)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToHashSet();
+            return FaultBusAddresses.Where(x => _requestedFaultBusAddresses.Contains(Converter.FromHex(x))).ToList();
+        }
+
+        /// <summary>The device template id whose fault texts apply to the bus address, if it is configured.</summary>
+        public int? GetFaultDeviceTemplateId(string busAddress)
+        {
+            if (!TryParseBusAddress(busAddress, out var ba)) return null;
+            return _config.Devices
+                .Where(x => GetFaultBusAddress(x) == ba)
+                .Select(x => (int?)x.DeviceTemplateId)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Processes a fault list answer. Like Wolf, every answer is treated as a full snapshot of all requested
+        /// devices: an entry missing from it stays in the device's list, but is no longer active. Codes outside
+        /// 1-255 are no faults and at most 10 entries per answer are used. Returns whether any device's list changed.
+        /// </summary>
+        public bool ProcessFaults(IEnumerable<ErrorStateResp> data)
+        {
+            var owners = _devices.Values.SelectMany(x => x)
+                .Where(x => x.ReportsFaults && _requestedFaultBusAddresses is not null && _requestedFaultBusAddresses.Contains(x.FaultBusAddress.Value))
+                .ToList();
+            var entries = new List<(byte BusAddress, ErrorStateResp Entry)>();
+            foreach (var entry in data)
+            {
+                if (entry.Code <= 0 || entry.Code > 255) continue;
+                if (!TryParseBusAddress(entry.BusAddress, out var ba) || !owners.Any(x => x.FaultBusAddress == ba))
+                {
+                    // every answer repeats it, so it is logged once per connection
+                    if (_unknownFaultBusAddresses.Add(entry.BusAddress ?? String.Empty))
+                        Console.WriteLine($"fault list: ignoring entries for unknown bus address '{entry.BusAddress}'");
+                    continue;
+                }
+                if (entries.Count >= 10) continue;
+                entries.Add((ba, entry));
+            }
+            var changed = false;
+            foreach (var device in owners)
+            {
+                var faults = entries
+                    .Where(x => x.BusAddress == device.FaultBusAddress)
+                    .Select(x => x.Entry)
+                    .OrderBy(x => x.Index)
+                    .Select(x => new FaultEntry(x.Index, x.Code, GetFaultText(x.Code, device.DeviceTemplateId),
+                        String.IsNullOrEmpty(x.Start) ? null : x.Start, String.IsNullOrEmpty(x.Stop) ? null : x.Stop, x.Active));
+                if (device.SetFaults(faults)) changed = true;
+            }
+            return changed;
+        }
+
+        private string GetFaultText(int code, int deviceTemplateId)
+        {
+            var text = FaultMessageTexts.Default.Get(code, deviceTemplateId);
+            return text is null ? null : _localizer[text];
+        }
+
+        private static bool TryParseBusAddress(string value, out byte busAddress)
+        {
+            busAddress = 0;
+            if (String.IsNullOrEmpty(value)) return false;
+            try
+            {
+                busAddress = Converter.FromHex(value.Trim());
+                return true;
+            }
+            catch (Exception ex) when (ex is ArgumentException or FormatException or OverflowException)
+            {
+                return false;
             }
         }
 
@@ -200,11 +334,13 @@ namespace ism7mqtt
         public class RunningDevice
         {
             private readonly List<RunningParameter> _parameter;
+            private readonly Ism7Localizer _localizer;
 
             public RunningDevice(string name, string ip, string readBusAddress, string writeBusAddress, IEnumerable<ParameterDescriptor> parameter, IEnumerable<ConverterTemplateBase> converter, Ism7Localizer localizer)
             {
                 Name = name;
                 IP = ip;
+                _localizer = localizer;
 
                 WriteAddress = writeBusAddress ?? $"0x{(Converter.FromHex(readBusAddress) - 5):X2}";
                 MqttTopic = $"Wolf/{ip}/{name}_{readBusAddress}";
@@ -227,7 +363,79 @@ namespace ism7mqtt
 
             public string WriteAddress { get; }
 
-            public bool HasValue => _parameter.Any(x => x.HasValue);
+            public bool HasValue => _parameter.Any(x => x.HasValue) || _faults is not null;
+
+            public int DeviceTemplateId { get; init; }
+
+            /// <summary>The bus address of the device's fault list, null if it has none.</summary>
+            public byte? FaultBusAddress { get; init; }
+
+            /// <summary>Whether this device publishes the fault list of its <see cref="FaultBusAddress"/>.</summary>
+            public bool ReportsFaults { get; init; }
+
+            public const string FaultTopic = "Stoermeldung";
+            public const string FaultListTopic = "Stoermeldungen";
+            public const string NoActiveFault = "Keine";
+            private const int MaxFaults = 10;
+
+            // null until the first fault list arrived, so nothing is published before the module answered
+            private List<FaultEntry> _faults;
+
+            public IReadOnlyList<FaultEntry> Faults => _faults;
+
+            /// <summary>
+            /// Takes the entries of a new answer. Like Wolf, an entry (code and start) missing from it is kept as
+            /// history, no longer active, until the module reports it again or newer entries push it out of the
+            /// last <see cref="MaxFaults"/>. Returns whether the list changed.
+            /// </summary>
+            public bool SetFaults(IEnumerable<FaultEntry> faults)
+            {
+                var list = faults.ToList();
+                if (_faults is not null)
+                {
+                    var missing = _faults
+                        .Where(x => !list.Any(y => y.Code == x.Code && y.Start == x.Start))
+                        .Select(x => x with { Active = false })
+                        .ToList();
+                    list.AddRange(missing);
+                }
+                list = list.Take(MaxFaults).ToList();
+                if (_faults is not null && _faults.SequenceEqual(list)) return false;
+                _faults = list;
+                return true;
+            }
+
+            /// <summary>The newest active fault, e.g. "63 Funktionskontrolle Schwerkraftbremse", or <see cref="NoActiveFault"/>.</summary>
+            public string ActiveFault
+            {
+                get
+                {
+                    var newest = _faults?
+                        .Where(x => x.Active)
+                        .OrderByDescending(x => x.StartTime ?? DateTime.MinValue)
+                        .ThenBy(x => x.Index)
+                        .FirstOrDefault();
+                    return newest?.Label ?? _localizer[NoActiveFault];
+                }
+            }
+
+            public JsonArray FaultListJson()
+            {
+                var result = new JsonArray();
+                foreach (var fault in _faults ?? new List<FaultEntry>())
+                {
+                    result.Add(new JsonObject
+                    {
+                        ["code"] = fault.Code,
+                        ["text"] = fault.Text,
+                        ["active"] = fault.Active,
+                        ["start"] = fault.Start,
+                        ["stop"] = fault.Stop,
+                        ["index"] = fault.Index,
+                    });
+                }
+                return result;
+            }
 
             private void EnsureUniqueParameterNames()
             {
@@ -306,8 +514,13 @@ namespace ism7mqtt
                         .Where(x => x.HasValue)
                         .Distinct()
                         .ToList();
-                    if (parameters.Count == 0) return null;
+                    if (parameters.Count == 0 && _faults is null) return null;
                     var result = new JsonObject();
+                    if (_faults is not null)
+                    {
+                        result.Add(FaultTopic, ActiveFault);
+                        result.Add(FaultListTopic, FaultListJson());
+                    }
                     foreach (var parameter in parameters)
                     {
                         var property = parameter.GetJsonValue();
@@ -342,6 +555,11 @@ namespace ism7mqtt
                             property.AddPrefix(MqttTopic);
                             yield return property;
                         }
+                    }
+                    if (_faults is not null)
+                    {
+                        yield return new MqttMessage(FaultTopic, ActiveFault).AddPrefix(MqttTopic);
+                        yield return new MqttMessage(FaultListTopic, JsonSerializer.Serialize(FaultListJson(), JsonContext.Default.JsonArray)).AddPrefix(MqttTopic);
                     }
                 }
             }
