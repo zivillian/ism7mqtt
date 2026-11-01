@@ -497,7 +497,10 @@ public class FaultTests
             var cgb = config.Devices.Single(x => x.Name == "CGB");
             var sm1 = config.Devices.Single(x => x.Name == "SM1");
             Assert.Equal("4 Keine Flammenbildung", cgb.ActiveFault);
-            Assert.Equal(10, cgb.Faults.Count + sm1.Faults.Count);
+            // at most 10 entries per device, the active ones are kept
+            Assert.Equal(10, cgb.Faults.Count);
+            Assert.Equal(2, cgb.Faults.Count(x => x.Active));
+            Assert.Single(sm1.Faults);
             Assert.False(config.ProcessFaults(entries));
 
             // a numeric match, whatever spelling the module uses
@@ -510,6 +513,70 @@ public class FaultTests
             var kept = Assert.Single(sm1.Faults);
             Assert.Equal(63, kept.Code);
             Assert.False(kept.Active);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void ProcessFaults_HistoryOfOneDevice_DoesNotHideAnActiveFault()
+    {
+        var config = LoadFaultsConfig(out var path);
+        try
+        {
+            // 11 history entries of the SM1 come first, then an active fault of the CGB
+            var entries = Enumerable.Range(1, 11)
+                .Select(i => Ers("0x76", i, 63, false, $"{i:00}.10.2026 07:00:00", $"{i:00}.10.2026 08:00:00"))
+                .ToList();
+            entries.Add(Ers("0x8", 1, 4, true, "01.11.2026 07:00:00"));
+            Assert.True(config.ProcessFaults(entries));
+            var cgb = config.Devices.Single(x => x.Name == "CGB");
+            var sm1 = config.Devices.Single(x => x.Name == "SM1");
+            Assert.Equal("4 Keine Flammenbildung", cgb.ActiveFault);
+            Assert.Equal(10, sm1.Faults.Count);
+
+            // within one device, an active entry behind 10 history entries is kept as well
+            entries.Add(Ers("0x76", 12, 63, true, "01.11.2026 07:00:00"));
+            Assert.True(config.ProcessFaults(entries));
+            Assert.Equal(10, sm1.Faults.Count);
+            Assert.Equal("63 Funktionskontrolle Schwerkraftbremse", sm1.ActiveFault);
+            Assert.Equal(12, sm1.Faults.Last().Index);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void ProcessFaults_BmListsHeatGeneratorFault_TextIsBorrowedFromTheHeatGenerator()
+    {
+        var config = LoadFaultsConfig(out var path);
+        try
+        {
+            // live answer of FW 3.00: the BM at 0x35 lists the burner faults 5 and 4 (texts only under the CGB, 80000)
+            Assert.True(config.ProcessFaults(new[]
+            {
+                Ers("0x35", 1, 5, true, "14.09.2026 23:10:41"),
+                Ers("0x35", 2, 4, false, "14.09.2026 23:10:34", "14.09.2026 23:10:40"),
+                Ers("0x35", 3, 15, false, "14.09.2026 23:10:30", "14.09.2026 23:10:31"),
+                Ers("0x76", 1, 4, true, "14.09.2026 23:10:41"),
+            }));
+            var bm = config.Devices.Single(x => x.ReportsFaults && x.FaultBusAddress == 0x35);
+            Assert.Equal("5 Flammenausfall im Betrieb", bm.ActiveFault);
+            Assert.Equal(80000, bm.Faults[0].TextSource);
+            Assert.Equal("Keine Flammenbildung", bm.Faults[1].Text);
+            // the BM's own text is not borrowed
+            Assert.Null(bm.Faults[2].TextSource);
+            Assert.NotNull(bm.Faults[2].Text);
+            var json = bm.MqttMessages.Single(x => x.Path.EndsWith("/Stoermeldungen")).Content;
+            Assert.Contains("\"text_source\":80000", json);
+            // only a BM borrows texts: the SM1 has none for code 4
+            var sm1 = config.Devices.Single(x => x.Name == "SM1");
+            Assert.Equal("4", sm1.ActiveFault);
+            Assert.Null(sm1.Faults[0].TextSource);
         }
         finally
         {
