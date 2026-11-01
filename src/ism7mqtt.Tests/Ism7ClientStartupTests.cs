@@ -10,7 +10,7 @@ namespace ism7mqtt.Tests;
 public class Ism7ClientStartupTests
 {
     // Telegram number -> raw wire bytes for the parameters used by Fixtures/happy-path.json.
-    private static readonly Dictionary<ushort, (string Low, string High)> HappyPathTelegrams = new()
+    internal static readonly Dictionary<ushort, (string Low, string High)> HappyPathTelegrams = new()
     {
         [12] = ("0x55", "0x00"),    // 270005 Außentemperatur (SS10): 85 -> 8.5°C
         [367] = ("0x2A", "0x00"),   // 270010 Aktuelle Leistungsvorgabe Verdichter (US): 42%
@@ -20,7 +20,7 @@ public class Ism7ClientStartupTests
         [5266] = ("0x02", "0x00"),  // 360066 Reglertyp (US): 2
     };
 
-    private static List<InfonumberReadResp> RespondFromTable(TelegramBundleReq request, IReadOnlyDictionary<ushort, (string Low, string High)> table)
+    internal static List<InfonumberReadResp> RespondFromTable(TelegramBundleReq request, IReadOnlyDictionary<ushort, (string Low, string High)> table)
     {
         return request.InfoReadTelegrams.Select(ir =>
         {
@@ -478,7 +478,7 @@ public class Ism7ClientStartupTests
                 Console.SetOut(originalOut);
             }
 
-            Assert.Contains("Shutdown ism7mqtt due to timeout during startup.", consoleOutput.ToString());
+            Assert.Contains("Timeout while waiting for a response during startup.", consoleOutput.ToString());
             // bundles 1-4 succeeded and were published before bundle 5 stalled; startup never completed.
             Assert.Equal(4, publishedDeviceCount);
             Assert.False(initFinished.Task.IsCompleted);

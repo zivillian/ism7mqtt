@@ -72,10 +72,24 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 only applies to the initial startup phase, where ism7mqtt requests all configured values from
 the ism7 one pull request at a time. It is **not** a timeout for the whole startup phase - it
 resets for every single pull request. If the ism7 does not answer one particular request within
-this time, ism7mqtt assumes the connection is stuck, logs the problem and exits so it can be
-restarted (e.g. by Docker's restart policy). Increase this value if your setup regularly needs
-more time to answer a single request; decrease it if you want ism7mqtt to fail faster on a
-stuck connection.
+this time, ism7mqtt assumes the connection is stuck, logs the problem and reconnects (see below).
+The same timeout applies to establishing the connection (TCP connect and TLS handshake).
+Increase this value if your setup regularly needs more time to answer a single request;
+decrease it if you want ism7mqtt to fail faster on a stuck connection.
+
+If the connection to the ism7 is lost (e.g. a nightly router reconnect or a reset of the ism7)
+or cannot be established, ism7mqtt keeps running and reconnects on its own, while the
+connection to the MQTT broker stays up. It waits 10 seconds before the first reconnect attempt
+and doubles the delay after every failed attempt, up to 5 minutes; the delay starts at 10 seconds
+again once a connection stayed up for 5 minutes after finishing startup. This also applies to a
+rejected login (e.g. a wrong password), so check the log for `invalid login state` if ism7mqtt
+never finishes startup. MQTT write commands received while the ism7 is not connected or the
+login has not completed yet are dropped (and logged).
+
+Previous versions exited on these errors and relied on the restart policy of Docker or systemd.
+ism7mqtt now stays running, so restarts no longer indicate ism7 outages - watch the log for
+`ism7 connection` instead. ism7mqtt still exits (with exit code 1) on errors it cannot recover
+from, e.g. if the MQTT broker is not reachable at startup.
 
 `ISM7_SERIALIZE_PUSH_SUBSCRIBES` (defaults to `false`, also available as
 `--serialize-push-subscribes`) changes how ism7mqtt subscribes to push updates at the end of

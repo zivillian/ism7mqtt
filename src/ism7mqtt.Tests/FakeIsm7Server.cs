@@ -28,16 +28,19 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     private readonly object _pushGate = new object();
     private bool _previousPushResponseSent = true;
     private readonly List<int> _prematurePushSubscribeOrdinals = new List<int>();
+    private readonly int _rejectConnections;
     private readonly Task _acceptTask;
+    private int _connectionCount;
     private TcpClient? _client;
     private SslStream? _sslStream;
 
-    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null)
+    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null, int rejectConnections = 0)
     {
         _pullResponder = pullResponder;
         _loginState = loginState;
         _dropPullBundleOrdinal = dropPullBundleOrdinal;
         _pushResponseDelay = pushResponseDelay;
+        _rejectConnections = rejectConnections;
         _listener = new TcpListener(IPAddress.Loopback, 0);
         _listener.Start();
         Port = ((IPEndPoint)_listener.LocalEndpoint).Port;
@@ -61,22 +64,60 @@ public sealed class FakeIsm7Server : IAsyncDisposable
 
     private readonly System.Collections.Concurrent.ConcurrentQueue<TelegramBundleReq> _pushRequests = new();
 
+    /// <summary>
+    /// Number of TCP connections accepted so far, including the ones closed because of rejectConnections.
+    /// </summary>
+    public int ConnectionCount => Volatile.Read(ref _connectionCount);
+
+    /// <summary>
+    /// Closes the current connection, like an ism7 dropping its session (e.g. after a router reconnect).
+    /// </summary>
+    public void DropConnection()
+    {
+        _sslStream?.Dispose();
+        _client?.Dispose();
+    }
+
     private async Task AcceptLoopAsync()
     {
-        try
+        // one connection at a time, like the real device
+        while (true)
         {
-            _client = await _listener.AcceptTcpClientAsync();
-            _sslStream = new SslStream(_client.GetStream(), false, (_, _, _, _) => true);
-            await _sslStream.AuthenticateAsServerAsync(new SslServerAuthenticationOptions
+            TcpClient client;
+            try
             {
-                ServerCertificate = Ism7SslStream.Certificate,
-                ClientCertificateRequired = true,
-            });
-            await HandleConnectionAsync(_sslStream);
-        }
-        catch
-        {
-            // connection torn down by the test (disposal/cancellation) - nothing to assert on here
+                client = await _listener.AcceptTcpClientAsync();
+            }
+            catch
+            {
+                // listener stopped by DisposeAsync
+                return;
+            }
+            if (Interlocked.Increment(ref _connectionCount) <= _rejectConnections)
+            {
+                // like an ism7 that still holds the previous session: close before the TLS handshake
+                client.Dispose();
+                continue;
+            }
+            try
+            {
+                _client = client;
+                _sslStream = new SslStream(_client.GetStream(), false, (_, _, _, _) => true);
+                await _sslStream.AuthenticateAsServerAsync(new SslServerAuthenticationOptions
+                {
+                    ServerCertificate = Ism7SslStream.Certificate,
+                    ClientCertificateRequired = true,
+                });
+                await HandleConnectionAsync(_sslStream);
+            }
+            catch
+            {
+                // connection torn down by the test (disposal/cancellation) - nothing to assert on here
+            }
+            finally
+            {
+                DropConnection();
+            }
         }
     }
 
