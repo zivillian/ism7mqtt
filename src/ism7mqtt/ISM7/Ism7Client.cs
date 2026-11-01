@@ -636,9 +636,9 @@ namespace ism7mqtt
         private ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = payload.Serialize();
-            // the probe logs what it sends, except the login with the password
-            if (EnableDebug || (IsFaultProbe && payload is not LoginReq))
-                Console.WriteLine($"> {Encoding.UTF8.GetString(data)}");
+            // debug output and the probe log what is sent - never the login, it carries the password
+            if (EnableDebug || IsFaultProbe)
+                Console.WriteLine(payload is LoginReq ? "> (login request, password not logged)" : $"> {Encoding.UTF8.GetString(data)}");
             var buffer = new byte[data.Length + 6];
             BinaryPrimitives.WriteInt32BigEndian(buffer, data.Length);
             BinaryPrimitives.WriteInt16BigEndian(buffer.AsSpan(4), (short) payload.Type);
