@@ -93,7 +93,7 @@ public class MqttConnectionTests
     }
 
     [Fact]
-    public async Task Writes_the_health_file_while_connected()
+    public async Task Writes_the_mqtt_health_file_while_connected()
     {
         var port = GetFreePort();
         var healthFile = Path.Combine(Path.GetTempPath(), $"ism7mqtt-health-{Guid.NewGuid():N}");
@@ -101,7 +101,7 @@ public class MqttConnectionTests
         var factory = new MqttFactory();
         var broker = await StartBrokerAsync(factory, port);
         using var mqttClient = factory.CreateMqttClient();
-        var connection = new MqttConnection(mqttClient, ClientOptions(port)) { HealthFile = healthFile };
+        var connection = new MqttConnection(mqttClient, ClientOptions(port)) { MqttHealthFile = healthFile };
         try
         {
             Assert.False(File.Exists(healthFile));

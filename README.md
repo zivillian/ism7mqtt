@@ -57,7 +57,7 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 | `-l, --lang=<code>` | `ISM7_LANGUAGE` | `DEU` | Language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR) |
 | `-d, --debug` | `ISM7_DEBUG` | `false` | Dump raw protocol XML (includes your password) |
 | `--hass-id=<prefix>` | `ISM7_HOMEASSISTANT_ID` | – | Enable Home Assistant discovery; implies `--separate` and `--retain` |
-| `--health-file=<path>` | `ISM7_HEALTH_FILE` | – (Docker image: `/tmp/ism7mqtt.alive`) | File that is updated every 30 seconds while the MQTT broker is reachable — see below |
+| `--mqtt-health-file=<path>` | `ISM7_MQTT_HEALTH_FILE` | – (Docker image: `/tmp/ism7mqtt-mqtt.alive`) | File that is updated every 30 seconds while the connection to the MQTT broker is up — see below |
 
 **Files & templates**
 
@@ -85,10 +85,12 @@ this happens, eventually resetting the connection. If you see this symptom, enab
 to make ism7mqtt send push subscribes one at a time, waiting for each response before sending
 the next, the same way pull requests are already handled.
 
-`ISM7_HEALTH_FILE` (also available as `--health-file`) names a file that ism7mqtt updates every
-30 seconds while the connection to the MQTT broker is up. The Docker image sets it to
-`/tmp/ism7mqtt.alive` and ships a `HEALTHCHECK` that reports the container as unhealthy when the
-file is older than two minutes. Plain Docker does not restart unhealthy containers on its own;
+`ISM7_MQTT_HEALTH_FILE` (also available as `--mqtt-health-file`) names a file that ism7mqtt
+updates every 30 seconds while the connection to the MQTT broker is up. It only reflects the
+MQTT side, not the connection to the ISM7. The Docker image sets it to
+`/tmp/ism7mqtt-mqtt.alive` and ships a `HEALTHCHECK` that reports the container as unhealthy when
+the file is older than two minutes. Set the variable to an empty value to turn the feature off;
+the check then always passes. Plain Docker does not restart unhealthy containers on its own;
 use your orchestrator or a tool like autoheal if you want that. If the broker goes away,
 ism7mqtt keeps trying to reconnect every 5 seconds and renews its subscriptions (and the Home
 Assistant discovery info) after every reconnect.

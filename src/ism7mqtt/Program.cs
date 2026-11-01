@@ -49,7 +49,7 @@ namespace ism7mqtt
             bool serializePushSubscribes = GetEnvBool("ISM7_SERIALIZE_PUSH_SUBSCRIBES");
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
-            string healthFile = GetEnvString("ISM7_HEALTH_FILE");
+            string mqttHealthFile = GetEnvString("ISM7_MQTT_HEALTH_FILE");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -67,7 +67,7 @@ namespace ism7mqtt
                 {"startup-timeout=", "timeout in seconds to wait for each pull request response during startup (defaults to 90)", (int x) => startupTimeout = x},
                 {"serialize-push-subscribes", "send push subscribes one at a time during startup, waiting for each response, instead of all at once (needed for some FW5.20 devices that otherwise stop responding; defaults to false)", x => serializePushSubscribes = x != null},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
-                {"health-file=", "file that is updated while the MQTT broker is reachable, e.g. for a docker HEALTHCHECK (defaults to none)", x => healthFile = x},
+                {"mqtt-health-file=", "file that is updated while the connection to the MQTT broker is up, e.g. for a docker HEALTHCHECK (defaults to none)", x => mqttHealthFile = x},
                 {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
@@ -153,7 +153,7 @@ namespace ism7mqtt
 
                         var mqttConnection = new MqttConnection(mqttClient, mqttOptions)
                         {
-                            HealthFile = healthFile,
+                            MqttHealthFile = mqttHealthFile,
                             EnableDebug = enableDebug,
                             // clean session: the broker forgets all subscriptions on every
                             // disconnect, so they are renewed after every (re)connect

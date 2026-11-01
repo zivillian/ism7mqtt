@@ -20,12 +20,12 @@ namespace ism7mqtt
     /// </remarks>
     public class MqttConnection
     {
-        private static readonly TimeSpan HealthFileInterval = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan MqttHealthFileInterval = TimeSpan.FromSeconds(30);
 
         private readonly IMqttClient _client;
         private readonly MqttClientOptions _options;
-        private DateTime _lastHealthFileWrite = DateTime.MinValue;
-        private bool _healthFileErrorLogged;
+        private DateTime _lastMqttHealthFileWrite = DateTime.MinValue;
+        private bool _mqttHealthFileErrorLogged;
 
         public MqttConnection(IMqttClient client, MqttClientOptions options)
         {
@@ -44,9 +44,15 @@ namespace ism7mqtt
         public TimeSpan CheckInterval { get; set; } = TimeSpan.FromSeconds(5);
 
         /// <summary>
-        /// Optional file that is touched while the broker is reachable, e.g. for a Docker HEALTHCHECK.
+        /// Upper time limit for a single ping; a ping that takes longer counts as failed.
         /// </summary>
-        public string HealthFile { get; set; }
+        public TimeSpan PingTimeout { get; set; } = TimeSpan.FromSeconds(10);
+
+        /// <summary>
+        /// Optional file that is touched while the connection to the broker is up, e.g. for a Docker
+        /// HEALTHCHECK. It reflects only the MQTT side, not the connection to the ISM7.
+        /// </summary>
+        public string MqttHealthFile { get; set; }
 
         public bool EnableDebug { get; set; }
 
@@ -54,7 +60,7 @@ namespace ism7mqtt
         {
             await _client.ConnectAsync(_options, cancellationToken);
             await RestoreSessionAsync(cancellationToken);
-            TouchHealthFile(force: true);
+            TouchMqttHealthFile(force: true);
         }
 
         public async Task KeepConnectedAsync(CancellationToken cancellationToken)
@@ -66,9 +72,9 @@ namespace ism7mqtt
                 await Task.Delay(CheckInterval, cancellationToken);
                 try
                 {
-                    if (await _client.TryPingAsync(cancellationToken))
+                    if (await PingAsync(cancellationToken))
                     {
-                        TouchHealthFile(force: false);
+                        TouchMqttHealthFile(force: false);
                         continue;
                     }
                     if (connected)
@@ -76,12 +82,15 @@ namespace ism7mqtt
                         Console.Error.WriteLine($"mqtt disconnected - reconnecting every {CheckInterval.TotalSeconds:0} seconds");
                         connected = false;
                     }
+                    // A ping can fail while the client still believes it is connected (half-open TCP
+                    // connection). ConnectAsync would then be rejected, so drop the old connection first.
+                    await DisconnectQuietlyAsync();
                     await _client.ConnectAsync(_options, cancellationToken);
                     await RestoreSessionAsync(cancellationToken);
                     Console.WriteLine("mqtt reconnected");
                     connected = true;
                     failureLogged = false;
-                    TouchHealthFile(force: true);
+                    TouchMqttHealthFile(force: true);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
@@ -95,6 +104,37 @@ namespace ism7mqtt
                         failureLogged = true;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Ping with an upper time limit, so a broker that accepts the TCP connection but no longer
+        /// answers does not block the check loop. A timed out ping counts as a failed ping.
+        /// </summary>
+        private async Task<bool> PingAsync(CancellationToken cancellationToken)
+        {
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeout.CancelAfter(PingTimeout);
+            try
+            {
+                return await _client.TryPingAsync(timeout.Token);
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                return false;
+            }
+        }
+
+        private async Task DisconnectQuietlyAsync()
+        {
+            if (!_client.IsConnected) return;
+            try
+            {
+                await _client.DisconnectAsync(new MqttClientDisconnectOptions(), CancellationToken.None);
+            }
+            catch
+            {
+                // already gone
             }
         }
 
@@ -121,21 +161,21 @@ namespace ism7mqtt
             }
         }
 
-        private void TouchHealthFile(bool force)
+        private void TouchMqttHealthFile(bool force)
         {
-            if (String.IsNullOrEmpty(HealthFile)) return;
+            if (String.IsNullOrEmpty(MqttHealthFile)) return;
             var now = DateTime.UtcNow;
-            if (!force && now - _lastHealthFileWrite < HealthFileInterval) return;
+            if (!force && now - _lastMqttHealthFileWrite < MqttHealthFileInterval) return;
             try
             {
-                File.WriteAllText(HealthFile, now.ToString("O"));
-                _lastHealthFileWrite = now;
+                File.WriteAllText(MqttHealthFile, now.ToString("O"));
+                _lastMqttHealthFileWrite = now;
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
             {
-                if (_healthFileErrorLogged) return;
-                Console.Error.WriteLine($"could not write health file '{HealthFile}': {ex.Message}");
-                _healthFileErrorLogged = true;
+                if (_mqttHealthFileErrorLogged) return;
+                Console.Error.WriteLine($"could not write mqtt health file '{MqttHealthFile}': {ex.Message}");
+                _mqttHealthFileErrorLogged = true;
             }
         }
     }
