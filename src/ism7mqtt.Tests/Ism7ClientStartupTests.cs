@@ -334,6 +334,64 @@ public class Ism7ClientStartupTests
     }
 
     [Fact]
+    public async Task TimeProgramDatapoints_AreNeitherPulledNorSubscribed()
+    {
+        // 300000 "Mo bis Fr" uses TimeprogConverterTemplate (telegrams 5248-5250), which cannot produce a
+        // value yet. Requesting it anyway only costs subscription slots in the ISM7 - and ISM7 firmware 2.10
+        // rejects every write once too many datapoints are subscribed
+        // (https://github.com/zivillian/ism7mqtt/issues/57#issuecomment-1874103810).
+        var pulled = new System.Collections.Concurrent.ConcurrentBag<int>();
+        await using var server = new FakeIsm7Server(request =>
+        {
+            foreach (var infoRead in request.InfoReadTelegrams)
+            {
+                pulled.Add(infoRead.InfoNumber);
+            }
+            // answer every telegram, so a regression shows up in the asserts below instead of a startup timeout
+            return request.InfoReadTelegrams.Select(ir => new InfonumberReadResp
+            {
+                BusAddress = ir.BusAddress,
+                InfoNumber = (ushort)ir.InfoNumber,
+                State = TelegrResponseState.OK,
+                DBLow = "0xD5",
+                DBHigh = "0x00",
+            }).ToList();
+        });
+        var parameterPath = TestFixtures.WriteParameterFile("timeprog.json", server.Port);
+        try
+        {
+            var initFinished = new TaskCompletionSource<bool>();
+            var client = new Ism7Client((_, _) => Task.CompletedTask, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"))
+            {
+                StartupTimeout = 5,
+                SerializePushSubscribes = true,
+                OnInitializationFinishedAsync = (_, _) =>
+                {
+                    initFinished.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            };
+
+            using var cts = new CancellationTokenSource();
+            var runTask = client.RunAsync("test-password", cts.Token);
+
+            var completed = await Task.WhenAny(initFinished.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+            Assert.Same(initFinished.Task, completed);
+
+            cts.Cancel();
+            await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+            var subscribed = server.PushRequests.SelectMany(x => x.InfoReadTelegrams).Select(x => x.InfoNumber);
+            Assert.Equal(new[] { 10164 }, pulled.OrderBy(x => x));
+            Assert.Equal(new[] { 10164 }, subscribed.OrderBy(x => x));
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
     public async Task InvalidLoginState_LogsErrorAndReturnsWithoutStartingUp()
     {
         await using var server = new FakeIsm7Server(_ => new List<InfonumberReadResp>(), loginState: LoginState.busy);

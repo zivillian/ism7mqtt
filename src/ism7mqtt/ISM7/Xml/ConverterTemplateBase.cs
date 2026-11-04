@@ -29,6 +29,13 @@ namespace ism7mqtt.ISM7.Xml
 
         public abstract bool HasValue { get; }
 
+        /// <summary>
+        /// False for converters that cannot produce a value yet (e.g. time programs). Their datapoints
+        /// are neither read nor subscribed: every push subscription occupies a slot in the ISM7, and
+        /// older firmware (e.g. 2.10) rejects all writes once too many datapoints are subscribed.
+        /// </summary>
+        public virtual bool ProducesValue => true;
+
         public abstract JsonValue GetValue();
 
         public abstract IEnumerable<InfoWrite> GetWrite(string value);

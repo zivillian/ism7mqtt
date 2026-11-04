@@ -359,6 +359,9 @@ namespace ism7mqtt
             // responding if these arrive in parallel; SerializePushSubscribes opts into sending them
             // one at a time, waiting for each response, like the pull phase above. Defaults to false
             // (burst, the long-standing behavior) since most devices don't need this.
+            // Older ISM7 firmware (e.g. 2.10) rejects all writes once too many datapoints are subscribed,
+            // so log the count to make this visible.
+            Console.WriteLine($"Subscribing to {pendingSubscriptions.Sum(x => _config.GetBundle(x.bundleId).Count)} datapoints");
             foreach (var (busAddress, bundleId) in pendingSubscriptions)
             {
                 if (SerializePushSubscribes)

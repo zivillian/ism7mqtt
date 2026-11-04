@@ -54,6 +54,13 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     /// </summary>
     public IReadOnlyList<int> PrematurePushSubscribeOrdinals => _prematurePushSubscribeOrdinals;
 
+    /// <summary>
+    /// All push-subscribe requests received on this connection, in arrival order.
+    /// </summary>
+    public IReadOnlyCollection<TelegramBundleReq> PushRequests => _pushRequests;
+
+    private readonly System.Collections.Concurrent.ConcurrentQueue<TelegramBundleReq> _pushRequests = new();
+
     private async Task AcceptLoopAsync()
     {
         try
@@ -104,6 +111,7 @@ public sealed class FakeIsm7Server : IAsyncDisposable
                     else if (request.TelegramBundleType == TelegramBundleType.push)
                     {
                         pushOrdinal++;
+                        _pushRequests.Enqueue(request);
                         // the startup waits for an answer to every push subscribe
                         if (_pushResponseDelay is { } delay)
                         {
