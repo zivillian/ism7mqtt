@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -28,6 +29,8 @@ namespace ism7mqtt
         private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
+        private Exception _connectionError;
+        private volatile bool _connected;
 
         public int Interval { get; set; }
 
@@ -38,6 +41,13 @@ namespace ism7mqtt
         public bool EnableDebug { get; set; }
 
         public bool SerializePushSubscribes { get; set; } = false;
+
+        public TimeSpan KeepAliveInterval { get; set; } = TimeSpan.FromMinutes(1);
+
+        /// <summary>
+        /// True while the connection is established and the login was accepted, i.e. write commands can be sent.
+        /// </summary>
+        public bool IsConnected => _connected;
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
@@ -51,23 +61,58 @@ namespace ism7mqtt
 
         public async Task RunAsync(string password, CancellationToken cancellationToken)
         {
+            using (var connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             using (_sslStream = await ConnectAsync(cancellationToken))
             {
-                var fillPipeTask = FillPipeAsync(_pipe.Writer, cancellationToken);
-                var readPipeTask = ReadPipeAsync(_pipe.Reader, cancellationToken);
-                await AuthenticateAsync(password, cancellationToken);
-                var keepAlive = KeepAliveAsync(cancellationToken);
-                await Task.WhenAny(fillPipeTask, readPipeTask, keepAlive);
+                var fillPipeTask = FillPipeAsync(_pipe.Writer, connectionCts.Token);
+                var readPipeTask = ReadPipeAsync(_pipe.Reader, connectionCts.Token);
+                Task keepAlive = null;
+                try
+                {
+                    await AuthenticateAsync(password, connectionCts.Token);
+                    keepAlive = KeepAliveAsync(connectionCts.Token);
+                    await Task.WhenAny(fillPipeTask, readPipeTask, keepAlive);
+                }
+                finally
+                {
+                    // stop the remaining work of this connection (keep-alive, handlers, reads) before the
+                    // stream is disposed, so nothing keeps running once the caller reconnects
+                    _connected = false;
+                    connectionCts.Cancel();
+                    await Task.WhenAll(fillPipeTask, readPipeTask);
+                }
+                // let the caller know why the connection ended (e.g. a refused login, a startup or keep-alive timeout)
+                if (_connectionError is not null)
+                    ExceptionDispatchInfo.Throw(_connectionError);
+                if (keepAlive is { IsFaulted: true })
+                    await keepAlive;
             }
         }
 
         private async Task<Stream> ConnectAsync(CancellationToken cancellationToken)
         {
             var tcp = new TcpClient();
-            await tcp.ConnectAsync(_host, _config.TcpPort, cancellationToken);
-            var ssl = new Ism7SslStream(tcp.Client);
-            await ssl.AuthenticateAsClientAsync(cancellationToken);
-            return ssl;
+            // the ism7 may accept the connection but never finish the handshake - don't wait forever
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(StartupTimeoutSpan);
+            try
+            {
+                await tcp.ConnectAsync(_host, _config.TcpPort, timeoutCts.Token);
+                var ssl = new Ism7SslStream(tcp.Client);
+                await ssl.AuthenticateAsClientAsync(timeoutCts.Token);
+                return ssl;
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                tcp.Dispose();
+                throw new TimeoutException("Timeout while connecting to the ism7.");
+            }
+            catch
+            {
+                // don't keep the socket of a failed attempt open - the ism7 accepts only a single connection
+                tcp.Dispose();
+                throw;
+            }
         }
 
         public Task OnCommandAsync(string mqttTopic, JsonObject data, CancellationToken cancellationToken)
@@ -156,11 +201,22 @@ namespace ism7mqtt
                 }
                 await target.CompleteAsync();
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                await target.CompleteAsync();
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                SetConnectionError(ex);
                 await target.CompleteAsync(ex);
             }
+        }
+
+        private void SetConnectionError(Exception ex)
+        {
+            // only the first error ends the connection - later ones (e.g. the same error seen through the pipe) are consequences
+            if (Interlocked.CompareExchange(ref _connectionError, ex, null) is null)
+                Console.WriteLine(ex);
         }
 
         private async Task ReadPipeAsync(PipeReader source, CancellationToken cancellationToken)
@@ -227,9 +283,13 @@ namespace ism7mqtt
                 }
                 await source.CompleteAsync();
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                await source.CompleteAsync();
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                SetConnectionError(ex);
                 await source.CompleteAsync(ex);
             }
         }
@@ -393,7 +453,7 @@ namespace ism7mqtt
             }
             catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
             {
-                throw new TimeoutException("Shutdown ism7mqtt due to timeout during startup.");
+                throw new TimeoutException("Timeout while waiting for a response during startup.");
             }
         }
 
@@ -427,7 +487,8 @@ namespace ism7mqtt
         {
             var resp = (LoginResp)response;
             if (resp.State != LoginState.ok)
-                throw new InvalidDataException("invalid login state");
+                throw new Ism7LoginException(resp.State);
+            _connected = true;
             return LoadInitialValuesAsync(cancellationToken);
         }
 
@@ -437,9 +498,9 @@ namespace ism7mqtt
             short currentKeepAlive = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+                await Task.Delay(KeepAliveInterval, cancellationToken);
                 if (currentKeepAlive != _lastKeepAlive)
-                    throw new TimeoutException("No keepalive response within the last 60 seconds");
+                    throw new TimeoutException($"No keepalive response within the last {KeepAliveInterval.TotalSeconds} seconds");
                 currentKeepAlive++;
                 await SendAsync(new KeepAliveReq(currentKeepAlive), cancellationToken);
             }
@@ -464,14 +525,14 @@ namespace ism7mqtt
             return _sslStream.WriteAsync(buffer, cancellationToken);
         }
 
-        private static string NextBundleId()
+        private string NextBundleId()
         {
-            return IdGenerator.GetNextBundleIdString();
+            return _config.Ids.GetNextBundleIdString();
         }
 
-        private static string NextSequenceId()
+        private string NextSequenceId()
         {
-            var id = IdGenerator.GetNextSequenceId();
+            var id = _config.Ids.GetNextSequenceId();
             return $"A;{id}";
         }
 
