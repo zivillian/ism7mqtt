@@ -98,9 +98,11 @@ The timeout is checked between two attempts, so an attempt that is already runni
 Set `ISM7_RECONNECT_TIMEOUT` to `0` to turn the reconnecting off: ism7mqtt then exits on the
 first connection error, exactly as it did before this option existed.
 
-A rejected login (e.g. a wrong password) is never retried, regardless of this option, because
-the ism7 might lock you out after repeated failed logins. ism7mqtt exits with an error and logs
-`invalid login state '...'`.
+A rejected login (`invalidCredentials`, e.g. a wrong password, or `error`) is never retried,
+regardless of this option, because the ism7 might lock you out after repeated failed logins.
+ism7mqtt exits with an error and logs `invalid login state '...'`. The login states `busy` and
+`pending` (the ism7 still holds the previous session) are transient: they are retried like a
+connection error, within the reconnect timeout (with `0` they end the process, as before).
 
 The bundle and sequence ids sent to the ism7 start again at 1 for every connection, like after
 a restart of ism7mqtt, so they do not grow when the connection is re-established again and again.

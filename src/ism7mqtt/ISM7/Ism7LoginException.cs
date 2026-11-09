@@ -4,8 +4,9 @@ using ism7mqtt.ISM7.Protocol;
 namespace ism7mqtt
 {
     /// <summary>
-    /// The ism7 rejected the login (e.g. a wrong password). Trying again would not help and could get the
-    /// client locked out, so this is never retried.
+    /// The ism7 did not accept the login. A rejected login (<c>invalidCredentials</c>, <c>error</c>) is never retried:
+    /// trying again would not help and could get the client locked out. <c>busy</c> and <c>pending</c> are transient
+    /// (e.g. the ism7 still holds the previous session, see #245) and are retried like a connection error.
     /// </summary>
     public class Ism7LoginException : Exception
     {
@@ -16,5 +17,8 @@ namespace ism7mqtt
         }
 
         public LoginState State { get; }
+
+        /// <summary>The ism7 is busy or still holds a previous session - worth another attempt.</summary>
+        public bool IsTransient => State == LoginState.busy || State == LoginState.pending;
     }
 }

@@ -185,6 +185,78 @@ public class Ism7SupervisorTests
         }
     }
 
+    [Theory]
+    [InlineData(LoginState.busy)]
+    [InlineData(LoginState.pending)]
+    public async Task LoginBusyOrPending_IsRetriedLikeAConnectionError(LoginState state)
+    {
+        // pending: the ism7 still holds the previous session (#245) - transient, so retried within the reconnect timeout
+        await using var server = new FakeIsm7Server(_ => new List<InfonumberReadResp>(), loginState: state);
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var clock = new ManualTimeProvider();
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath), (delay, _) =>
+            {
+                delays.Add(delay);
+                clock.Advance(delay);
+                return Task.CompletedTask;
+            }, clock);
+
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            var output = await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            Assert.Equal(new[] { 10, 20, 40, 60, 60, 60, 50 }, delays.Select(x => (int)x.TotalSeconds));
+            Assert.Equal(delays.Count + 1, server.ConnectionCount);
+            var timeout = Assert.IsType<TimeoutException>(error);
+            var login = Assert.IsType<Ism7LoginException>(timeout.InnerException);
+            Assert.Equal(state, login.State);
+            Assert.Contains($"invalid login state '{state}' - reconnecting in 10 seconds", output);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task LoginError_IsNeverRetried()
+    {
+        // "error" is not known to be transient, so it is treated like a rejected login
+        await using var server = new FakeIsm7Server(_ => new List<InfonumberReadResp>(), loginState: LoginState.error);
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath), (delay, _) =>
+            {
+                delays.Add(delay);
+                return Task.CompletedTask;
+            });
+
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            var login = Assert.IsType<Ism7LoginException>(error);
+            Assert.Equal(LoginState.error, login.State);
+            Assert.Equal(1, server.ConnectionCount);
+            Assert.Empty(delays);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
     [Fact]
     public async Task ReconnectTimeoutZero_ConnectionErrorEndsImmediately()
     {

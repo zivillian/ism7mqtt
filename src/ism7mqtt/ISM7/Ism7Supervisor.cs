@@ -85,10 +85,11 @@ namespace ism7mqtt
                 {
                     return;
                 }
-                catch (Ism7LoginException)
+                catch (Ism7LoginException ex) when (!ex.IsTransient)
                 {
                     // a refused login (e.g. a wrong password) is not transient - and repeated attempts might lock the
-                    // client out, so fail right away regardless of the reconnect timeout
+                    // client out, so fail right away regardless of the reconnect timeout. busy/pending fall through to
+                    // the retry below (with a reconnect timeout of 0 they end the process like any other error).
                     throw;
                 }
                 catch (Exception ex) when (ReconnectTimeout > TimeSpan.Zero)
