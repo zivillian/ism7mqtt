@@ -324,8 +324,9 @@ public class FaultTests
         var error = new TelegramBundleResp { GatewayId = "1", BundleId = "3", State = TelegrResponseState.ER, Errormsg = "not supported" };
         await using var server = new FakeIsm7Server(RespondZero, faultListResponder: _ => new[] { error }, bundleAfterLogin: error);
         await using var run = new FaultsRun(server);
-        await WaitUntilAsync(() => server.ReceivedRequests.Any(x => x.Xml.Contains("<erd")));
-        Assert.True(run.InitFinished.Task.IsCompleted);
+        // since the fault list is requested right after login (like Wolf), it can be answered before the initialisation
+        // has finished: wait for both instead of assuming an order
+        await WaitUntilAsync(() => server.ReceivedRequests.Any(x => x.Xml.Contains("<erd")) && run.InitFinished.Task.IsCompleted);
         await Task.Delay(200);
         Assert.False(run.RunTask.IsCompleted);
         Assert.DoesNotContain(run.Topics, x => x.Contains("Stoermeldung"));
