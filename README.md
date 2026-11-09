@@ -65,6 +65,7 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 |---|---|---|---|
 | `-t, --parameter=<path>` | *(none — Docker: mount to `/app/parameter.json`)* | `parameter.json` | Path to the generated parameter.json |
 | `--startup-timeout=<seconds>` | `ISM7_STARTUP_TIMEOUT` | `90` | Per-request startup timeout — see below |
+| `--ism7-reconnect-timeout=<seconds>` | `ISM7_RECONNECT_TIMEOUT` | `300` | How long to keep reconnecting to the ism7 before exiting with an error; `0` = exit on the first error — see below |
 | `--serialize-push-subscribes` | `ISM7_SERIALIZE_PUSH_SUBSCRIBES` | `false` | Send push subscribes one at a time during startup — see below |
 | `--parameter-xml-override=<path>` | `ISM7_PARAMETER_XML_OVERRIDE` | – | Replace the built-in parameter template — see [Advanced](#advanced-overriding-the-built-in-parameterxml) below |
 
@@ -72,23 +73,40 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 only applies to the initial startup phase, where ism7mqtt requests all configured values from
 the ism7 one pull request at a time. It is **not** a timeout for the whole startup phase - it
 resets for every single pull request. If the ism7 does not answer one particular request within
-this time, ism7mqtt assumes the connection is stuck, logs the problem and reconnects (see below).
+this time, ism7mqtt assumes the connection is stuck, logs the problem and reconnects until the reconnect timeout is reached (see below).
 The same timeout applies to establishing the connection (TCP connect and TLS handshake).
 Increase this value if your setup regularly needs more time to answer a single request;
 decrease it if you want ism7mqtt to fail faster on a stuck connection.
 
-If the connection to the ism7 is lost (e.g. a nightly router reconnect or a reset of the ism7)
-or cannot be established, ism7mqtt keeps running and reconnects on its own, while the
-connection to the MQTT broker stays up. It waits 10 seconds before the first reconnect attempt
-and doubles the delay after every failed attempt, up to 5 minutes; the delay starts at 10 seconds
-again once a connection stayed up for 5 minutes after finishing startup. This also applies to a
-rejected login (e.g. a wrong password), so check the log for `invalid login state` if ism7mqtt
-never finishes startup. MQTT write commands received while the ism7 is not connected or the
-login has not completed yet are dropped (and logged).
+`ISM7_RECONNECT_TIMEOUT` (in seconds, defaults to `300`, also available as
+`--ism7-reconnect-timeout`) controls what happens when the connection to the ism7 is lost (e.g.
+a nightly router reconnect or a reset of the ism7) or cannot be established. ism7mqtt then
+reconnects on its own, while the connection to the MQTT broker stays up. It waits 10 seconds
+before the first reconnect attempt and doubles the delay after every failed attempt, but never
+waits longer than 60 seconds, so an ism7 that was powered off and on again is picked up quickly.
+Every wait is logged together with the reason, e.g.
+`ism7 connection failed: ... - reconnecting in 20 seconds (attempt 2, giving up after 300 seconds without a connection)`.
+If the connection cannot be re-established within `ISM7_RECONNECT_TIMEOUT` seconds, ism7mqtt
+logs the last error and exits with an error, just like it does without a reconnect, so a
+restart policy (Docker, systemd, the Home Assistant app) or your monitoring still sees a real
+connection problem. A connection that is lost again shortly after it was established does not
+extend this time. Only a connection that stayed up for 5 minutes after finishing startup counts
+as recovered: the next loss then starts a new reconnect period with a 10 seconds delay.
+The timeout is checked between two attempts, so an attempt that is already running (see
+`ISM7_STARTUP_TIMEOUT`) is not interrupted.
 
-Previous versions exited on these errors and relied on the restart policy of Docker or systemd.
-ism7mqtt now stays running, so restarts no longer indicate ism7 outages - watch the log for
-`ism7 connection` instead. ism7mqtt still exits (with exit code 1) on errors it cannot recover
+Set `ISM7_RECONNECT_TIMEOUT` to `0` to turn the reconnecting off: ism7mqtt then exits on the
+first connection error, exactly as it did before this option existed.
+
+A rejected login (e.g. a wrong password) is never retried, regardless of this option, because
+the ism7 might lock you out after repeated failed logins. ism7mqtt exits with an error and logs
+`invalid login state '...'`.
+
+The bundle and sequence ids sent to the ism7 start again at 1 for every connection, like after
+a restart of ism7mqtt, so they do not grow when the connection is re-established again and again.
+
+MQTT write commands received while the ism7 is not connected or the login has not completed
+yet are dropped (and logged). ism7mqtt also exits with an error on problems it cannot recover
 from, e.g. if the MQTT broker is not reachable at startup.
 
 `ISM7_SERIALIZE_PUSH_SUBSCRIBES` (defaults to `false`, also available as

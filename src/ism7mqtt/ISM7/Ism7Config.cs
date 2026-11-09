@@ -37,6 +37,11 @@ namespace ism7mqtt
             _devices = new Dictionary<byte, List<RunningDevice>>();
         }
 
+        /// <summary>
+        /// Ids of the current connection - a new config (and so a new client) always starts a new sequence.
+        /// </summary>
+        public IdGenerator Ids { get; } = new IdGenerator();
+
         public int TcpPort => _config.TcpPort;
 
         private List<DeviceTemplate> LoadDeviceTemplates()
@@ -122,7 +127,7 @@ namespace ism7mqtt
 
             foreach (var bundle in bundles)
             {
-                var bundleId = IdGenerator.GetNextBundleIdString();
+                var bundleId = Ids.GetNextBundleIdString();
                 _bundles.Add(bundleId, bundle);
                 yield return (bundleId, bundle);
             }

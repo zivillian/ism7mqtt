@@ -46,6 +46,7 @@ namespace ism7mqtt
             _retain = GetEnvBool("ISM7_RETAIN");
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             int startupTimeout = GetEnvInt32("ISM7_STARTUP_TIMEOUT", 90);
+            int reconnectTimeout = GetEnvInt32("ISM7_RECONNECT_TIMEOUT", 300);
             bool serializePushSubscribes = GetEnvBool("ISM7_SERIALIZE_PUSH_SUBSCRIBES");
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
@@ -65,6 +66,7 @@ namespace ism7mqtt
                 {"retain", "retain mqtt messages", x=> _retain = x != null},
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"startup-timeout=", "timeout in seconds to connect to the ism7 and to wait for each pull request response during startup (defaults to 90)", (int x) => startupTimeout = x},
+                {"ism7-reconnect-timeout=", "how long in seconds to keep reconnecting to the ism7 after the connection was lost (or could not be established at startup) before exiting with an error; 0 disables reconnecting; a rejected login (e.g. wrong password) is never retried (defaults to 300)", (int x) => reconnectTimeout = x},
                 {"serialize-push-subscribes", "send push subscribes one at a time during startup, waiting for each response, instead of all at once (needed for some FW5.20 devices that otherwise stop responding; defaults to false)", x => serializePushSubscribes = x != null},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
                 {"mqtt-health-file=", "file that is updated while the connection to the MQTT broker is up, e.g. for a docker HEALTHCHECK (defaults to none)", x => mqttHealthFile = x},
@@ -154,7 +156,8 @@ namespace ism7mqtt
                             return client;
                         })
                         {
-                            EnableDebug = enableDebug
+                            EnableDebug = enableDebug,
+                            ReconnectTimeout = TimeSpan.FromSeconds(Math.Max(0, reconnectTimeout))
                         };
                         mqttClient.ApplicationMessageReceivedAsync += async x =>
                         {

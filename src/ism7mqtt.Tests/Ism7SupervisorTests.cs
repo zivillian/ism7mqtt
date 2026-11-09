@@ -150,46 +150,327 @@ public class Ism7SupervisorTests
     }
 
     [Fact]
-    public async Task LoginRefused_IsRetriedWithDoublingBackoffUpToMaximum()
+    public async Task LoginRefused_IsNeverRetried()
     {
+        // a wrong password must not be repeated - the ism7 might lock the client out
         await using var server = new FakeIsm7Server(_ => new List<InfonumberReadResp>(), loginState: LoginState.invalidCredentials);
         var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
         try
         {
-            using var cts = new CancellationTokenSource();
             var delays = new List<TimeSpan>();
             var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath), (delay, _) =>
             {
                 delays.Add(delay);
-                if (delays.Count == 5)
-                {
-                    cts.Cancel();
-                }
                 return Task.CompletedTask;
-            })
-            {
-                MinBackoff = TimeSpan.FromSeconds(10),
-                MaxBackoff = TimeSpan.FromSeconds(40),
-                // a connection that never finished its initialization is never stable
-                StableConnectionTime = TimeSpan.Zero,
-            };
-
-            Task runTask = null!;
-            var output = await CaptureConsoleAsync(async () =>
-            {
-                runTask = supervisor.RunAsync("test-password", cts.Token);
-                Assert.Same(runTask, await Task.WhenAny(runTask, Task.Delay(TestTimeout)));
             });
 
-            Assert.True(runTask.IsCompletedSuccessfully);
-            Assert.Equal(new[] { 10, 20, 40, 40, 40 }, delays.Select(x => (int)x.TotalSeconds));
-            Assert.Equal(5, server.ConnectionCount);
-            Assert.Contains("ism7 connection failed: InvalidDataException: invalid login state 'invalidCredentials' - reconnecting in 10 seconds", output);
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            var output = await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            var login = Assert.IsType<Ism7LoginException>(error);
+            Assert.Equal(LoginState.invalidCredentials, login.State);
+            Assert.Contains("invalid login state 'invalidCredentials'", login.Message);
+            Assert.Equal(1, server.ConnectionCount);
+            Assert.Empty(delays);
+            Assert.DoesNotContain("reconnecting", output);
+            Assert.Null(supervisor.Current);
         }
         finally
         {
             File.Delete(parameterPath);
         }
+    }
+
+    [Fact]
+    public async Task ReconnectTimeoutZero_ConnectionErrorEndsImmediately()
+    {
+        // exactly the behavior before the reconnect loop: the first problem ends RunAsync with the error
+        await using var server = new FakeIsm7Server(_ => new List<InfonumberReadResp>(), rejectConnections: 100);
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath), (delay, _) =>
+            {
+                delays.Add(delay);
+                return Task.CompletedTask;
+            })
+            {
+                ReconnectTimeout = TimeSpan.Zero,
+            };
+
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            var output = await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            Assert.NotNull(error);
+            Assert.IsNotType<TimeoutException>(error);
+            Assert.Equal(1, server.ConnectionCount);
+            Assert.Empty(delays);
+            Assert.DoesNotContain("reconnecting", output);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task ReconnectTimeoutZero_ConnectionLostAfterInitializationEndsWithError()
+    {
+        await using var server = new FakeIsm7Server(request => Ism7ClientStartupTests.RespondFromTable(request, Ism7ClientStartupTests.HappyPathTelegrams));
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath, () =>
+            {
+                server.DropConnection();
+                return Task.CompletedTask;
+            }), (delay, _) =>
+            {
+                delays.Add(delay);
+                return Task.CompletedTask;
+            })
+            {
+                ReconnectTimeout = TimeSpan.Zero,
+            };
+
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            Assert.NotNull(error);
+            Assert.Equal(1, server.ConnectionCount);
+            Assert.Empty(delays);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task ReconnectTimeoutExceeded_RetriesWithBackoffUpToMaximumThenFailsWithLastError()
+    {
+        // the ism7 never comes back. Time is simulated: every delay advances the clock, so the whole 5 minutes run instantly.
+        await using var server = new FakeIsm7Server(_ => new List<InfonumberReadResp>(), rejectConnections: 100);
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var clock = new ManualTimeProvider();
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath), (delay, _) =>
+            {
+                delays.Add(delay);
+                clock.Advance(delay);
+                return Task.CompletedTask;
+            }, clock);
+            // defaults: backoff 10 s up to 60 s, give up after 5 minutes
+            Assert.Equal(TimeSpan.FromSeconds(10), supervisor.MinBackoff);
+            Assert.Equal(TimeSpan.FromSeconds(60), supervisor.MaxBackoff);
+            Assert.Equal(TimeSpan.FromMinutes(5), supervisor.ReconnectTimeout);
+
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            var output = await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            // 10 + 20 + 40 + 60 + 60 + 60 + 50 = 300 s, the last delay is cut so the final attempt is made at the limit
+            Assert.Equal(new[] { 10, 20, 40, 60, 60, 60, 50 }, delays.Select(x => (int)x.TotalSeconds));
+            Assert.All(delays, x => Assert.True(x <= TimeSpan.FromSeconds(60)));
+            Assert.Equal(TimeSpan.FromSeconds(300), delays.Aggregate(TimeSpan.Zero, (sum, x) => sum + x));
+            Assert.Equal(delays.Count + 1, server.ConnectionCount);
+            var timeout = Assert.IsType<TimeoutException>(error);
+            Assert.NotNull(timeout.InnerException);
+            Assert.Contains("within 300 seconds", timeout.Message);
+            Assert.Contains("ism7 connection failed: ", timeout.Message);
+            // the wait is visible in the log
+            Assert.Contains("- reconnecting in 10 seconds (attempt 1, giving up after 300 seconds without a connection)", output);
+            Assert.Contains("- reconnecting in 50 seconds (attempt 7, ", output);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task FlappingConnection_DoesNotResetTheReconnectTimeout()
+    {
+        // the ism7 accepts the connection and drops it again shortly after the initialization, again and again.
+        // That is a real problem and must end the process instead of reconnecting forever.
+        await using var server = new FakeIsm7Server(request => Ism7ClientStartupTests.RespondFromTable(request, Ism7ClientStartupTests.HappyPathTelegrams));
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var clock = new ManualTimeProvider();
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath, () =>
+            {
+                // up for 100 s - less than StableConnectionTime
+                clock.Advance(TimeSpan.FromSeconds(100));
+                server.DropConnection();
+                return Task.CompletedTask;
+            }), (delay, _) =>
+            {
+                delays.Add(delay);
+                clock.Advance(delay);
+                return Task.CompletedTask;
+            }, clock);
+
+            using var cts = new CancellationTokenSource();
+            Exception? error = null;
+            await CaptureConsoleAsync(async () =>
+            {
+                error = await Record.ExceptionAsync(() => supervisor.RunAsync("test-password", cts.Token).WaitAsync(TestTimeout));
+            });
+
+            Assert.IsType<TimeoutException>(error);
+            // the backoff keeps growing as well
+            Assert.Equal(new[] { 10, 20, 40 }, delays.Select(x => (int)x.TotalSeconds));
+            Assert.Equal(4, server.ConnectionCount);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task StableConnection_StartsANewOutageForTheReconnectTimeout()
+    {
+        // 10 minutes up, then the ism7 disappears for a while: the timeout counts from the loss of the stable connection,
+        // not from the start of ism7mqtt
+        await using var server = new FakeIsm7Server(request => Ism7ClientStartupTests.RespondFromTable(request, Ism7ClientStartupTests.HappyPathTelegrams));
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var clock = new ManualTimeProvider();
+            var initializations = 0;
+            var secondInitialization = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var delays = new List<TimeSpan>();
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath, () =>
+            {
+                if (Interlocked.Increment(ref initializations) == 1)
+                {
+                    clock.Advance(TimeSpan.FromMinutes(10));
+                    server.DropConnection();
+                }
+                else
+                {
+                    secondInitialization.TrySetResult();
+                }
+                return Task.CompletedTask;
+            }), (delay, _) =>
+            {
+                delays.Add(delay);
+                clock.Advance(delay);
+                return Task.CompletedTask;
+            }, clock);
+
+            using var cts = new CancellationTokenSource();
+            Task runTask = null!;
+            await CaptureConsoleAsync(async () =>
+            {
+                runTask = supervisor.RunAsync("test-password", cts.Token);
+                Assert.Same(secondInitialization.Task, await Task.WhenAny(secondInitialization.Task, Task.Delay(TestTimeout)));
+                cts.Cancel();
+                Assert.Same(runTask, await Task.WhenAny(runTask, Task.Delay(TestTimeout)));
+            });
+
+            Assert.True(runTask.IsCompletedSuccessfully);
+            Assert.Equal(new[] { supervisor.MinBackoff }, delays);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task EveryConnectionStartsItsBundleAndSequenceIdsAgain()
+    {
+        // ids are only correlation ids within one session. A reconnect is a new session and has to look like a fresh start of
+        // ism7mqtt, so nothing grows when the connection is lost again and again.
+        var firstBundleIdPerConnection = new Dictionary<int, string>();
+        FakeIsm7Server server = null!;
+        server = new FakeIsm7Server(request =>
+        {
+            lock (firstBundleIdPerConnection)
+            {
+                firstBundleIdPerConnection.TryAdd(server.ConnectionCount, request.BundleId);
+            }
+            return Ism7ClientStartupTests.RespondFromTable(request, Ism7ClientStartupTests.HappyPathTelegrams);
+        });
+        await using var disposeServer = server;
+        var parameterPath = TestFixtures.WriteParameterFile("happy-path.json", server.Port);
+        try
+        {
+            var initializations = 0;
+            var thirdInitialization = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var supervisor = new Ism7Supervisor(() => CreateClient(parameterPath, () =>
+            {
+                if (Interlocked.Increment(ref initializations) == 3)
+                    thirdInitialization.TrySetResult();
+                else
+                    server.DropConnection();
+                return Task.CompletedTask;
+            }), (_, _) => Task.CompletedTask);
+
+            using var cts = new CancellationTokenSource();
+            Task runTask = null!;
+            await CaptureConsoleAsync(async () =>
+            {
+                runTask = supervisor.RunAsync("test-password", cts.Token);
+                Assert.Same(thirdInitialization.Task, await Task.WhenAny(thirdInitialization.Task, Task.Delay(TestTimeout)));
+                cts.Cancel();
+                Assert.Same(runTask, await Task.WhenAny(runTask, Task.Delay(TestTimeout)));
+            });
+
+            Assert.Equal(3, firstBundleIdPerConnection.Count);
+            Assert.All(firstBundleIdPerConnection.Values, x => Assert.Equal(firstBundleIdPerConnection.Values.First(), x));
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public void IdGenerator_EveryInstanceStartsAtTheBeginning()
+    {
+        var first = new ism7mqtt.ISM7.IdGenerator();
+        Assert.Equal(1, first.GetNextBundleId());
+        Assert.Equal(2, first.GetNextBundleId());
+        Assert.Equal(2, first.GetNextSequenceId());
+
+        var second = new ism7mqtt.ISM7.IdGenerator();
+        Assert.Equal("1", second.GetNextBundleIdString());
+        Assert.Equal(2, second.GetNextSequenceId());
+    }
+
+    private sealed class ManualTimeProvider : TimeProvider
+    {
+        private long _ticks;
+
+        public override long TimestampFrequency => TimeSpan.TicksPerSecond;
+
+        public override long GetTimestamp() => Interlocked.Read(ref _ticks);
+
+        public void Advance(TimeSpan time) => Interlocked.Add(ref _ticks, time.Ticks);
     }
 
     [Fact]

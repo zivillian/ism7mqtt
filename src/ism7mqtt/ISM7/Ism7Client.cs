@@ -487,7 +487,7 @@ namespace ism7mqtt
         {
             var resp = (LoginResp)response;
             if (resp.State != LoginState.ok)
-                throw new InvalidDataException($"invalid login state '{resp.State}'");
+                throw new Ism7LoginException(resp.State);
             _connected = true;
             return LoadInitialValuesAsync(cancellationToken);
         }
@@ -525,14 +525,14 @@ namespace ism7mqtt
             return _sslStream.WriteAsync(buffer, cancellationToken);
         }
 
-        private static string NextBundleId()
+        private string NextBundleId()
         {
-            return IdGenerator.GetNextBundleIdString();
+            return _config.Ids.GetNextBundleIdString();
         }
 
-        private static string NextSequenceId()
+        private string NextSequenceId()
         {
-            var id = IdGenerator.GetNextSequenceId();
+            var id = _config.Ids.GetNextSequenceId();
             return $"A;{id}";
         }
 
