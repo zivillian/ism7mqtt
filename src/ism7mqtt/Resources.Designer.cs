@@ -128,6 +128,19 @@ namespace ism7mqtt {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;FaultMessageConfig xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;1&quot;&gt;
+        ///  &lt;FaultMessages&gt;
+        ///    &lt;FaultMessage faultMessageTemplateId=&quot;1&quot; code=&quot;1&quot; dtids=&quot;100000 110000 80000 90000 120000 130000 140000 180000 200000 210000 250000 280000 290000 380000 430000 440000&quot; text=&quot;STB Übertemperatur&quot; /&gt;
+        ///    [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string FaultMessages {
+            get {
+                return ResourceManager.GetString("FaultMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ParameterTemplateConfig xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Version=&quot;1&quot;&gt;
         ///  &lt;ParameterList&gt;
         ///    &lt;NumericParameterDescriptor PTID=&quot;10000&quot;&gt;

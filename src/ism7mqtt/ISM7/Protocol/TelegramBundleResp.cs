@@ -27,6 +27,9 @@ namespace ism7mqtt.ISM7.Protocol
         [XmlElement("iac")]
         public List<InfonumberWriteResp> WriteTelegrams { get; set; }
 
+        [XmlElement("ers")]
+        public List<ErrorStateResp> ErrorStates { get; set; }
+
         public PayloadType MessageType => PayloadType.TgrBundleResp;
     }
 }

@@ -26,6 +26,9 @@ namespace ism7mqtt.HomeAssistant
 
         public MqttQualityOfServiceLevel QosLevel { get; set; }
 
+        /// <summary>Also announce a fault sensor per device (--faults).</summary>
+        public bool EnableFaults { get; set; }
+
         public HaDiscovery(Ism7Config config, IMqttClient mqttClient, string discoveryId, Ism7Localizer localizer)
         {
             _config = config;
@@ -138,7 +141,32 @@ namespace ism7mqtt.HomeAssistant
                 message.Add("device", GetDiscoveryDeviceInfo(device));
                 result.Add(new JsonMessage(discoveryTopic, message));
             }
+            if (EnableFaults && device.ReportsFaults)
+            {
+                result.Add(GetFaultDiscoveryInfo(device));
+            }
             return result;
+        }
+
+        /// <summary>
+        /// The device's fault sensor: the state is the newest active fault (or "Keine"), the attributes hold the
+        /// whole fault list. HA only accepts an object as attributes, so the list is wrapped by a template.
+        /// </summary>
+        private JsonMessage GetFaultDiscoveryInfo(Ism7Config.RunningDevice device)
+        {
+            var uniqueId = LaunderHomeassistantId($"{_discoveryId}_{device.Name}_{device.WriteAddress}_{Ism7Config.RunningDevice.FaultTopic}");
+            var message = new JsonObject
+            {
+                { "unique_id", uniqueId },
+                { "state_topic", $"{device.MqttTopic}/{Ism7Config.RunningDevice.FaultTopic}" },
+                { "json_attributes_topic", $"{device.MqttTopic}/{Ism7Config.RunningDevice.FaultListTopic}" },
+                { "json_attributes_template", $"{{{{ {{'{Ism7Config.RunningDevice.FaultListTopic}': value_json}} | tojson }}}}" },
+                { "name", _localizer["Störmeldung"] },
+                { "default_entity_id", $"sensor.{uniqueId}" },
+                { "icon", "mdi:alert-circle-outline" },
+                { "device", GetDiscoveryDeviceInfo(device) },
+            };
+            return new JsonMessage($"homeassistant/sensor/{uniqueId}/config", message);
         }
 
         private JsonObject GetDiscoveryDeviceInfo(Ism7Config.RunningDevice device)

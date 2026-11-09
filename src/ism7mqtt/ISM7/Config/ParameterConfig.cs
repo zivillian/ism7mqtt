@@ -26,6 +26,7 @@ namespace ism7mqtt.ISM7.Config
     [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
     [JsonSerializable(typeof(ConfigRoot))]
     [JsonSerializable(typeof(JsonObject))]
+    [JsonSerializable(typeof(JsonArray))]
     [JsonSerializable(typeof(JsonNode))]
     [JsonSerializable(typeof(JsonValue))]
     internal partial class JsonContext : JsonSerializerContext

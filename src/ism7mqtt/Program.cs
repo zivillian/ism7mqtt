@@ -50,6 +50,8 @@ namespace ism7mqtt
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
             string mqttHealthFile = GetEnvString("ISM7_MQTT_HEALTH_FILE");
+            bool faults = GetEnvBool("ISM7_FAULTS");
+            string faultProbe = GetEnvString("ISM7_FAULT_PROBE");
             var options = new OptionSet
             {
                 {"m|mqttServer=", "MQTT Server", x => mqttHost = x},
@@ -69,6 +71,8 @@ namespace ism7mqtt
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
                 {"mqtt-health-file=", "file that is updated while the connection to the MQTT broker is up, e.g. for a docker HEALTHCHECK (defaults to none)", x => mqttHealthFile = x},
                 {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
+                {"faults", "read the fault lists of all devices and publish them (defaults to false)", x => faults = x != null},
+                {"fault-probe=", "DIAGNOSTIC: only request the fault lists of these comma separated read bus addresses (e.g. 0x76) and log every answer - reads no values, writes nothing, needs no MQTT; it opens its own ism7 session, so stop the regular ism7mqtt instance while it runs", x => faultProbe = x},
                 {"d|debug", "dump raw xml messages", x => enableDebug = x != null},
                 {"h|help", "show help", x => showHelp = x != null},
             };
@@ -86,7 +90,8 @@ namespace ism7mqtt
                 Console.Error.WriteLine("Try 'ism7mqtt --help' for more information");
                 return;
             }
-            if (showHelp || String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(mqttHost) || String.IsNullOrEmpty(password))
+            var isFaultProbe = !String.IsNullOrWhiteSpace(faultProbe);
+            if (showHelp || String.IsNullOrEmpty(ip) || (String.IsNullOrEmpty(mqttHost) && !isFaultProbe) || String.IsNullOrEmpty(password))
             {
                 options.WriteOptionDescriptions(Console.Out);
                 return;
@@ -108,6 +113,29 @@ namespace ism7mqtt
                 _useSeparateTopics = true;
             }
 
+            if (isFaultProbe)
+            {
+                var addresses = faultProbe.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                if (addresses.Length == 0)
+                {
+                    Console.Error.WriteLine("fault probe: no bus address given, e.g. 0x76");
+                    return;
+                }
+                foreach (var address in addresses)
+                {
+                    try
+                    {
+                        Converter.FromHex(address);
+                    }
+                    catch (Exception)
+                    {
+                        Console.Error.WriteLine($"fault probe: '{address}' is not a bus address like 0x76");
+                        return;
+                    }
+                }
+                faultProbe = String.Join(",", addresses);
+            }
+
             var localizer = new Ism7Localizer(language);
 
             using (var cts = new CancellationTokenSource())
@@ -119,6 +147,18 @@ namespace ism7mqtt
                         cts.Cancel();
                         e.Cancel = true;
                     };
+                    if (isFaultProbe)
+                    {
+                        // diagnostic mode without MQTT: nothing is published and no command can be received
+                        var probe = new Ism7Client((_, _) => Task.CompletedTask, parameter, ip, localizer, parameterXmlOverride)
+                        {
+                            StartupTimeout = startupTimeout,
+                            EnableDebug = enableDebug,
+                            FaultProbeAddresses = faultProbe
+                        };
+                        await probe.RunAsync(password, cts.Token);
+                        return;
+                    }
                     using (var mqttClient = new MqttFactory().CreateMqttClient())
                     {
                         var mqttOptionBuilder = new MqttClientOptionsBuilder()
@@ -134,7 +174,8 @@ namespace ism7mqtt
                             Interval = interval,
                             StartupTimeout = startupTimeout,
                             SerializePushSubscribes = serializePushSubscribes,
-                            EnableDebug = enableDebug
+                            EnableDebug = enableDebug,
+                            EnableFaults = faults
                         };
                         mqttClient.ApplicationMessageReceivedAsync += x => OnMessage(client, x, enableDebug, cts.Token);
 
@@ -145,7 +186,8 @@ namespace ism7mqtt
                                 _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId, localizer)
                                 {
                                     EnableDebug = enableDebug, 
-                                    QosLevel = _qos
+                                    QosLevel = _qos,
+                                    EnableFaults = faults
                                 };
                                 return _haDiscovery.PublishDiscoveryInfo(c);
                             };

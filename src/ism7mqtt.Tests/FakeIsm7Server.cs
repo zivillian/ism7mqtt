@@ -20,11 +20,20 @@ public sealed class FakeIsm7Server : IAsyncDisposable
 {
     public delegate List<InfonumberReadResp> PullBundleResponder(TelegramBundleReq request);
 
+    /// <summary>Answers a fault list request (a bundle with an erd element) with any number of bundle responses.</summary>
+    public delegate IEnumerable<TelegramBundleResp> FaultListResponder(TelegramBundleReq request);
+
     private readonly TcpListener _listener;
     private readonly LoginState _loginState;
     private readonly PullBundleResponder _pullResponder;
     private readonly int? _dropPullBundleOrdinal;
     private readonly TimeSpan? _pushResponseDelay;
+    private readonly FaultListResponder? _faultListResponder;
+    private readonly bool _answerSystemconfig;
+    private readonly TelegramBundleResp? _bundleAfterLogin;
+    private readonly string[] _systemconfigBusAddresses;
+    private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1, 1);
+    private readonly List<(PayloadType Type, string Xml)> _received = new List<(PayloadType Type, string Xml)>();
     private readonly object _pushGate = new object();
     private bool _previousPushResponseSent = true;
     private readonly List<int> _prematurePushSubscribeOrdinals = new List<int>();
@@ -32,8 +41,14 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     private TcpClient? _client;
     private SslStream? _sslStream;
 
-    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null)
+    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null,
+        FaultListResponder? faultListResponder = null, bool answerSystemconfig = true, TelegramBundleResp? bundleAfterLogin = null,
+        string[]? systemconfigBusAddresses = null)
     {
+        _systemconfigBusAddresses = systemconfigBusAddresses ?? new[] { "0x76" };
+        _faultListResponder = faultListResponder;
+        _answerSystemconfig = answerSystemconfig;
+        _bundleAfterLogin = bundleAfterLogin;
         _pullResponder = pullResponder;
         _loginState = loginState;
         _dropPullBundleOrdinal = dropPullBundleOrdinal;
@@ -60,6 +75,18 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     public IReadOnlyCollection<TelegramBundleReq> PushRequests => _pushRequests;
 
     private readonly System.Collections.Concurrent.ConcurrentQueue<TelegramBundleReq> _pushRequests = new();
+
+    /// <summary>Every frame received from the client, in order, with its XML body.</summary>
+    public IReadOnlyList<(PayloadType Type, string Xml)> ReceivedRequests
+    {
+        get { lock (_received) return _received.ToList(); }
+    }
+
+    /// <summary>Sends a bundle response (e.g. a changed fault list) to the connected client.</summary>
+    public Task SendBundleResponseAsync(TelegramBundleResp response)
+    {
+        return SendAsync(_sslStream!, PayloadType.TgrBundleResp, response);
+    }
 
     private async Task AcceptLoopAsync()
     {
@@ -92,15 +119,33 @@ public sealed class FakeIsm7Server : IAsyncDisposable
             var type = (PayloadType)BinaryPrimitives.ReadInt16BigEndian(header.AsSpan(4));
             var body = length > 0 ? new byte[length] : Array.Empty<byte>();
             if (length > 0 && !await ReadExactAsync(stream, body, length)) return;
+            lock (_received) _received.Add((type, Encoding.UTF8.GetString(body)));
 
             switch (type)
             {
                 case PayloadType.DirectLogonReq:
                     await SendAsync(stream, PayloadType.DirectLogonResp, BuildLoginResp());
+                    if (_bundleAfterLogin is not null)
+                    {
+                        await SendAsync(stream, PayloadType.TgrBundleResp, _bundleAfterLogin);
+                    }
+                    break;
+                case PayloadType.SystemconfigReq:
+                    if (_answerSystemconfig)
+                    {
+                        await SendAsync(stream, PayloadType.SystemconfigResp, BuildSystemconfigResp());
+                    }
                     break;
                 case PayloadType.TgrBundleReq:
                     var request = DeserializeXml<TelegramBundleReq>(body);
-                    if (request.TelegramBundleType == TelegramBundleType.pull)
+                    if (request.EStRead is not null)
+                    {
+                        foreach (var response in _faultListResponder?.Invoke(request) ?? Enumerable.Empty<TelegramBundleResp>())
+                        {
+                            await SendAsync(stream, PayloadType.TgrBundleResp, response);
+                        }
+                    }
+                    else if (request.TelegramBundleType == TelegramBundleType.pull)
                     {
                         pullOrdinal++;
                         if (pullOrdinal != _dropPullBundleOrdinal)
@@ -179,6 +224,18 @@ public sealed class FakeIsm7Server : IAsyncDisposable
         Type = "ISM7i",
     };
 
+    private SystemconfigResp BuildSystemconfigResp() => new SystemconfigResp
+    {
+        Sid = "1",
+        BusConfig = new SystemconfigResp.Busconfig
+        {
+            Type = "ebus",
+            Devices = _systemconfigBusAddresses
+                .Select(ba => new SystemconfigResp.BusDevice { Ba = ba, SoftwareVersion = "0x01", SoftwareRevision = "0x02", Configuration = "0x00", DeviceId = "0x0B" })
+                .ToList(),
+        },
+    };
+
     private static TelegramBundleResp BuildBundleResp(TelegramBundleReq request, List<InfonumberReadResp> telegrams) => new TelegramBundleResp
     {
         Timestamp = DateTime.UtcNow.ToString("O"),
@@ -200,15 +257,24 @@ public sealed class FakeIsm7Server : IAsyncDisposable
         return true;
     }
 
-    private static async Task SendAsync<T>(Stream stream, PayloadType type, T payload)
+    private async Task SendAsync<T>(Stream stream, PayloadType type, T payload)
     {
         var body = SerializeXml(payload);
         var frame = new byte[body.Length + 6];
         BinaryPrimitives.WriteInt32BigEndian(frame, body.Length);
         BinaryPrimitives.WriteInt16BigEndian(frame.AsSpan(4), (short)type);
         Buffer.BlockCopy(body, 0, frame, 6, body.Length);
-        await stream.WriteAsync(frame);
-        await stream.FlushAsync();
+        // tests can also send responses (SendBundleResponseAsync), so keep frames from interleaving
+        await _writeLock.WaitAsync();
+        try
+        {
+            await stream.WriteAsync(frame);
+            await stream.FlushAsync();
+        }
+        finally
+        {
+            _writeLock.Release();
+        }
     }
 
     private static byte[] SerializeXml<T>(T obj)
