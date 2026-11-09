@@ -14,6 +14,8 @@ namespace ism7mqtt.ISM7.Xml
 
         public override bool HasValue => false;
 
+        public override bool ProducesValue => false;
+
         public override JsonValue GetValue()
         {
             throw new NotImplementedException($"CTID '{CTID}' is not yet implemented");
