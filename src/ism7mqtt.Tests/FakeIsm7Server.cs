@@ -20,6 +20,9 @@ public sealed class FakeIsm7Server : IAsyncDisposable
 {
     public delegate List<InfonumberReadResp> PullBundleResponder(TelegramBundleReq request);
 
+    /// <summary>returns the hex encoded switch times (db) for a time program day, null for an error response</summary>
+    public delegate string? TimeprogResponder(TimeprogRead request);
+
     private readonly TcpListener _listener;
     private readonly LoginState _loginState;
     private readonly PullBundleResponder _pullResponder;
@@ -28,12 +31,17 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     private readonly object _pushGate = new object();
     private bool _previousPushResponseSent = true;
     private readonly List<int> _prematurePushSubscribeOrdinals = new List<int>();
+    private readonly TimeprogResponder? _timeprogResponder;
+    private readonly TimeSpan? _timeprogResponseDelay;
+    private readonly System.Collections.Concurrent.ConcurrentQueue<TimeprogRead> _timeprogRequests = new();
     private readonly Task _acceptTask;
     private TcpClient? _client;
     private SslStream? _sslStream;
 
-    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null)
+    public FakeIsm7Server(PullBundleResponder pullResponder, LoginState loginState = LoginState.ok, int? dropPullBundleOrdinal = null, TimeSpan? pushResponseDelay = null, TimeprogResponder? timeprogResponder = null, TimeSpan? timeprogResponseDelay = null)
     {
+        _timeprogResponder = timeprogResponder;
+        _timeprogResponseDelay = timeprogResponseDelay;
         _pullResponder = pullResponder;
         _loginState = loginState;
         _dropPullBundleOrdinal = dropPullBundleOrdinal;
@@ -58,6 +66,11 @@ public sealed class FakeIsm7Server : IAsyncDisposable
     /// All push-subscribe requests received on this connection, in arrival order.
     /// </summary>
     public IReadOnlyCollection<TelegramBundleReq> PushRequests => _pushRequests;
+
+    /// <summary>
+    /// All time program day reads (s03f1rd) received on this connection, in arrival order.
+    /// </summary>
+    public IReadOnlyCollection<TimeprogRead> TimeprogRequests => _timeprogRequests;
 
     private readonly System.Collections.Concurrent.ConcurrentQueue<TelegramBundleReq> _pushRequests = new();
 
@@ -100,7 +113,31 @@ public sealed class FakeIsm7Server : IAsyncDisposable
                     break;
                 case PayloadType.TgrBundleReq:
                     var request = DeserializeXml<TelegramBundleReq>(body);
-                    if (request.TelegramBundleType == TelegramBundleType.pull)
+                    if (request.TelegramBundleType == TelegramBundleType.pull && request.TimeprogReadTelegrams is { Count: > 0 })
+                    {
+                        if (_timeprogResponseDelay is { } timeprogDelay)
+                        {
+                            // answer after the client gave up waiting, without blocking this read loop
+                            var response = BuildTimeprogBundleResp(request);
+                            _ = Task.Run(async () =>
+                            {
+                                try
+                                {
+                                    await Task.Delay(timeprogDelay);
+                                    await SendAsync(stream, PayloadType.TgrBundleResp, response);
+                                }
+                                catch
+                                {
+                                    // connection torn down by the test
+                                }
+                            });
+                        }
+                        else
+                        {
+                            await SendAsync(stream, PayloadType.TgrBundleResp, BuildTimeprogBundleResp(request));
+                        }
+                    }
+                    else if (request.TelegramBundleType == TelegramBundleType.pull)
                     {
                         pullOrdinal++;
                         if (pullOrdinal != _dropPullBundleOrdinal)
@@ -187,6 +224,36 @@ public sealed class FakeIsm7Server : IAsyncDisposable
         State = TelegrResponseState.OK,
         Telegrams = telegrams,
     };
+
+    private TelegramBundleResp BuildTimeprogBundleResp(TelegramBundleReq request)
+    {
+        var telegrams = new List<TimeprogReadResp>();
+        foreach (var read in request.TimeprogReadTelegrams)
+        {
+            _timeprogRequests.Enqueue(read);
+            var data = _timeprogResponder?.Invoke(read);
+            telegrams.Add(new TimeprogReadResp
+            {
+                Seq = read.Seq,
+                BusAddress = read.BusAddress,
+                HeatprogNumber = read.HeatprogNumber,
+                ProgramType = read.ProgramType,
+                HzkInstance = read.HzkInstance,
+                DayOfWeek = read.DayOfWeek,
+                Data = data,
+                State = data is null ? TelegrResponseState.ER : TelegrResponseState.OK,
+            });
+        }
+        return new TelegramBundleResp
+        {
+            Timestamp = DateTime.UtcNow.ToString("O"),
+            GatewayId = request.GatewayId,
+            BundleId = request.BundleId,
+            State = TelegrResponseState.OK,
+            Telegrams = new List<InfonumberReadResp>(),
+            TimeprogTelegrams = telegrams,
+        };
+    }
 
     private static async Task<bool> ReadExactAsync(Stream stream, byte[] buffer, int count)
     {

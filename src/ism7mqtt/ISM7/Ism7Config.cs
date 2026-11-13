@@ -146,6 +146,35 @@ namespace ism7mqtt
             return _devices.Values.SelectMany(x => x).Any(x => x.HasValue);
         }
 
+        /// <summary>
+        /// s03f1rd requests for all configured time program days (see <see cref="Timeprog03F1ConverterTemplate"/>)
+        /// </summary>
+        public IEnumerable<TimeprogRead> GetTimeprogReads()
+        {
+            return _devices.Values
+                .SelectMany(x => x)
+                .SelectMany(device => device.Parameters
+                    .Select(x => x.Timeprog)
+                    .Where(x => x is not null)
+                    .Select(x => x.CreateRead(device.ReadAddress)));
+        }
+
+        public bool ProcessData(IEnumerable<TimeprogReadResp> data)
+        {
+            foreach (var value in data)
+            {
+                if (!_devices.TryGetValue(Converter.FromHex(value.BusAddress), out var devices)) continue;
+                foreach (var timeprog in devices.SelectMany(x => x.Parameters).Select(x => x.Timeprog))
+                {
+                    if (timeprog is not null && timeprog.Matches(value))
+                    {
+                        timeprog.SetData(value.Data);
+                    }
+                }
+            }
+            return _devices.Values.SelectMany(x => x).Any(x => x.HasValue);
+        }
+
         public bool ProcessData(IEnumerable<InfonumberWriteResp> data)
         {
             foreach (var value in data)
@@ -206,6 +235,7 @@ namespace ism7mqtt
                 Name = name;
                 IP = ip;
 
+                ReadAddress = readBusAddress;
                 WriteAddress = writeBusAddress ?? $"0x{(Converter.FromHex(readBusAddress) - 5):X2}";
                 MqttTopic = $"Wolf/{ip}/{name}_{readBusAddress}";
 
@@ -226,6 +256,8 @@ namespace ism7mqtt
             public string IP { get; }
 
             public string WriteAddress { get; }
+
+            public string ReadAddress { get; }
 
             public bool HasValue => _parameter.Any(x => x.HasValue);
 
@@ -377,6 +409,11 @@ namespace ism7mqtt
             public IEnumerable<InfoRead> InfoReads => _converter.InfoReads;
 
             public ParameterDescriptor Descriptor => _descriptor;
+
+            /// <summary>
+            /// set if this parameter is one day of a time program
+            /// </summary>
+            public Timeprog03F1ConverterTemplate Timeprog => _converter as Timeprog03F1ConverterTemplate;
 
             public void ProcessDatapoint(ushort telegram, int? service, byte low, byte high, bool write)
             {
