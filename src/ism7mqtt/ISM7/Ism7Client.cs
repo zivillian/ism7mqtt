@@ -31,6 +31,8 @@ namespace ism7mqtt
         private Stream _sslStream;
         private Exception _connectionError;
         private volatile bool _connected;
+        // keep-alive and mqtt commands write concurrently - the TLS stream is not thread safe
+        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1, 1);
 
         public int Interval { get; set; }
 
@@ -513,7 +515,7 @@ namespace ism7mqtt
             return Task.CompletedTask;
         }
 
-        private ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
+        private async ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = payload.Serialize();
             if (EnableDebug)
@@ -522,7 +524,15 @@ namespace ism7mqtt
             BinaryPrimitives.WriteInt32BigEndian(buffer, data.Length);
             BinaryPrimitives.WriteInt16BigEndian(buffer.AsSpan(4), (short) payload.Type);
             Buffer.BlockCopy(data, 0, buffer, 6, data.Length);
-            return _sslStream.WriteAsync(buffer, cancellationToken);
+            await _sendLock.WaitAsync(cancellationToken);
+            try
+            {
+                await _sslStream.WriteAsync(buffer, cancellationToken);
+            }
+            finally
+            {
+                _sendLock.Release();
+            }
         }
 
         private string NextBundleId()
