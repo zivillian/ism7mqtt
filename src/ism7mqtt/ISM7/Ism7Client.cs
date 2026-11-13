@@ -28,6 +28,8 @@ namespace ism7mqtt
         private readonly ResponseDispatcher _dispatcher = new ResponseDispatcher();
         private short _lastKeepAlive = 0;
         private Stream _sslStream;
+        // keep-alive, mqtt commands and the time program refresh write concurrently - the TLS stream is not thread safe
+        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1, 1);
 
         public int Interval { get; set; }
 
@@ -38,6 +40,23 @@ namespace ism7mqtt
         public bool EnableDebug { get; set; }
 
         public bool SerializePushSubscribes { get; set; } = false;
+
+        /// <summary>
+        /// Read the configured time programs every n minutes. 0 (default) disables reading time programs.
+        /// </summary>
+        public int TimeprogInterval { get; set; } = 0;
+
+        /// <summary>
+        /// Pause between two time program bundles (one week each). The ISM7 reads every day separately
+        /// via eBus, which takes a few seconds per day, and delays the push updates in the meantime -
+        /// reading all time programs at once stalled the push updates for minutes (observed with ISM7 FW 4.50).
+        /// </summary>
+        public TimeSpan TimeprogBundlePause { get; set; } = TimeSpan.FromSeconds(30);
+
+        /// <summary>
+        /// Delay before the first time program read after the startup, so the initial push updates are not delayed.
+        /// </summary>
+        public TimeSpan TimeprogStartupDelay { get; set; } = TimeSpan.FromMinutes(1);
 
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
@@ -375,10 +394,118 @@ namespace ism7mqtt
                 }
             }
 
+            if (TimeprogInterval > 0)
+            {
+                // runs until the connection is closed, never throws
+                _ = ReadTimeprogsPeriodicallyAsync(cancellationToken);
+            }
+
             if (OnInitializationFinishedAsync is not null)
             {
                 await OnInitializationFinishedAsync(_config, cancellationToken);
             }
+        }
+
+        private async Task ReadTimeprogsPeriodicallyAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay(TimeprogStartupDelay, cancellationToken);
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await ReadTimeprogsAsync(cancellationToken);
+                    }
+                    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine($"reading time programs failed: {ex.Message}");
+                    }
+                    await Task.Delay(TimeSpan.FromMinutes(TimeprogInterval), cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // connection closed
+            }
+        }
+
+        /// <summary>
+        /// Pulls all configured time program days, one bundle (= up to one week) at a time with a pause in between
+        /// (see <see cref="TimeprogBundlePause"/>). Time programs are only pulled, never push-subscribed, so they do
+        /// not occupy subscription slots in the ISM7. Each bundle uses the startup timeout.
+        /// </summary>
+        private async Task ReadTimeprogsAsync(CancellationToken cancellationToken)
+        {
+            var reads = _config.GetTimeprogReads().ToList();
+            if (reads.Count == 0) return;
+            var received = 0;
+            var busy = TimeSpan.Zero;
+            var started = Environment.TickCount64;
+            var first = true;
+            foreach (var chunk in reads.Chunk(7))
+            {
+                if (!first)
+                {
+                    await Task.Delay(TimeprogBundlePause, cancellationToken);
+                }
+                first = false;
+                var bundleStarted = Environment.TickCount64;
+                var bundleId = NextBundleId();
+                // one completion source per bundle: a late answer (after the timeout) must not affect the next bundle
+                var responseSource = new TaskCompletionSource<TelegramBundleResp>(TaskCreationOptions.RunContinuationsAsynchronously);
+                _dispatcher.SubscribeOnce(
+                    x => x.MessageType == PayloadType.TgrBundleResp && ((TelegramBundleResp)x).BundleId == bundleId,
+                    (r, _) =>
+                    {
+                        responseSource.TrySetResult((TelegramBundleResp)r);
+                        return Task.CompletedTask;
+                    });
+                foreach (var read in chunk)
+                {
+                    read.Seq = NextSequenceId();
+                }
+                await SendAsync(new TelegramBundleReq
+                {
+                    AbortOnError = false,
+                    BundleId = bundleId,
+                    GatewayId = "1",
+                    TelegramBundleType = TelegramBundleType.pull,
+                    TimeprogReadTelegrams = chunk.ToList()
+                }, cancellationToken);
+                TelegramBundleResp response;
+                try
+                {
+                    response = await responseSource.Task.WaitAsync(StartupTimeoutSpan, cancellationToken);
+                }
+                catch (TimeoutException)
+                {
+                    Console.Error.WriteLine($"no response for time program bundle {bundleId} within {StartupTimeout}s - skipping the remaining time programs");
+                    break;
+                }
+                finally
+                {
+                    busy += TimeSpan.FromMilliseconds(Environment.TickCount64 - bundleStarted);
+                }
+                if (!String.IsNullOrEmpty(response.Errormsg) || response.State != TelegrResponseState.OK)
+                {
+                    Console.Error.WriteLine($"time program bundle {bundleId} failed with state '{response.State}': {response.Errormsg}");
+                    continue;
+                }
+                var telegrams = response.TimeprogTelegrams ?? new List<TimeprogReadResp>();
+                var ok = telegrams.Where(x => x.State == TelegrResponseState.OK).ToList();
+                received += ok.Count;
+                if (ok.Count > 0 && _config.ProcessData(ok))
+                {
+                    await _messageHandler(_config, cancellationToken);
+                }
+            }
+            var total = TimeSpan.FromMilliseconds(Environment.TickCount64 - started);
+            Console.WriteLine($"read {received} of {reads.Count} time program days in {total.TotalSeconds:0}s (ISM7 busy {busy.TotalSeconds:0}s)");
         }
 
         // We observed pull bundel request were not answered by the ISM7 which caused the startup to hang.
@@ -452,7 +579,7 @@ namespace ism7mqtt
             return Task.CompletedTask;
         }
 
-        private ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
+        private async ValueTask SendAsync<T>(T payload, CancellationToken cancellationToken) where T:IPayload
         {
             var data = payload.Serialize();
             if (EnableDebug)
@@ -461,7 +588,15 @@ namespace ism7mqtt
             BinaryPrimitives.WriteInt32BigEndian(buffer, data.Length);
             BinaryPrimitives.WriteInt16BigEndian(buffer.AsSpan(4), (short) payload.Type);
             Buffer.BlockCopy(data, 0, buffer, 6, data.Length);
-            return _sslStream.WriteAsync(buffer, cancellationToken);
+            await _sendLock.WaitAsync(cancellationToken);
+            try
+            {
+                await _sslStream.WriteAsync(buffer, cancellationToken);
+            }
+            finally
+            {
+                _sendLock.Release();
+            }
         }
 
         private static string NextBundleId()

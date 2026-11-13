@@ -54,6 +54,7 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 | Flag | Env var | Default | Description |
 |---|---|---|---|
 | `--interval=<seconds>` | `ISM7_INTERVAL` | `60` | Push interval for polled values |
+| `--timeprog-interval=<minutes>` | `ISM7_TIMEPROG_INTERVAL` | `0` (off) | Read the time programs in parameter.json every n minutes (read-only) — see below |
 | `-l, --lang=<code>` | `ISM7_LANGUAGE` | `DEU` | Language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR) |
 | `-d, --debug` | `ISM7_DEBUG` | `false` | Dump raw protocol XML (includes your password) |
 | `--hass-id=<prefix>` | `ISM7_HOMEASSISTANT_ID` | – | Enable Home Assistant discovery; implies `--separate` and `--retain` |
@@ -67,6 +68,16 @@ Every option can be set as a CLI flag (when running the binary/`dotnet run` dire
 | `--startup-timeout=<seconds>` | `ISM7_STARTUP_TIMEOUT` | `90` | Per-request startup timeout — see below |
 | `--serialize-push-subscribes` | `ISM7_SERIALIZE_PUSH_SUBSCRIBES` | `false` | Send push subscribes one at a time during startup — see below |
 | `--parameter-xml-override=<path>` | `ISM7_PARAMETER_XML_OVERRIDE` | – | Replace the built-in parameter template — see [Advanced](#advanced-overriding-the-built-in-parameterxml) below |
+
+`ISM7_TIMEPROG_INTERVAL` (in minutes, defaults to `0` = disabled, also available as `--timeprog-interval`)
+reads the switch times of the time programs (heating, hot water, circulation) that are listed in your
+parameter.json (the `DaySwitchTimes` parameters, e.g. 320000-320083 for a BM-2) - once after startup and
+then every n minutes. They are only pulled, never push-subscribed, so they don't occupy subscription slots
+in the ISM7. The ISM7 reads every day separately via eBus (a few seconds per day) and delays the push updates
+meanwhile, so the days are read one week at a time with a 30s pause in between - with all 84 time program days
+of a BM-2 a refresh takes about 10 minutes. Choose a long interval, time programs rarely change. Each day is published as text like `05:30-22:00, 17:00-18:00` (`-` if there is no switch time),
+with `--hass-id` as a read-only sensor named e.g. `Zeitprogramm Warmwasser 1 Mo`. Writing time programs is
+not supported yet.
 
 `ISM7_STARTUP_TIMEOUT` (in seconds, defaults to `90`, also available as `--startup-timeout`)
 only applies to the initial startup phase, where ism7mqtt requests all configured values from

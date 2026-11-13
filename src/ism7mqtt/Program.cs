@@ -47,6 +47,7 @@ namespace ism7mqtt
             int interval = GetEnvInt32("ISM7_INTERVAL", 60);
             int startupTimeout = GetEnvInt32("ISM7_STARTUP_TIMEOUT", 90);
             bool serializePushSubscribes = GetEnvBool("ISM7_SERIALIZE_PUSH_SUBSCRIBES");
+            int timeprogInterval = GetEnvInt32("ISM7_TIMEPROG_INTERVAL", 0);
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
             string mqttHealthFile = GetEnvString("ISM7_MQTT_HEALTH_FILE");
@@ -66,6 +67,7 @@ namespace ism7mqtt
                 {"interval=", "push interval in seconds (defaults to 60)", (int x) => interval = x},
                 {"startup-timeout=", "timeout in seconds to wait for each pull request response during startup (defaults to 90)", (int x) => startupTimeout = x},
                 {"serialize-push-subscribes", "send push subscribes one at a time during startup, waiting for each response, instead of all at once (needed for some FW5.20 devices that otherwise stop responding; defaults to false)", x => serializePushSubscribes = x != null},
+                {"timeprog-interval=", "read the time programs configured in parameter.json every n minutes (read-only, defaults to 0 = disabled)", (int x) => timeprogInterval = x},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
                 {"mqtt-health-file=", "file that is updated while the connection to the MQTT broker is up, e.g. for a docker HEALTHCHECK (defaults to none)", x => mqttHealthFile = x},
                 {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
@@ -134,6 +136,7 @@ namespace ism7mqtt
                             Interval = interval,
                             StartupTimeout = startupTimeout,
                             SerializePushSubscribes = serializePushSubscribes,
+                            TimeprogInterval = timeprogInterval,
                             EnableDebug = enableDebug
                         };
                         mqttClient.ApplicationMessageReceivedAsync += x => OnMessage(client, x, enableDebug, cts.Token);
@@ -145,7 +148,8 @@ namespace ism7mqtt
                                 _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId, localizer)
                                 {
                                     EnableDebug = enableDebug, 
-                                    QosLevel = _qos
+                                    QosLevel = _qos,
+                                    IncludeTimeprogs = timeprogInterval > 0
                                 };
                                 return _haDiscovery.PublishDiscoveryInfo(c);
                             };
