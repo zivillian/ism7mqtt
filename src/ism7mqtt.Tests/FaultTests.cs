@@ -585,6 +585,36 @@ public class FaultTests
         }
     }
 
+    [Theory]
+    [InlineData("01.11.2026 13:05:00")]
+    [InlineData("2025-11-20T10:13:54")] // WOLF Link FW 5.20 (reported in #248)
+    [InlineData("2025-11-20 10:13:54")]
+    public void FaultEntry_ParsesTheStartTime(string start)
+    {
+        var entry = new FaultEntry(1, 118, null!, start, null!, false);
+        Assert.NotNull(entry.StartTime);
+    }
+
+    [Fact]
+    public void ActiveFault_IsTheNewest_WithIsoTimes()
+    {
+        var config = LoadFaultsConfig(out var path);
+        try
+        {
+            config.ProcessFaults(new[]
+            {
+                Ers("0x76", 1, 118, true, "2025-11-20T10:13:54"),
+                Ers("0x76", 2, 63, true, "2025-11-21T08:00:00"), // newer, but the higher index: only the parsed time puts it first
+            });
+            var sm1 = Assert.Single(config.JsonMessages, x => x.Path == "Wolf/host/SM1_0x76");
+            Assert.Equal("63 Funktionskontrolle Schwerkraftbremse", sm1.Content["Stoermeldung"]!.GetValue<string>());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
     [Fact]
     public void FaultTexts_AreLookedUpByCodeAndDevice()
     {

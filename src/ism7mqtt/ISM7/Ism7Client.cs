@@ -476,7 +476,6 @@ namespace ism7mqtt
             }
         }
 
-        private volatile bool _faultSystemconfigReceived;
         private volatile bool _faultListReceived;
         private readonly TaskCompletionSource _faultListRequested = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -507,7 +506,6 @@ namespace ism7mqtt
 
         private async Task OnFaultSystemconfigAsync(IResponse response, CancellationToken cancellationToken)
         {
-            _faultSystemconfigReceived = true;
             try
             {
                 var busDevices = ((SystemconfigResp)response).BusConfig?.Devices ?? new List<SystemconfigResp.BusDevice>();
