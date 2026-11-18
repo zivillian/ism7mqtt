@@ -60,7 +60,35 @@ namespace ism7mqtt.HomeAssistant
 
         public IEnumerable<JsonMessage> GetDiscoveryInfo()
         {
-            return _config.Devices.SelectMany(GetDiscoveryInfo);
+            var result = _config.Devices.SelectMany(GetDiscoveryInfo);
+            if (IncludeTimeprogs)
+            {
+                var refresh = GetTimeprogRefreshDiscoveryInfo();
+                if (refresh is not null)
+                    result = result.Append(refresh);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// One button for all time programs, attached to the first device that has time program parameters.
+        /// </summary>
+        private JsonMessage GetTimeprogRefreshDiscoveryInfo()
+        {
+            var device = _config.Devices.FirstOrDefault(x => x.Parameters.Any(p => p.Timeprog is not null));
+            if (device is null) return null;
+            var uniqueId = LaunderHomeassistantId($"{_discoveryId}_{device.Name}_{device.WriteAddress}_Zeitprogramme_Aktualisieren");
+            var message = new JsonObject
+            {
+                { "unique_id", uniqueId },
+                { "command_topic", Ism7Client.GetTimeprogRefreshTopic(device.IP) },
+                { "name", $"{_localizer["Zeitprogramme"]} {_localizer["Aktualisieren"]}" },
+                { "default_entity_id", $"button.{uniqueId}" },
+                { "icon", "mdi:calendar-refresh" },
+                { "entity_category", "diagnostic" },
+                { "device", GetDiscoveryDeviceInfo(device) }
+            };
+            return new JsonMessage($"homeassistant/button/{uniqueId}/config", message);
         }
 
         private string LaunderHomeassistantId(string id) {

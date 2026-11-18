@@ -81,6 +81,11 @@ of a BM-2 a refresh takes about 10 minutes. Choose a long interval, time program
 with `--hass-id` as a read-only sensor named e.g. `Zeitprogramm Warmwasser 1 Mo`. Writing time programs is
 not supported yet.
 
+To read the time programs right away (e.g. after changing them in the Smartset app), publish anything to
+`Wolf/<ip>/timeprogs/refresh` - with `--hass-id` there is a button `Zeitprogramme Aktualisieren` for this.
+Several requests are merged, a request during a running read starts one more read afterwards. This only works
+if reading time programs is enabled.
+
 `ISM7_STARTUP_TIMEOUT` (in seconds, defaults to `90`, also available as `--startup-timeout`)
 only applies to the initial startup phase, where ism7mqtt requests all configured values from
 the ism7 one pull request at a time. It is **not** a timeout for the whole startup phase - it

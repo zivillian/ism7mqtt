@@ -198,6 +198,80 @@ public class TimeprogTests
     }
 
     [Fact]
+    public async Task TimeprogRefresh_ReadsAgain_WithoutWaitingForTheInterval()
+    {
+        await using var server = new FakeIsm7Server(RoomTemperature, timeprogResponder: Respond);
+        var parameterPath = TestFixtures.WriteParameterFile("timeprog-read.json", server.Port);
+        try
+        {
+            var client = new Ism7Client((_, _) => Task.CompletedTask, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"))
+            {
+                StartupTimeout = 5,
+                TimeprogInterval = 60,
+                TimeprogBundlePause = TimeSpan.Zero,
+                TimeprogStartupDelay = TimeSpan.Zero,
+            };
+            Assert.Equal("Wolf/127.0.0.1/timeprogs/refresh", client.TimeprogRefreshTopic);
+            using var cts = new CancellationTokenSource();
+            var runTask = client.RunAsync("test-password", cts.Token);
+
+            // first read after startup: 9 days
+            await WaitForAsync(() => server.TimeprogRequests.Count() == 9, TimeSpan.FromSeconds(10));
+            await Task.Delay(300);
+            Assert.Equal(9, server.TimeprogRequests.Count());
+
+            // several requests are merged into one more read, not one read per request
+            client.RequestTimeprogRefresh();
+            client.RequestTimeprogRefresh();
+            client.RequestTimeprogRefresh();
+            await WaitForAsync(() => server.TimeprogRequests.Count() == 18, TimeSpan.FromSeconds(10));
+            await Task.Delay(500);
+            Assert.InRange(server.TimeprogRequests.Count(), 18, 27);
+
+            cts.Cancel();
+            await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
+    public async Task TimeprogRefresh_IsIgnored_IfReadingIsDisabled()
+    {
+        await using var server = new FakeIsm7Server(RoomTemperature, timeprogResponder: Respond);
+        var parameterPath = TestFixtures.WriteParameterFile("timeprog-read.json", server.Port);
+        try
+        {
+            var initFinished = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var client = new Ism7Client((_, _) => Task.CompletedTask, parameterPath, "127.0.0.1", new Ism7Localizer("DEU"))
+            {
+                StartupTimeout = 5,
+                OnInitializationFinishedAsync = (_, _) =>
+                {
+                    initFinished.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            };
+            using var cts = new CancellationTokenSource();
+            var runTask = client.RunAsync("test-password", cts.Token);
+            var completed = await Task.WhenAny(initFinished.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+            Assert.Same(initFinished.Task, completed);
+            client.RequestTimeprogRefresh();
+            await Task.Delay(500);
+            cts.Cancel();
+            await Task.WhenAny(runTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+            Assert.Empty(server.TimeprogRequests);
+        }
+        finally
+        {
+            File.Delete(parameterPath);
+        }
+    }
+
+    [Fact]
     public async Task TimeprogReads_AreNotSent_ByDefault()
     {
         await using var server = new FakeIsm7Server(RoomTemperature, timeprogResponder: Respond);
@@ -244,6 +318,9 @@ public class TimeprogTests
             var mkMonday = Assert.Single(discovery.GetDiscoveryInfo(),
                 x => x.Content["unique_id"]!.GetValue<string>() == "Wolf_MK_BM2_0x80_320063_Zeitprogramm_Heizen_1_Mo");
             Assert.Equal("Time program Heating 1 Mo", mkMonday.Content["name"]!.GetValue<string>());
+            var refresh = Assert.Single(discovery.GetDiscoveryInfo(), x => x.Path.StartsWith("homeassistant/button/"));
+            Assert.Equal("Time programs Refresh", refresh.Content["name"]!.GetValue<string>());
+            Assert.EndsWith("_Zeitprogramme_Aktualisieren", refresh.Content["unique_id"]!.GetValue<string>());
         }
         finally
         {
@@ -263,15 +340,24 @@ public class TimeprogTests
             var config = new Ism7Config(parameterPath, localizer);
             _ = config.AddAllDevices("127.0.0.1").ToList();
             var discovery = new HaDiscovery(config, null!, "Wolf", localizer) { IncludeTimeprogs = includeTimeprogs };
-            var timeprogs = discovery.GetDiscoveryInfo()
-                .Where(x => x.Content["name"]!.GetValue<string>().StartsWith("Zeitprogramm"))
+            var all = discovery.GetDiscoveryInfo().ToList();
+            var buttons = all.Where(x => x.Path.StartsWith("homeassistant/button/")).ToList();
+            var timeprogs = all
+                .Where(x => x.Path.StartsWith("homeassistant/sensor/") && x.Content["name"]!.GetValue<string>().StartsWith("Zeitprogramm"))
                 .ToList();
 
             if (!includeTimeprogs)
             {
                 Assert.Empty(timeprogs);
+                Assert.Empty(buttons);
                 return;
             }
+            // one refresh button for all time programs
+            var refresh = Assert.Single(buttons);
+            Assert.Equal("Zeitprogramme Aktualisieren", refresh.Content["name"]!.GetValue<string>());
+            Assert.Equal("Wolf/127.0.0.1/timeprogs/refresh", refresh.Content["command_topic"]!.GetValue<string>());
+            Assert.Equal("homeassistant/button/" + refresh.Content["unique_id"]!.GetValue<string>() + "/config", refresh.Path);
+
             Assert.Equal(9, timeprogs.Count);
             Assert.All(timeprogs, x =>
             {

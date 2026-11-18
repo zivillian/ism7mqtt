@@ -70,6 +70,17 @@ namespace ism7mqtt
         /// </summary>
         public TimeSpan TimeprogStartupDelay { get; set; } = TimeSpan.FromMinutes(1);
 
+        // released by RequestTimeprogRefresh - starts the next time program read without waiting for the interval
+        private readonly SemaphoreSlim _timeprogRefresh = new SemaphoreSlim(0, 1);
+
+        /// <summary>
+        /// MQTT topic (any payload) to read the time programs now, see <see cref="RequestTimeprogRefresh"/>.
+        /// Deliberately not ".../set": that would also match both "+/set" and "+/set/#" and be delivered twice.
+        /// </summary>
+        public static string GetTimeprogRefreshTopic(string host) => $"Wolf/{host}/timeprogs/refresh";
+
+        public string TimeprogRefreshTopic => GetTimeprogRefreshTopic(_host);
+
         public Func<Ism7Config, CancellationToken, Task> OnInitializationFinishedAsync { get; set; }
 
         public Ism7Client(Func<Ism7Config, CancellationToken, Task> messageHandler, string parameterPath, string host, Ism7Localizer localizer, string parameterXmlOverridePath = null)
@@ -135,6 +146,28 @@ namespace ism7mqtt
                 // don't keep the socket of a failed attempt open - the ism7 accepts only a single connection
                 tcp.Dispose();
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Read the time programs now instead of waiting for the interval, e.g. after they were changed in the
+        /// Smartset app. Requests are merged: a request during a running read starts one more read afterwards.
+        /// </summary>
+        public void RequestTimeprogRefresh()
+        {
+            if (TimeprogInterval <= 0)
+            {
+                Console.WriteLine("ignoring time program refresh - reading time programs is disabled (timeprog-interval)");
+                return;
+            }
+            Console.WriteLine("time program refresh requested");
+            try
+            {
+                _timeprogRefresh.Release();
+            }
+            catch (SemaphoreFullException)
+            {
+                // already requested
             }
         }
 
@@ -474,9 +507,13 @@ namespace ism7mqtt
         {
             try
             {
-                await Task.Delay(TimeprogStartupDelay, cancellationToken);
+                // SemaphoreSlim accepts at most Int32.MaxValue ms (~24 days)
+                var interval = TimeSpan.FromMilliseconds(Math.Min(TimeSpan.FromMinutes(TimeprogInterval).TotalMilliseconds, Int32.MaxValue));
+                await _timeprogRefresh.WaitAsync(TimeprogStartupDelay, cancellationToken);
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    // requests up to now are covered by this read
+                    _timeprogRefresh.Wait(0);
                     try
                     {
                         await ReadTimeprogsAsync(cancellationToken);
@@ -489,7 +526,7 @@ namespace ism7mqtt
                     {
                         Console.Error.WriteLine($"reading time programs failed: {ex.Message}");
                     }
-                    await Task.Delay(TimeSpan.FromMinutes(TimeprogInterval), cancellationToken);
+                    await _timeprogRefresh.WaitAsync(interval, cancellationToken);
                 }
             }
             catch (OperationCanceledException)
