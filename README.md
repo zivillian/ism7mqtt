@@ -135,13 +135,13 @@ Assistant discovery info) after every reconnect.
 ### Fault messages
 
 With `--faults` (`ISM7_FAULTS=true`) ism7mqtt also requests the fault lists of the devices, the
-same way the Wolf app does, once per connection after the startup has finished: it reads the
+same way the Wolf app does, once per connection right after the login, before any value is read
+or subscribed (some firmware ignores the request after the push subscriptions): it reads the
 systemconfig and requests the fault lists of the configured devices the ism7 reports there. Like
 Wolf, only the physical eBus devices have a fault list (not the ISM itself, the virtual devices
 such as DHK or MK, or Modbus devices); a CWL reports its faults on `0x8B`. The log shows the
 requested addresses (`fault list: requesting li="..."`) and says so if the ism7 does not answer.
-Without `--serialize-push-subscribes` the request is sent while push answers may still be
-outstanding. The ism7 answers with the current lists and again whenever they change; every
+The ism7 answers with the current lists and again whenever they change; every
 answer is a full snapshot, and an entry missing from it is kept as no longer active (in memory,
 until the next reconnect). Each device then publishes (as JSON properties, or with `--separate`
 as topics below the device topic):
@@ -157,9 +157,9 @@ that device is published as just the code. A BM also lists faults of the heat ge
 4 or 5), which Wolf only has texts for under the heat generator: these take the text of the
 configured heat generator and carry its device template id as `text_source` (e.g. `80000`).
 
-The fault list request has not been tested on a session with many push subscriptions on every
-firmware. When you enable `--faults`, watch the log: if the ism7 connection fails or closes
-within seconds after `fault list: requesting li=...` on every connection, ism7mqtt keeps
+The fault list request has not been tested on every firmware. When you enable `--faults`, watch
+the log: if the ism7 connection fails or closes within seconds after
+`fault list: requesting li=...` on every connection, ism7mqtt keeps
 reconnecting with backoff and requests it again each time - disable `--faults` then and use
 `--fault-probe` to check your ism7.
 
