@@ -525,12 +525,12 @@ public class Ism7SupervisorTests
     public void IdGenerator_EveryInstanceStartsAtTheBeginning()
     {
         var first = new ism7mqtt.ISM7.IdGenerator();
-        Assert.Equal(1, first.GetNextBundleId());
-        Assert.Equal(2, first.GetNextBundleId());
+        Assert.Equal(10, first.GetNextBundleId());
+        Assert.Equal(11, first.GetNextBundleId());
         Assert.Equal(2, first.GetNextSequenceId());
 
         var second = new ism7mqtt.ISM7.IdGenerator();
-        Assert.Equal("1", second.GetNextBundleIdString());
+        Assert.Equal("10", second.GetNextBundleIdString());
         Assert.Equal(2, second.GetNextSequenceId());
     }
 
