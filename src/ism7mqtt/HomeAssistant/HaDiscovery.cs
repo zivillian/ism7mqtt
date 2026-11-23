@@ -26,6 +26,11 @@ namespace ism7mqtt.HomeAssistant
 
         public MqttQualityOfServiceLevel QosLevel { get; set; }
 
+        /// <summary>
+        /// publish sensors for time programs - only useful if reading time programs is enabled
+        /// </summary>
+        public bool IncludeTimeprogs { get; set; }
+
         public HaDiscovery(Ism7Config config, IMqttClient mqttClient, string discoveryId, Ism7Localizer localizer)
         {
             _config = config;
@@ -72,8 +77,52 @@ namespace ism7mqtt.HomeAssistant
 
         private string ToHaObjectId(Ism7Config.RunningDevice device, ParameterDescriptor parameter)
         {
-            var objectId = $"{_discoveryId}_{device.Name}_{device.WriteAddress}_{parameter.PTID}_{parameter.Name}";
+            return ToHaObjectId(device, parameter, parameter.Name);
+        }
+
+        private string ToHaObjectId(Ism7Config.RunningDevice device, ParameterDescriptor parameter, string name)
+        {
+            var objectId = $"{_discoveryId}_{device.Name}_{device.WriteAddress}_{parameter.PTID}_{name}";
             return LaunderHomeassistantId(objectId);
+        }
+
+        /// <summary>
+        /// The parameter names of time program days are just the weekday ("Mo") - add program type and number.
+        /// All parts are part of the dictionary, the untranslated name is used for the (language independent) id.
+        /// </summary>
+        private string GetTimeprogName(Timeprog03F1ConverterTemplate timeprog, ParameterDescriptor descriptor, bool localize)
+        {
+            var type = timeprog.ProgramType switch
+            {
+                0 => "Heizen",
+                1 => "Warmwasser",
+                2 => "Zirkulation",
+                _ => timeprog.ProgramType.ToString(CultureInfo.InvariantCulture)
+            };
+            Func<string, string> text = localize ? x => _localizer[x] : x => x;
+            return $"{text("Zeitprogramm")} {text(type)} {timeprog.HeatprogNumber} {text(descriptor.Name)}";
+        }
+
+        private JsonMessage GetTimeprogDiscoveryInfo(Ism7Config.RunningDevice device, Ism7Config.RunningParameter parameter)
+        {
+            var descriptor = parameter.Descriptor;
+            var name = GetTimeprogName(parameter.Timeprog, descriptor, localize: true);
+            var uniqueId = ToHaObjectId(device, descriptor, GetTimeprogName(parameter.Timeprog, descriptor, localize: false));
+            var deduplicator = parameter.IsDuplicate ? $"/{descriptor.PTID}" : String.Empty;
+            // read-only: writing time programs is not supported (yet)
+            var message = new JsonObject
+            {
+                { "unique_id", uniqueId },
+                { "state_topic", $"{device.MqttTopic}/{parameter.MqttName}{deduplicator}" },
+                // the payload is a json string ("05:30-22:00") - strip the quotes
+                { "value_template", "{{ value_json }}" },
+                { "name", name },
+                { "default_entity_id", $"sensor.{uniqueId}" },
+                { "icon", "mdi:calendar-clock" },
+                { "entity_category", "diagnostic" },
+                { "device", GetDiscoveryDeviceInfo(device) }
+            };
+            return new JsonMessage($"homeassistant/sensor/{uniqueId}/config", message);
         }
 
         private IEnumerable<JsonMessage> GetDiscoveryInfo(Ism7Config.RunningDevice device)
@@ -82,6 +131,14 @@ namespace ism7mqtt.HomeAssistant
             foreach (var parameter in device.Parameters)
             {
                 var descriptor = parameter.Descriptor;
+                if (parameter.Timeprog is not null)
+                {
+                    if (IncludeTimeprogs)
+                    {
+                        result.Add(GetTimeprogDiscoveryInfo(device, parameter));
+                    }
+                    continue;
+                }
                 var type = GetHomeAssistantType(descriptor);
                 if (type == null) continue;
                 if (descriptor.ControlType == "DaySwitchTimes" || descriptor.ControlType.Contains("NO_DISPLAY")) continue;
