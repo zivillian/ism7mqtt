@@ -48,6 +48,7 @@ namespace ism7mqtt
             int startupTimeout = GetEnvInt32("ISM7_STARTUP_TIMEOUT", 90);
             int reconnectTimeout = GetEnvInt32("ISM7_RECONNECT_TIMEOUT", 300);
             bool serializePushSubscribes = GetEnvBool("ISM7_SERIALIZE_PUSH_SUBSCRIBES");
+            int timeprogInterval = GetEnvInt32("ISM7_TIMEPROG_INTERVAL", 0);
             string discoveryId = GetEnvString("ISM7_HOMEASSISTANT_ID");
             string language = GetEnvString("ISM7_LANGUAGE", "DEU");
             string mqttHealthFile = GetEnvString("ISM7_MQTT_HEALTH_FILE");
@@ -68,6 +69,7 @@ namespace ism7mqtt
                 {"startup-timeout=", "timeout in seconds to connect to the ism7 and to wait for each pull request response during startup (defaults to 90)", (int x) => startupTimeout = x},
                 {"ism7-reconnect-timeout=", "how long in seconds to keep reconnecting to the ism7 after the connection was lost (or could not be established at startup) before exiting with an error; 0 disables reconnecting; a rejected login (e.g. wrong password) is never retried (defaults to 300)", (int x) => reconnectTimeout = x},
                 {"serialize-push-subscribes", "send push subscribes one at a time during startup, waiting for each response, instead of all at once (needed for some FW5.20 devices that otherwise stop responding; defaults to false)", x => serializePushSubscribes = x != null},
+                {"timeprog-interval=", "read the time programs configured in parameter.json every n minutes (read-only, defaults to 0 = disabled)", (int x) => timeprogInterval = x},
                 {"hass-id=", "HomeAssistant auto-discovery device id/entity prefix (implies --separate and --retain)", x => discoveryId = x},
                 {"mqtt-health-file=", "file that is updated while the connection to the MQTT broker is up, e.g. for a docker HEALTHCHECK (defaults to none)", x => mqttHealthFile = x},
                 {"l|lang=", "language for HA localization (DEU,CHN,GRC,EST,HRV,LVA,LTU,ROU,ITA,ESP,FRA,POL,CZE,SVK,RUS,DNK,HUN,GBR,TUR,NLD,BUL,POR)", x => language = x},
@@ -139,6 +141,7 @@ namespace ism7mqtt
                                 Interval = interval,
                                 StartupTimeout = startupTimeout,
                                 SerializePushSubscribes = serializePushSubscribes,
+                                TimeprogInterval = timeprogInterval,
                                 EnableDebug = enableDebug
                             };
                             if (!String.IsNullOrEmpty(discoveryId))
@@ -148,7 +151,8 @@ namespace ism7mqtt
                                     _haDiscovery =  new HaDiscovery(config, mqttClient, discoveryId, localizer)
                                     {
                                         EnableDebug = enableDebug,
-                                        QosLevel = _qos
+                                        QosLevel = _qos,
+                                        IncludeTimeprogs = timeprogInterval > 0
                                     };
                                     return PublishNonFatalAsync(() => _haDiscovery.PublishDiscoveryInfo(c), c);
                                 };
@@ -181,6 +185,8 @@ namespace ism7mqtt
                             {
                                 await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set", cancellationToken: token);
                                 await mqttClient.SubscribeAsync($"Wolf/{ip}/+/set/#", cancellationToken: token);
+                                if (timeprogInterval > 0)
+                                    await mqttClient.SubscribeAsync(Ism7Client.GetTimeprogRefreshTopic(ip), cancellationToken: token);
                                 if (!String.IsNullOrEmpty(discoveryId))
                                 {
                                     await mqttClient.SubscribeAsync("homeassistant/status", cancellationToken: token);
@@ -269,6 +275,13 @@ namespace ism7mqtt
             if (client is null || !client.IsConnected)
             {
                 Console.Error.WriteLine($"ism7 not connected - dropping mqtt message with topic '{message.Topic}'");
+                return Task.CompletedTask;
+            }
+
+            if (message.Topic == client.TimeprogRefreshTopic)
+            {
+                //payload is ignored
+                client.RequestTimeprogRefresh();
                 return Task.CompletedTask;
             }
 
