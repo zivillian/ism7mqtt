@@ -88,9 +88,22 @@ namespace ism7mqtt
                 Console.Error.WriteLine("Try 'ism7mqtt --help' for more information");
                 return;
             }
-            if (showHelp || String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(mqttHost) || String.IsNullOrEmpty(password))
+            if (showHelp)
             {
                 options.WriteOptionDescriptions(Console.Out);
+                return;
+            }
+            var missing = RequiredOptions.Missing(ip, mqttHost, password);
+            if (missing.Count > 0)
+            {
+                // Name what is missing before the help, otherwise a missing value (e.g. an empty
+                // ISM7_MQTTHOST from a wrapper script) looks like ism7mqtt only printing its help.
+                foreach (var value in missing)
+                {
+                    Console.Error.WriteLine($"ism7mqtt: missing {value}");
+                }
+                options.WriteOptionDescriptions(Console.Out);
+                Environment.ExitCode = 1;
                 return;
             }
             if (!File.Exists(parameter))
