@@ -21,6 +21,17 @@ public class RequiredOptionsTests
         Assert.Contains("ISM7_MQTTHOST", entry);
     }
 
+    [Theory]
+    [InlineData(" ")]
+    [InlineData("\t")]
+    [InlineData("  \r\n")]
+    public void WhitespaceOnly_CountsAsMissing(string value)
+    {
+        var missing = RequiredOptions.Missing(value, value, value);
+
+        Assert.Equal(3, missing.Count);
+    }
+
     [Fact]
     public void AllMissing_NamesAllThreeInOrder()
     {
